@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "VControl",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

@@ -1,0 +1,7 @@
+{
+  "name": "VControl",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
