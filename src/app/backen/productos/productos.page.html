@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+      <ion-button [routerLink]= "['/home']" >
+        <ion-icon style="width: 22px;" color="primary" name="home" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      <ion-button [routerLink]= "['/registro']" >
+        <ion-icon color="primary" name="person-circle-outline" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      
+      </ion-buttons>
+    <ion-title style="text-align: center; margin-right: 5%;" class="subtitulo">
+      Productos
+    </ion-title>
+
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+     </ion-buttons>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  
+  <h1 style="width: 80%;" class="subtitulo">Datos del Articulo</h1>
+
+  <div Class="content-section">
+
+  <div class="form-input">
+  <ion-item>
+    <ion-label class="normal">TIpo de Articulo:</ion-label>
+   <!-- <ion-select [(ngModel)]="newReporte.edad" placeholder="seleccionar">-->
+     <ion-select style="text-align: left;" class="normal" placeholder="Seleccione">
+      <ion-select-option value="Laptpop">Laptop</ion-select-option>
+     <ion-select-option value="Discor Duro">Disco duro</ion-select-option>
+     <ion-select-option value="Accesorios">Accesorios</ion-select-option>
+    </ion-select>
+  </ion-item>
+</div>
+
+<div class="form-input"><ion-item>
+  <ion-label class="normal" >Foto:</ion-label>
+  
+  <ion-buttons slot="end">
+    
+    <ion-button>
+    
+      <label for="file-upload"><ion-icon  slot="end" name="images"></ion-icon></label>
+     <!--<input (change)="newImg($event)" id="file-upload" style="visibility:hidden" type="file" accept="image/*">--> 
+      
+      
+    </ion-button>
+  </ion-buttons>
+  
+</ion-item>
+<!--<ion-item ><img class= "image" [src]="img"></ion-item>--></div>
+
+
+<div class="form-input">
+  <ion-item>
+    <ion-label    class="normal" >Articulo:</ion-label>
+     <ion-input  class="normal" type="string" inputmode="text" placeholder="Nombre del articulo"></ion-input>
+  </ion-item>
+</div>
+  
+<div class="form-input">
+  <ion-item>
+    <ion-label   class="normal" >Costo:</ion-label>
+     <ion-input  class="normal" type="number" inputmode="number" placeholder="Precio Compra"></ion-input>
+  </ion-item>
+</div>
+  
+<div class="form-input">
+  <ion-item>
+    <ion-label   position="floating" class="normal" placeholder="Ingresar el nombre del Infante">Gasto:</ion-label>
+     <ion-input  class="normal" type="number" inputmode="number" placeholder="Precio Compra"></ion-input>
+  </ion-item>
+</div>
+
+<div class="form-input">
+  <ion-item>
+    <ion-label    class="normal">Costo Neto: {{5}}</ion-label>
+    
+  </ion-item>
+</div>
+ 
+
+<div class="form-input">
+  <ion-item>
+    <ion-label    class="normal">Ganancia: {{5}}</ion-label>
+    
+  </ion-item>
+</div>
+  
+
+ 
+   
+
+ 
+
+</div>
+
+
+
+
+
+</ion-content>

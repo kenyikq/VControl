@@ -24,3 +24,42 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+/* ITpo de letra desde google font */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,500&display=swap');
+
+//Clases Globales
+
+.titulo{
+    font-family: 'Lora', serif !important;
+    font-size: 25px!important;
+    font-weight: 600;
+    color: #8c8c8c;
+    @media screen and (max-width:590px) {
+       
+        font-size: 22px!important;
+    }
+}
+.subtitulo{
+    font-family: 'Lora', serif !important;
+    font-size: 20px!important;
+    font-weight: 550;
+    color: #8c8c8c;
+    @media screen and (max-width:590px) {
+       
+        font-size: 19px!important;
+    }
+}
+
+.normal{
+    font-family: 'Lora', serif !important;
+    
+    font-size: 18px !important;
+    color: #8c8c8c;
+    @media screen and (max-width:590px) {
+       
+        font-size: 16px !important;
+    }
+}
+
+

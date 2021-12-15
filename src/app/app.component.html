@@ -1,3 +1,80 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+ 
+  <ion-split-pane contentId="main">
+    
+    <!--  the side menu  -->
+    <ion-menu contentId="main" menuId="main" >
+      <ion-header>
+        <ion-toolbar>
+          <ion-title style="text-align: center;" class="subtitulo">Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <div class="menu-header-hg">Menú</div>
+        <div class="header-content">
+         <!--   <img src="../assets/logo.png" alt="">-->
+          <ion-label>
+          <h2>VControl</h2>
+          <p>Control de Ventas</p>
+        </ion-label>
+        </div>
+
+        
+       
+         <ion-menu-toggle lines ="none" class="menu-items" autoHide="false"><!--Cierra el menu al dar click en una de las opciones -->
+          <ion-item id="pri" (click)="seleccionA('pri')" button="true" detail="true" [routerLink]="['/home']">
+            <ion-label class="normal">Inicio</ion-label>
+            <ion-icon slot="start" name="home"></ion-icon>
+          </ion-item>
+
+        <ion-item id="1" (click)="seleccionA('1')"  button="true" detail="true" [routerLink]="['/productos']">
+          <ion-label class="normal">Productos</ion-label>
+          <ion-icon slot="start" name="help-buoy"></ion-icon>
+        </ion-item>
+        
+          <ion-item id="2" (click)="seleccionA('2')"  *ngIf="login" button="true" detail="true" [routerLink]="['/casos']">
+          <ion-label class="normal">Ventas</ion-label>
+          <ion-icon slot="start" name="browsers-outline"></ion-icon>
+        </ion-item>
+        <ion-item id="3" (click)="seleccionA('3')" button="true" detail="true" [routerLink]="['/estadistica']">
+          <ion-label class="normal">Estadistica</ion-label>
+          <ion-icon slot="start" name="pie-chart-outline"></ion-icon>
+        </ion-item>
+        <ion-item id= "4"(click)="seleccionA('4')" button="true" detail="true" [routerLink]="['/accion-callejera']">
+          <ion-label class="normal">Movimientos</ion-label>
+          <ion-icon  slot="start" name="help"></ion-icon>
+        </ion-item>
+      </ion-menu-toggle>
+
+      <div shape="round" style="margin-top: 30px;" class="action-button" >
+        <ion-menu-toggle autoHide="false">
+          
+        <ion-button *ngIf="login===false" style="width: 190px;" shape="round"  >
+           <ion-icon  slot="start"  name="add"></ion-icon>
+           <ion-label class="normal" >Login</ion-label>
+         </ion-button>
+         <ion-button  *ngIf="login" style="width: 190px;" shape="round"  >
+          <ion-icon  slot="start"  name="log-out-outline"></ion-icon>
+          <ion-label class="normal" >Salir</ion-label>
+           </ion-button>
+       </ion-menu-toggle> 
+       </div >
+
+       
+       </ion-content>
+
+       
+
+      
+
+     
+
+    </ion-menu>
+  
+    <!-- the main content -->
+    <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
+
+
 </ion-app>
