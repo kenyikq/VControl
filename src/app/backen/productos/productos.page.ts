@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
+import { AngularFireDatabase, AngularFireList } from '@angular/fire/compat/database';
+import { Observable } from 'rxjs';
+import { FirestoreService } from 'src/app/services/firestore.service';
+import { Prueba } from 'src/app/models';
 
 @Component({
   selector: 'app-productos',
@@ -6,12 +11,40 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./productos.page.scss'],
 })
 export class ProductosPage implements OnInit {
+prueba: Prueba[]=[];
+isActive = true;
 
-  constructor() { }
+  path = 'producto';
+
+
+  constructor( public navCtrl: NavController,
+              public firestoreService: FirestoreService,
+              public cd: ChangeDetectorRef,
+
+    ) { }
 
   ngOnInit() {
+   // this.cargarLista();
+   this.firestoreService.getNotes().subscribe(res => {
+    this.prueba = res;
+    this.cd.detectChanges();
+    console.log(res);
+  });
+  }
+  goAnOtherPage() {
+    this.navCtrl.navigateRoot('/home');
+
   }
 
+
+
+  guardarDatos(){
+const data = {docnum : '001' , nombre : 'prueba'};
+this.firestoreService.addNote(data, this.path);
+
+
+
+  }
 /*async  guardarDatos(){
   this.presentLoading();
     const path = '/reporte';
