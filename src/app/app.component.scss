@@ -6,8 +6,8 @@
 
     height: 240px;
     width: 500px;
-    background: #3880ff;
-    background: linear-gradient(90deg, #3880ff, #eff0f3 1005 );
+    background: red;
+    background: linear-gradient(90deg, red, #eff0f3 1005 );
     box-shadow: 0px 1px 10px rgba(98,140, 255, 0.5);
     transform: rotate(-15deg);
     border-radius: 10px 10px 10px 50px;
@@ -33,7 +33,7 @@
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        border: 7px solid #5e7ccc;
+        border: 7px solid red;
         margin-right: 14px;
 
     }
@@ -50,7 +50,7 @@
     p{
         font-family: 'Roboto', sans-serif !important;
         font-size: 16px;
-        color: #e4e4e4;
+        color: white;
         font-weight: 100px;
         letter-spacing: 0.4px;
         @media screen and (max-width:1280px) {
@@ -67,7 +67,7 @@
     ion-button{
         text-transform: capitalize;
         font-weight: 300;
-    --background: #628cff;
+    --background: red;
     --boder-radius: 20px;
     --box-shadow: 1px;
     margin-top: 25%;
@@ -79,7 +79,7 @@ ion-icon{margin-right: 1px;}
 .menu-items{
     margin: opx;
     ion-icon{
-        color: #86979f;
+        color: red;
         margin-right: 25px;
       
         @media screen and (max-width:1280px) {
@@ -100,7 +100,7 @@ ion-icon{margin-right: 1px;}
 
 .active{
     border-left: 5px solid;
-    color: #628cff;
+    color: red;
     padding-left: 15px;
-    ion-icon{color: #628cff;}
+    ion-icon{color: red;}
 }

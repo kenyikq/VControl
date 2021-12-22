@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/compat/database';
-import { Observable } from 'rxjs';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { Prueba } from 'src/app/models';
+import { Producto } from 'src/app/models';
+import { FirestorageService } from 'src/app/services/firestorage.service';
+import { AlertController, LoadingController, MenuController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 
 @Component({
   selector: 'app-productos',
@@ -11,63 +11,178 @@ import { Prueba } from 'src/app/models';
   styleUrls: ['./productos.page.scss'],
 })
 export class ProductosPage implements OnInit {
-prueba: Prueba[]=[];
+
+productos: Producto[]= [];
+img='';
+newFile= '';
+
+newproducto: Producto = {
+  id: this.firestoreService.getid(),
+  codigo: 1000,
+  tipoArticulo :'',
+  foto: '',
+  nombre: '',
+  unds: 0,
+  fecha: new Date(),
+  costo: 0,
+  gasto: 0,
+  costoNeto: 0,
+  precio: 0,
+  precioMin: 0,
+  ganancia: 0,
+  descripcion: {
+    procesador: {tipo: '', gen: ''},
+    ram: {tipo: '', cant: ''},
+    almacenamiento: {tipo: '', cant: ''},
+    pantalla: ''}
+  };
+
+
 isActive = true;
+valorneto: number;
+loading: any;
+idArticulo: 1000;
+
+actulizarProducto= true;
 
   path = 'producto';
 
 
-  constructor( public navCtrl: NavController,
-              public firestoreService: FirestoreService,
+  constructor(public firestoreService: FirestoreService,
               public cd: ChangeDetectorRef,
+              public firestorage: FirestorageService,
+              public log: FirebaseauthService,
+              public loadingController: LoadingController,
+              public navCtrl: NavController,
+              public toastCtrl: ToastController,
+              public alertController: AlertController,
 
-    ) { }
+    ) {
+      this.getproductos();
+    }
+
+
 
   ngOnInit() {
-   // this.cargarLista();
-   this.firestoreService.getNotes().subscribe(res => {
-    this.prueba = res;
-    this.cd.detectChanges();
-    console.log(res);
-  });
+
+
   }
+nuevo(){
+
+this.firestoreService.getultimodoc(this.path,'codigo');
+
+  this.newproducto = {
+ id: this.firestoreService.getid(),
+    codigo: 1000,
+    tipoArticulo :'',
+    foto: '',
+    nombre: '',
+    unds: 0,
+    fecha: new Date(),
+    costo: 0,
+    gasto: 0,
+    costoNeto: 0,
+    precio: 0,
+    precioMin: 0,
+    ganancia: 0,
+    descripcion: {
+      procesador: {tipo: '', gen: ''},
+      ram: {tipo: '', cant: ''},
+      almacenamiento: {tipo: '', cant: ''},
+      pantalla: ''}
+    };
+
+}
+
   goAnOtherPage() {
     this.navCtrl.navigateRoot('/home');
 
   }
-
-
-
-  guardarDatos(){
-const data = {docnum : '001' , nombre : 'prueba'};
-this.firestoreService.addNote(data, this.path);
-
-
-
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
   }
-/*async  guardarDatos(){
-  this.presentLoading();
-    const path = '/reporte';
-const name = this.newReporte.nombre;
-const file = this.newFile;
-const res = await this.firestorage.uploadImg(file, path, name);
-this.newReporte.foto = res;
+  mostrarDatos(producto){
+    this.actulizarProducto = false;
+    this.newproducto = producto;
+  }
 
-    this.firestoreService.createDoc(this.newReporte, this.path, this.newReporte.id).then( ans =>{
+
+
+  async newImg(event: any){
+
+    if (event.target.files && event.target.files[0]){
+      const reader = new FileReader();
+      this.newFile = event.target.files[0];;
+      reader.onload = ((image) => {
+        this.img = image.target.result as string;
+        this.newproducto.foto= this.img;
+
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  async deleteproducto(producto: Producto){
+
+    const alert = await this.alertController.create({
+      cssClass: 'normal',
+      header: 'Confirmacion!',
+      message: '<strong>Resuro que desea eliminar el Articulo</strong>?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            //console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            console.log(producto);
+
+            this.firestoreService.deleteDoc(this.path,producto.id);
+            this.presentToast('Producto eliminado');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+getproductos() {
+
+    this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
+       console.log(res);
+       this.productos= res;
+
+     } );
+  }
+
+async  guardarDatos(){
+  this.presentLoading();
+
+const name = this.newproducto.nombre;
+const file = this.newFile;
+const res = await this.firestorage.uploadImg(file, this.path, name);
+this.newproducto.foto = res;
+
+    this.firestoreService.createDoc(this.newproducto, this.path, this.newproducto.id).then( ans =>{
       this.loading.dismiss().then( respuesta => {
-        this.presentToast('Reporte enviado');
-        if(this.newReporte.id==='' || null){
+        this.actulizarProducto = false;
+        this.presentToast('Acción ralizada con exito');
+        if(this.newproducto.id==='' || null){
           this.navCtrl.navigateRoot('/home');
         }
-        else{this.navCtrl.navigateRoot('/casos');}
+        else{this.navCtrl.navigateRoot('/productos');}
            });
     });
 
 }
-goAnOtherPage() {
-  this.navCtrl.navigateRoot('/home');
-}
 
+
+/*
 
 getUserInfo(uid: string){
   const path ='usuario';
@@ -75,7 +190,7 @@ this. subinfo = this.firestoreService.getDoc<Usuario>(path,uid).subscribe(res=>{
 this.usuario = res;
 });
 }
-
+*/
 
 
 async presentToast(msg: string) {
@@ -97,31 +212,16 @@ await this.loading.present();
 
 }
 
-async newImg(event: any){
-
-if (event.target.files && event.target.files[0]){
-  const reader = new FileReader();
-  this.newFile = event.target.files[0];;
-  reader.onload = ((image) => {
-    this.img = image.target.result as string;
-
-
-  });
-  reader.readAsDataURL(event.target.files[0]);
-}
-
-
-
-}
+/*
 
 getuid(){
   this.firebaseauthService.stateauth().subscribe(res =>{
     if(res !== null){
-      this.newReporte.iduser= res.uid;
+      this.newproducto.iduser= res.uid;
 
     }
 
-    else{ this.newReporte.iduser= '';}
+    else{ this.newproducto.iduser= '';}
   });
 
 

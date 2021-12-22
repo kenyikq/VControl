@@ -2,11 +2,11 @@
   <ion-toolbar>
     <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
       <ion-button [routerLink]= "['/home']" >
-        <ion-icon style="width: 22px;" color="primary" name="home" slot="icon-only"></ion-icon>
+        <ion-icon style="width: 22px;" color="danger" name="home" slot="icon-only"></ion-icon>
         
       </ion-button>
-      <ion-button [routerLink]= "['/registro']" >
-        <ion-icon color="primary" name="person-circle-outline" slot="icon-only"></ion-icon>
+      <ion-button [routerLink]= "['/productos']" >
+        <ion-icon color="danger" name="person-circle-outline" slot="icon-only"></ion-icon>
         
       </ion-button>
       
@@ -22,90 +22,228 @@
 </ion-header>
 
 <ion-content>
+  
 
   
-  <h1 style="width: 80%;" class="subtitulo">Datos del Articulo</h1>
-
-  <div Class="content-section">
-
-  <div class="form-input">
-  <ion-item>
-    <ion-label class="normal">TIpo de Articulo:</ion-label>
-   <!-- <ion-select [(ngModel)]="newReporte.edad" placeholder="seleccionar">-->
-     <ion-select style="text-align: left;" class="normal" placeholder="Seleccione">
-      <ion-select-option value="Laptpop">Laptop</ion-select-option>
-     <ion-select-option value="Discor Duro">Disco duro</ion-select-option>
-     <ion-select-option value="Accesorios">Accesorios</ion-select-option>
-    </ion-select>
-  </ion-item>
-</div>
-
-<div class="form-input"><ion-item>
-  <ion-label class="normal" >Foto:</ion-label>
-  
-  <ion-buttons slot="end">
-    
-    <ion-button>
-    
-      <label for="file-upload"><ion-icon  slot="end" name="images"></ion-icon></label>
-     <!--<input (change)="newImg($event)" id="file-upload" style="visibility:hidden" type="file" accept="image/*">--> 
+  <h3 *ngIf="actulizarProducto === false" class="titulo p-3 encabezado">Datos del producto</h3>
+    <div *ngIf="actulizarProducto === false" class="datosProducto">
       
+      <ion-item>
+        <ion-label  class="normal">Foto:</ion-label>
+
+        <ion-buttons slot="end">
+          <ion-button>
+            <label for="file-upload"><ion-icon  slot="icon-only" name="images"></ion-icon></label>
+            <input (change)="newImg($event)" id="file-upload" style="visibility:hidden" type="file" accept="image/*">
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+     
+        <ion-item ><img style="width: 100%;" class="image"  [src]="newproducto.foto"></ion-item>
+  
+       
       
-    </ion-button>
-  </ion-buttons>
-  
-</ion-item>
-<!--<ion-item ><img class= "image" [src]="img"></ion-item>--></div>
+      <ion-list>
+
+        <ion-item>
+             <ion-label    class="normal" >Articulo:</ion-label>
+             <ion-input [(ngModel)]= "newproducto.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del articulo"></ion-input>
+         
+        </ion-item>
+
+        <ion-item>
+          <ion-label  class="normal">Tipo de Articulo:</ion-label>
+          <ion-select [(ngModel)]="newproducto.tipoArticulo">
+            <ion-select-option value="Laptop">Laptop</ion-select-option>
+            <ion-select-option value="Accesorio">Accesorio</ion-select-option
+            >
+            <ion-select-option value="Disco Duro">Disco Duro</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+
+        <ion-label style="margin-top: 40px; background-color: #fd4a4a; border-radius: 30px; margin-left: auto; 
+        margin-right: auto; text-align: center;" class="subtitulo">Detalles del Productos:</ion-label>
+      </ion-item>
+       
+        <ion-item>
+
+          <ion-label  class="normal">Procesador:</ion-label>
+          
+          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+            <ion-select-option value="Core i3">Core i3</ion-select-option>
+            <ion-select-option value="Core i5">Core i5</ion-select-option>
+            <ion-select-option value="Core i7">Core i7</ion-select-option>
+            <ion-select-option value="AMD">AMD</ion-select-option>
+            <ion-select-option value="Celeron">Celeron</ion-select-option>
+          </ion-select>
+
+          <ion-select [(ngModel)]="newproducto.descripcion.procesador.gen">
+            <ion-select-option value="1ra">1ra</ion-select-option>
+            <ion-select-option value="2da">2da</ion-select-option>
+            <ion-select-option value="3ra">3ra</ion-select-option>
+            <ion-select-option value="4ta">4ta</ion-select-option>
+            <ion-select-option value="5ta">5ta</ion-select-option>
+            <ion-select-option value="6ta">6ta</ion-select-option>
+            <ion-select-option value="7ma">7ma</ion-select-option>
+            <ion-select-option value="8va">8va</ion-select-option>
+            <ion-select-option value="9na">9na</ion-select-option>
+          </ion-select><ion-label class="normal"> Gen</ion-label>
+
+          
+        </ion-item>
+
+        <ion-item>
+
+          <ion-label  class="normal">Ram:</ion-label>
+          
+          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+            <ion-select-option value="2gb">2gb</ion-select-option>
+            <ion-select-option value="4gb">4gb</ion-select-option>
+            <ion-select-option value="6gb">6gb</ion-select-option>
+            <ion-select-option value="8gb">8gb</ion-select-option>
+            <ion-select-option value="12gb">12gb</ion-select-option>
+            <ion-select-option value="16gb">16gb</ion-select-option>
+          </ion-select>
+
+          <ion-select [(ngModel)]="newproducto.descripcion.procesador.gen">
+            <ion-select-option value="DDR2">DDR2</ion-select-option>
+            <ion-select-option value="DDR3">DDR3</ion-select-option>
+            <ion-select-option value="DDR4">DDR4</ion-select-option>
+            <ion-select-option value="DDR5">DDR5</ion-select-option>
+            </ion-select>          
+        </ion-item>
+        <ion-item>
+
+          <ion-label  class="normal">Almacenamiento:</ion-label>
+          
+          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+            <ion-select-option value="SSD">SSD</ion-select-option>
+            <ion-select-option value="HHD">HHD</ion-select-option>
+            <ion-select-option value="M2">M2</ion-select-option>
+            <ion-select-option value="eMC">eMC</ion-select-option>
+          </ion-select>
+
+          <ion-input [(ngModel)]= "newproducto.descripcion.almacenamiento.cant" class="normal" type="number" inputmode="number" placeholder="cantidad"></ion-input>
+          <ion-label  class="normal">GB</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-label  class="normal">Pantalla:</ion-label>
+          
+        <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+          <ion-select-option value="10">10</ion-select-option>
+          <ion-select-option value="11">11</ion-select-option>
+          <ion-select-option value="12">12</ion-select-option>
+          <ion-select-option value="12.5">12.5</ion-select-option>
+          <ion-select-option value="13">13</ion-select-option>
+          <ion-select-option value="14">14</ion-select-option>
+          <ion-select-option value="15.5">15.5</ion-select-option>
+        </ion-select><ion-label class="normal">Pulg</ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label style="background-color: #fd4a4a; border-radius: 30px; margin-left: auto; margin-top: 40px;
+          margin-right: auto; text-align: center;" class="subtitulo">Detalles Monetario:</ion-label></ion-item>
+        
+
+        <ion-item style="width: 168px;">
+          <ion-label    class="normal" >Costo:</ion-label>
+           <ion-input [(ngModel)]= "newproducto.costo" class="normal" type="number" inputmode="number" placeholder="$"></ion-input>
+          </ion-item>
 
 
-<div class="form-input">
-  <ion-item>
-    <ion-label    class="normal" >Articulo:</ion-label>
-     <ion-input  class="normal" type="string" inputmode="text" placeholder="Nombre del articulo"></ion-input>
-  </ion-item>
-</div>
-  
-<div class="form-input">
-  <ion-item>
-    <ion-label   class="normal" >Costo:</ion-label>
-     <ion-input  class="normal" type="number" inputmode="number" placeholder="Precio Compra"></ion-input>
-  </ion-item>
-</div>
-  
-<div class="form-input">
-  <ion-item>
-    <ion-label   position="floating" class="normal" placeholder="Ingresar el nombre del Infante">Gasto:</ion-label>
-     <ion-input  class="normal" type="number" inputmode="number" placeholder="Precio Compra"></ion-input>
-  </ion-item>
-</div>
+                <ion-item style="width: 127px; margin-top: -50px; margin-left: 179px; position: absolute; ">
+            <ion-label  class="normal" >Und:</ion-label>
+             <ion-input  [(ngModel)]= "newproducto.unds"  class="normal" type="number" inputmode="number" placeholder="1"></ion-input>
+          </ion-item>
 
-<div class="form-input">
-  <ion-item>
-    <ion-label    class="normal">Costo Neto: {{5}}</ion-label>
-    
-  </ion-item>
-</div>
- 
+          <ion-item style="width: 200px">
+            <ion-label   class="normal" placeholder="">Gasto:</ion-label>
+             <ion-input [(ngModel)]= "newproducto.gasto"  style="width: 168px;" class="normal" type="number" inputmode="number" placeholder="0"></ion-input>
+             
+             </ion-item>
+             <ion-item>
+              <ion-label    class="normal">Costo Neto: {{(newproducto.costo + newproducto.gasto)}}</ion-label>
+              
+            </ion-item>
 
-<div class="form-input">
-  <ion-item>
-    <ion-label    class="normal">Ganancia: {{5}}</ion-label>
-    
-  </ion-item>
-</div>
-  
+        
+            <ion-item >
+              <ion-label   class="normal" placeholder="">Precio:</ion-label>
+               <ion-input [(ngModel)]= "newproducto.precio"  style="width: 168px;" class="normal" type="number" inputmode="number" placeholder="0"></ion-input>
+               <ion-label  *ngIf="newproducto.precio>100"   class="normal"> {{(newproducto.precio/(newproducto.costo + newproducto.gasto)) | percent: '0.0'}}</ion-label>
+               </ion-item>
+          
+           
+              <ion-item >
+                <ion-label   class="normal" placeholder="">Precio Min:</ion-label>
+                 <ion-input [(ngModel)]= "newproducto.precioMin"  style="width: 168px;" class="normal" type="number" inputmode="number" placeholder="0"></ion-input>
+                 <ion-label  *ngIf="newproducto.precioMin>100"   class="normal"> {{(newproducto.precioMin/(newproducto.costo + newproducto.gasto)) | percent: '0.0'}}</ion-label>
+                    
+                 </ion-item>
+       
 
-<div class="action-buttons" style="margin-top: 20px; padding-bottom: 60px !important;">
-  <ion-button  *ngIf="isActive=== true "  shape="round"  style="   width: 150
-  px;" (click)="guardarDatos()">  Enviar  </ion-button>
-  <ion-button shape="round" (click)="goAnOtherPage()"  class="signup-button"  fill="outline" >Cancelar </ion-button>
- 
-   </div>
+      </ion-list>
+      
+    </div>
+
+    <div *ngIf="actulizarProducto === false" class="action-buttons" style=" padding-bottom: 60px !important; text-align: center;">
+      <ion-button class="action-button"  *ngIf="isActive=== true "  shape="round"  (click)="guardarDatos()">  Enviar  </ion-button>
+      <ion-button class="action-button" shape="round" (click)="actulizarProducto = true" style="color: red; --border-color: red;" class="signup-button"  fill="outline " >Cancelar </ion-button>
+     
+       </div>
+
+<!--Listado de los articulos-->
+
+   <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="actulizarProducto === true" class="contenedorControles">
+    <h3  class="titulo p-2 encabezado">Listado de Productos</h3>
    
+    <div id="lista" class="listaProductos">
+      <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+        <ion-button  >
+          <ion-icon  slot="start"  name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
+          
+        </ion-button>
+                
+        </ion-buttons>
+    
+    <ion-item style="margin-bottom: 3px;" class="emcabezados">
+      <ion-label style="text-align: center;" class="normal">Articulo</ion-label>
+        <ion-label style="text-align: center;" class="normal">Costo N</ion-label>
+      <ion-label style="text-align: center;" class="normal">Precio</ion-label>
+      <ion-label style="text-align: center;" class="normal">Stock</ion-label>
+      <ion-label  style="text-align: center;" class="normal">Acciones</ion-label>
+    </ion-item>
 
- 
-
+  <div  style="border-radius: 40px;">
+    <ion-card style="border-radius: 22px;">
+  <ion-item *ngFor="let producto of productos">
+    <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> {{ producto.nombre }}</ion-label>
+    <ion-label style="text-align: center;" class="normal">{{ producto.costoNeto }}</ion-label >
+    <ion-label style="text-align: center;" class="normal">{{ producto.precio }}</ion-label >
+      <ion-label style="text-align: center;" class="normal">{{ producto.unds }}</ion-label >
+        <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;" class="ionbutton" slot="end">
+          <ion-button style="margin-right: -19px;" (click)="mostrarDatos(producto)">
+            <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
+          </ion-button>
+          <ion-button class="icono"  (click)="deleteproducto(producto)">
+            <ion-icon slot="icon-only" color="danger"  name="trash-bin"  ></ion-icon>
+          </ion-button>
+        </ion-buttons></ion-label>
+     
+  </ion-item>
+</ion-card>
 </div>
+
+    
+  </div>
+
+ </div>
+
+
 
 
 

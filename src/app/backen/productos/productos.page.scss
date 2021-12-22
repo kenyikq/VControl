@@ -10,7 +10,7 @@ h1{
   padding: 7px;
   width: 80%;
   text-shadow: black;
-  background: #3880ff;
+  background: red;
   opacity: 89%;
   border-bottom-left-radius: 70px;
   border-bottom-right-radius: 70px;
@@ -112,6 +112,7 @@ h1{
       z-index: 2 !important;
       font-size: 1.2rem !important;
       left: 5px !important;
+      color: red;
   }
 
   ion-input{
@@ -119,7 +120,7 @@ h1{
       --padding-start: 5px !important;
       
      
-      color: #7b7b7b;
+      color: #1a1919;
   }
 
 }
@@ -141,9 +142,9 @@ ion-button{
 
 .encabezado{
   text-align: center;
-  background:#3880ff;
+  background:red;
   border-radius: 30px;
-  margin: 30px;
+  margin: 20px;
   color: white;
 }
 
@@ -153,9 +154,118 @@ ion-item{
   border-radius: 50px;
 
   @media screen and (max-width:690px) {
-      padding: 0%;
+      
 
   }
 }    
+
+ion-icon{
+.ion-md-time{
+	color: red !important;
+}
+.ion-ios-time{
+	color: red !important;
+}
+}
+.contenedorControles{
+    
+
+    
+  padding-left: -5% !important;
+padding-right: -5% !important;
+align-items: center;
+ 
+
+@media screen and (max-width:590px) {
+  padding-left: 0%!important;
+  padding-right: 0%!important;
+  align-items: center;
+ 
+}
+
+}
+
+.hide{visibility: inherit;
+@media screen and (max-width:590px) {
+  visibility: hidden;
+  position: absolute;
+}}
+.icono{
+margin-right: -15px;
+color: red;
+@media screen and (max-width:590px) {
+  }
+}
+ion-select{
+
+max-width: 90% !important;
+}
+ion-label{
+font-weight: 900;
+}
+.datosProducto{
+padding: 2%!important;
+border-style: double;
+border-radius: 25px!important;
+background-color: #f8f9fa;
+margin-left: 20%!important;
+margin-right: 20%!important;
+
+
+@media screen and (max-width:590px) {
+
+  padding-left: 1%;
+padding-right: 1%!important;
+margin-left: 5%!important;
+margin-right: 5%!important;
+
+}
+
+
+}
+.listaProductos{
+padding-left: 4%;
+padding-right: 4%;
+margin-bottom: 40px;
+
+
+@media screen and (max-width:590px) {
+
+  padding-left: 1%;
+padding-right: 1%;
+}
+
+
+}
+ion-list{
+
+ion-label{
+  font-weight: 900;
+}
+}
+
+
+.action-buttons{
+margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: capitalize;
+  margin-left: 27%!important;
+margin-right: 27%!important;
+
+
+@media screen and (max-width:590px) {
+
+  padding-left: 1%;
+padding-right: 1%!important;
+margin-left: 5%!important;
+margin-right: 5%!important;}
+
+  
+
+  
+}
 
 

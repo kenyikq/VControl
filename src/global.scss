@@ -62,4 +62,15 @@
     }
 }
 
+.action-button{
+    --background:red;
+    :host(.button-solid) {
+        --background-activated: var(--ion-color-primary-shade, red !important);
+        --background-focused: var(--ion-color-primary-shade, red!important);
+        --background-hover: var(--ion-color-primary-tint, red!important);
+        --background-activated-opacity: 1;
+    
+    border-color:red var(--border-color, red);
+    }
+}
 
