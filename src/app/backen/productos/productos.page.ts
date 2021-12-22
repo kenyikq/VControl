@@ -71,7 +71,7 @@ nuevo(){
    this.newproducto = {
  id: this.firestoreService.getid(),
     codigo: 1000,
-    tipoArticulo :'',
+    tipoArticulo :'Laptop',
     foto: '',
     nombre: '',
     unds: 0,
@@ -82,10 +82,10 @@ nuevo(){
     precioMin: 0,
     ganancia: 0,
     descripcion: {
-      procesador: {tipo: '', gen: ''},
-      ram: {tipo: '', cant: ''},
-      almacenamiento: {tipo: '', cant: ''},
-      pantalla: ''}
+      procesador: {tipo: 'Core i5', gen: '4ta'},
+      ram: {tipo: 'DDR3', cant: '8gb'},
+      almacenamiento: {tipo: 'HHD', cant: '320'},
+      pantalla: '14'}
     };
     this.firestoreService.getultimodoc<Producto>(this.path).subscribe(res=>{
       if (res !==null)

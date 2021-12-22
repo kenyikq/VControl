@@ -53,13 +53,12 @@
 
         <ion-item>
           <ion-label  class="normal">Tipo de Articulo:</ion-label>
-          <ion-select [(ngModel)]="newproducto.tipoArticulo">
+          <ion-select class="normal" [(ngModel)]="newproducto.tipoArticulo">
             <ion-select-option value="Laptop">Laptop</ion-select-option>
-            <ion-select-option value="Accesorio">Accesorio</ion-select-option
-            >
-            <ion-select-option value="Disco Duro">Disco Duro</ion-select-option
-            >
-          </ion-select>
+            <ion-select-option value="Accesorio">Accesorio</ion-select-option>
+            <ion-select-option value="Disco Duro">Disco Duro</ion-select-option>
+          </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
+            class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
         </ion-item>
 
         <ion-item>
@@ -70,9 +69,9 @@
        
         <ion-item>
 
-          <ion-label  class="normal">Procesador:</ion-label>
+          <ion-label  class="normal"  class="normal">Procesador:</ion-label>
           
-          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+          <ion-select  class="normal" [(ngModel)]="newproducto.descripcion.procesador.tipo">
             <ion-select-option value="Core i3">Core i3</ion-select-option>
             <ion-select-option value="Core i5">Core i5</ion-select-option>
             <ion-select-option value="Core i7">Core i7</ion-select-option>
@@ -80,7 +79,7 @@
             <ion-select-option value="Celeron">Celeron</ion-select-option>
           </ion-select>
 
-          <ion-select [(ngModel)]="newproducto.descripcion.procesador.gen">
+          <ion-select  class="normal"  [(ngModel)]="newproducto.descripcion.procesador.gen">
             <ion-select-option value="1ra">1ra</ion-select-option>
             <ion-select-option value="2da">2da</ion-select-option>
             <ion-select-option value="3ra">3ra</ion-select-option>
@@ -90,7 +89,8 @@
             <ion-select-option value="7ma">7ma</ion-select-option>
             <ion-select-option value="8va">8va</ion-select-option>
             <ion-select-option value="9na">9na</ion-select-option>
-          </ion-select><ion-label class="normal"> Gen</ion-label>
+          </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
+            class="normal" style="position: absolute;    margin-left: 10px;">Gen</ion-label></ion-input>
 
           
         </ion-item>
@@ -99,7 +99,7 @@
 
           <ion-label  class="normal">Ram:</ion-label>
           
-          <ion-select [(ngModel)]="newproducto.descripcion.ram.cant">
+          <ion-select  class="normal"  [(ngModel)]="newproducto.descripcion.ram.cant">
             <ion-select-option value="2gb">2gb</ion-select-option>
             <ion-select-option value="4gb">4gb</ion-select-option>
             <ion-select-option value="6gb">6gb</ion-select-option>
@@ -108,40 +108,46 @@
             <ion-select-option value="16gb">16gb</ion-select-option>
           </ion-select>
 
-          <ion-select [(ngModel)]="newproducto.descripcion.ram.tipo">
+          <ion-select  class="normal" [(ngModel)]="newproducto.descripcion.ram.tipo">
             <ion-select-option value="DDR2">DDR2</ion-select-option>
             <ion-select-option value="DDR3">DDR3</ion-select-option>
             <ion-select-option value="DDR4">DDR4</ion-select-option>
             <ion-select-option value="DDR5">DDR5</ion-select-option>
-            </ion-select>          
+            </ion-select>  <ion-input disabled="true" inputmode="number" > <ion-label   
+              class="normal" style="position: absolute;    margin-left: 44px;"></ion-label></ion-input>    
         </ion-item>
         <ion-item>
 
           <ion-label  class="normal">Almacenamiento:</ion-label>
           
-          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+          <ion-select class="normal" [(ngModel)]="newproducto.descripcion.almacenamiento.tipo">
             <ion-select-option value="SSD">SSD</ion-select-option>
             <ion-select-option value="HHD">HHD</ion-select-option>
             <ion-select-option value="M2">M2</ion-select-option>
             <ion-select-option value="eMC">eMC</ion-select-option>
           </ion-select>
 
-          <ion-input [(ngModel)]= "newproducto.descripcion.almacenamiento.cant" class="normal" type="number" inputmode="number" placeholder="cantidad"></ion-input>
-          <ion-label  class="normal">GB</ion-label>
+          <ion-input [(ngModel)]= "newproducto.descripcion.almacenamiento.cant" class="normal" type="number" inputmode="number" placeholder="cantidad"> <ion-label   
+            class="normal" style="position: absolute;    margin-left: 44px;">GB</ion-label></ion-input>
+          
         </ion-item>
 
         <ion-item>
           <ion-label  class="normal">Pantalla:</ion-label>
+        
+        <ion-select class="normal" [(ngModel)]="newproducto.descripcion.pantalla">
           
-        <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
           <ion-select-option value="10">10</ion-select-option>
           <ion-select-option value="11">11</ion-select-option>
           <ion-select-option value="12">12</ion-select-option>
           <ion-select-option value="12.5">12.5</ion-select-option>
           <ion-select-option value="13">13</ion-select-option>
           <ion-select-option value="14">14</ion-select-option>
+          <ion-select-option value="15">15.5</ion-select-option>
           <ion-select-option value="15.5">15.5</ion-select-option>
-        </ion-select><ion-label class="normal">Pulg</ion-label>
+        </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
+          class="normal" style="position: absolute;    margin-left: 10px;">Pulg</ion-label></ion-input>
+      
         </ion-item>
         
         <ion-item>
