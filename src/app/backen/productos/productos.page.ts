@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
-import { AlertController, LoadingController, MenuController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 
 @Component({
@@ -26,7 +26,6 @@ newproducto: Producto = {
   fecha: new Date(),
   costo: 0,
   gasto: 0,
-  costoNeto: 0,
   precio: 0,
   precioMin: 0,
   ganancia: 0,
@@ -43,7 +42,7 @@ valorneto: number;
 loading: any;
 idArticulo: 1000;
 
-actulizarProducto= true;
+actualizarProducto= false;
 
   path = 'producto';
 
@@ -69,9 +68,7 @@ actulizarProducto= true;
   }
 nuevo(){
 
-this.firestoreService.getultimodoc(this.path,'codigo');
-
-  this.newproducto = {
+   this.newproducto = {
  id: this.firestoreService.getid(),
     codigo: 1000,
     tipoArticulo :'',
@@ -81,7 +78,6 @@ this.firestoreService.getultimodoc(this.path,'codigo');
     fecha: new Date(),
     costo: 0,
     gasto: 0,
-    costoNeto: 0,
     precio: 0,
     precioMin: 0,
     ganancia: 0,
@@ -91,6 +87,15 @@ this.firestoreService.getultimodoc(this.path,'codigo');
       almacenamiento: {tipo: '', cant: ''},
       pantalla: ''}
     };
+    this.firestoreService.getultimodoc<Producto>(this.path).subscribe(res=>{
+      if (res !==null)
+      {
+        const sum: number =res[0].codigo + 1;
+        this.newproducto.codigo= sum;}
+
+        ;});
+
+    this.actualizarProducto= true;
 
 }
 
@@ -102,7 +107,7 @@ this.firestoreService.getultimodoc(this.path,'codigo');
     console.log('Segment changed', ev);
   }
   mostrarDatos(producto){
-    this.actulizarProducto = false;
+    this.actualizarProducto = true;
     this.newproducto = producto;
   }
 
@@ -154,7 +159,7 @@ this.firestoreService.getultimodoc(this.path,'codigo');
 getproductos() {
 
     this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
-       console.log(res);
+       //console.log(res);
        this.productos= res;
 
      } );
@@ -170,7 +175,7 @@ this.newproducto.foto = res;
 
     this.firestoreService.createDoc(this.newproducto, this.path, this.newproducto.id).then( ans =>{
       this.loading.dismiss().then( respuesta => {
-        this.actulizarProducto = false;
+        this.actualizarProducto = false;
         this.presentToast('Acción ralizada con exito');
         if(this.newproducto.id==='' || null){
           this.navCtrl.navigateRoot('/home');

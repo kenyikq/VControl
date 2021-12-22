@@ -1,6 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { NavController, Platform } from '@ionic/angular';
-//import {Plugins} from '@capacitor/core';
+import { Usuario } from './models';
+import { FirebaseauthService } from './services/firebaseauth.service';
+import { FirestoreService } from './services/firestore.service';
+
 
 //const {SplashScreen, StatusBar} = Plugins;
 @Component({
@@ -11,7 +14,7 @@ import { NavController, Platform } from '@ionic/angular';
 
 export class AppComponent  {
   login = false;
- /* subinfo: any;
+  subinfo: any;
   usuario: Usuario = {
     uid: '',
     nombre: '',
@@ -23,31 +26,32 @@ export class AppComponent  {
     loading: any;
     path: '/usuarios';
     uid = '';
-    login = false;*/
+
 
 
 
 
   constructor(public navCtrl: NavController,
-   // private firebaseauthService: FirebaseauthService, public firestoreService: FirestoreService, public platform: Platform,
+    private firebaseauthService: FirebaseauthService,
+    public firestoreService: FirestoreService,
+    public platform: Platform,
 
     ) {
-       //this.firebaseauthService.stateauth().subscribe( res=>{
-        //console.log(res.uid.length);
-       // this.getuid();
-      //  if(res){this.uid=res.uid;}
+       this.firebaseauthService.stateauth().subscribe( res=>{
+       this.getuid();
+        if(res){this.uid=res.uid;}
 
-     // });
+      });
     }
 
-/*
+
 
   goAnOtherPage(ruta: string) {
     this.navCtrl.navigateRoot(ruta);
     this.seleccionA('no');
   }
 getuid(){
-  //this.firebaseauthService.stateauth().subscribe(res =>{
+  this.firebaseauthService.stateauth().subscribe(res =>{
     if(res !== null){
 
       if(res.uid !==''){
@@ -59,7 +63,7 @@ getuid(){
     else{ this.login = false;}
   });
 }
-*/
+
 
 seleccionA(id: string){
   this.seleccion();
@@ -93,7 +97,7 @@ inactive(id: string){
   active.classList.remove('active');
 }
 
-/*
+
 
   getUserInfo(uid: string){
     const path ='usuario';
@@ -107,7 +111,7 @@ inactive(id: string){
     this.goAnOtherPage('/home');
   }
 
-*/
+
 
 
 }

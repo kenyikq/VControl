@@ -27,12 +27,13 @@
     "@capacitor/status-bar": "1.0.6",
     "@ionic/angular": "^5.5.2",
     "angularfire2": "^5.4.2",
+    "chart.js": "^3.6.2",
     "firebase": "^9.6.1",
     "promise-polyfill": "^8.2.1",
+    "rxfire": "^6.0.0",
     "rxjs": "^6.6.7",
     "tslib": "^2.2.0",
-    "zone.js": "~0.11.4",
-    "rxfire": "^6.0.0"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.1.1",

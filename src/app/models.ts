@@ -10,7 +10,6 @@
    fecha: Date;
    costo: number;
    gasto: number;
-   costoNeto: number;
    precio: number;
    precioMin: number;
    ganancia: number;
@@ -22,3 +21,13 @@
    };
 
  }
+
+ export interface Usuario{
+  uid: string;
+  nombre: string;
+  contacto: string;
+  email: string;
+  password: string;
+  fecha: Date;
+
+}

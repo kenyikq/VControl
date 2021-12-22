@@ -43,9 +43,9 @@ getCollection<Tipo>(path: string){
   return collection.valueChanges();
 }
 
-getultimodoc<Tipo>(path: string, parametro: string){
+getultimodoc<Tipo>(path: string){
   const collection= this.database.collection<Tipo>(path,
-    ref => ref.orderBy(parametro).limitToLast(1));
+    ref => ref.orderBy('codigo').limitToLast(1));
   return collection.valueChanges();
 }
 

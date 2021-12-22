@@ -5,7 +5,7 @@
         <ion-icon style="width: 22px;" color="danger" name="home" slot="icon-only"></ion-icon>
         
       </ion-button>
-      <ion-button [routerLink]= "['/productos']" >
+      <ion-button [routerLink]= "['/registro']" >
         <ion-icon color="danger" name="person-circle-outline" slot="icon-only"></ion-icon>
         
       </ion-button>
@@ -25,8 +25,8 @@
   
 
   
-  <h3 *ngIf="actulizarProducto === false" class="titulo p-3 encabezado">Datos del producto</h3>
-    <div *ngIf="actulizarProducto === false" class="datosProducto">
+  <h3 *ngIf="actualizarProducto === true" class="titulo p-3 encabezado">Datos del producto</h3>
+    <div *ngIf="actualizarProducto === true" class="datosProducto">
       
       <ion-item>
         <ion-label  class="normal">Foto:</ion-label>
@@ -99,7 +99,7 @@
 
           <ion-label  class="normal">Ram:</ion-label>
           
-          <ion-select [(ngModel)]="newproducto.descripcion.procesador.tipo">
+          <ion-select [(ngModel)]="newproducto.descripcion.ram.cant">
             <ion-select-option value="2gb">2gb</ion-select-option>
             <ion-select-option value="4gb">4gb</ion-select-option>
             <ion-select-option value="6gb">6gb</ion-select-option>
@@ -108,7 +108,7 @@
             <ion-select-option value="16gb">16gb</ion-select-option>
           </ion-select>
 
-          <ion-select [(ngModel)]="newproducto.descripcion.procesador.gen">
+          <ion-select [(ngModel)]="newproducto.descripcion.ram.tipo">
             <ion-select-option value="DDR2">DDR2</ion-select-option>
             <ion-select-option value="DDR3">DDR3</ion-select-option>
             <ion-select-option value="DDR4">DDR4</ion-select-option>
@@ -190,27 +190,27 @@
       
     </div>
 
-    <div *ngIf="actulizarProducto === false" class="action-buttons" style=" padding-bottom: 60px !important; text-align: center;">
+    <div *ngIf="actualizarProducto === true" class="action-buttons" style=" padding-bottom: 60px !important; text-align: center;">
       <ion-button class="action-button"  *ngIf="isActive=== true "  shape="round"  (click)="guardarDatos()">  Enviar  </ion-button>
-      <ion-button class="action-button" shape="round" (click)="actulizarProducto = true" style="color: red; --border-color: red;" class="signup-button"  fill="outline " >Cancelar </ion-button>
+      <ion-button class="action-button" shape="round" (click)="actualizarProducto = false" style="color: red; --border-color: red;" class="signup-button"  fill="outline " >Cancelar </ion-button>
      
        </div>
 
 <!--Listado de los articulos-->
 
-   <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="actulizarProducto === true" class="contenedorControles">
+   <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="actualizarProducto === false" class="contenedorControles">
     <h3  class="titulo p-2 encabezado">Listado de Productos</h3>
    
     <div id="lista" class="listaProductos">
       <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
-        <ion-button  >
-          <ion-icon  slot="start"  name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
+        <ion-button  (click)="nuevo()" >
+          <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
           
         </ion-button>
                 
         </ion-buttons>
     
-    <ion-item style="margin-bottom: 3px;" class="emcabezados">
+    <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
       <ion-label style="text-align: center;" class="normal">Articulo</ion-label>
         <ion-label style="text-align: center;" class="normal">Costo N</ion-label>
       <ion-label style="text-align: center;" class="normal">Precio</ion-label>
@@ -222,7 +222,7 @@
     <ion-card style="border-radius: 22px;">
   <ion-item *ngFor="let producto of productos">
     <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> {{ producto.nombre }}</ion-label>
-    <ion-label style="text-align: center;" class="normal">{{ producto.costoNeto }}</ion-label >
+    <ion-label style="text-align: center;" class="normal">{{ producto.costo + producto.gasto }}</ion-label >
     <ion-label style="text-align: center;" class="normal">{{ producto.precio }}</ion-label >
       <ion-label style="text-align: center;" class="normal">{{ producto.unds }}</ion-label >
         <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;" class="ionbutton" slot="end">

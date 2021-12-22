@@ -11,13 +11,15 @@ import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import {  AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { PagesModule } from './pages/pages.module';
 
 
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule,  BackenModule, IonicModule.forRoot(),
+  imports: [BrowserModule,  BackenModule, PagesModule,
+    IonicModule.forRoot(),
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,

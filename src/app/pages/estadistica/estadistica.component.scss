@@ -1,0 +1,20 @@
+.chart-container{
+    position: relative;
+    margin: auto;
+}
+ion-card{
+    margin-top: 5%;
+}
+
+.tituloGrafico{
+    font-size:19px; 
+    text-align: center; 
+    font-weight: bold;
+    margin: auto;
+    @media screen and (max-width:590px) {
+      
+        font-size:15px; 
+    }
+
+
+}
