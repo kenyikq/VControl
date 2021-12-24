@@ -4,6 +4,8 @@ import { Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
+import * as moment from 'moment';
+
 
 @Component({
   selector: 'app-productos',
@@ -16,6 +18,10 @@ productos: Producto[]= [];
 img='';
 newFile= '';
 
+
+
+
+
 newproducto: Producto = {
   id: this.firestoreService.getid(),
   codigo: 1000,
@@ -23,7 +29,8 @@ newproducto: Producto = {
   foto: '',
   nombre: '',
   unds: 0,
-  fecha: new Date(),
+  fecha: moment(new Date()).format('DD-MM-YYYY'),
+  mes: moment(new Date()).format('MMMM'),
   costo: 0,
   gasto: 0,
   precio: 0,
@@ -44,8 +51,8 @@ idArticulo: 1000;
 
 actualizarProducto= false;
 
-  path = 'producto';
-
+  path = null;
+  iduser=null;
 
   constructor(public firestoreService: FirestoreService,
               public cd: ChangeDetectorRef,
@@ -57,7 +64,26 @@ actualizarProducto= false;
               public alertController: AlertController,
 
     ) {
-      this.getproductos();
+
+      if ( this.log.stateauth())
+      {
+      this.log.stateauth().subscribe( res=>{
+
+        if (res !== null){
+          this.iduser= res.uid;
+        this.path=this.iduser+'.producto';
+
+        this.getproductos();
+
+        }else {
+          this.alerta('Necesitas ingresar con tu usuario para usar el modulo de Productos');
+
+        }
+      });
+
+    }
+
+
     }
 
 
@@ -74,8 +100,9 @@ nuevo(){
     tipoArticulo :'Laptop',
     foto: '',
     nombre: '',
-    unds: 0,
-    fecha: new Date(),
+    unds: 1,
+    fecha: moment(new Date()).toString(),//para mostrar la fecha anctual al crear nuevo producto
+    mes: moment(new Date()).format('MMMM'),
     costo: 0,
     gasto: 0,
     precio: 0,
@@ -96,6 +123,8 @@ nuevo(){
         ;});
 
     this.actualizarProducto= true;
+    console.log('esta ganacia:', this.newproducto.ganancia);
+
 
 }
 
@@ -106,10 +135,12 @@ nuevo(){
   segmentChanged(ev: any) {
     console.log('Segment changed', ev);
   }
-  mostrarDatos(producto){
+  mostrarDatos(producto: Producto){
     this.actualizarProducto = true;
     this.newproducto = producto;
+    this.newproducto.mes= producto.mes;
   }
+
 
 
 
@@ -144,8 +175,6 @@ nuevo(){
         }, {
           text: 'Okay',
           handler: () => {
-            console.log(producto);
-
             this.firestoreService.deleteDoc(this.path,producto.id);
             this.presentToast('Producto eliminado');
           }
@@ -165,7 +194,15 @@ getproductos() {
      } );
   }
 
-async  guardarDatos(){
+  guardarDatos(){
+    this.validacion();
+  if(this.validacion())
+  {
+    this.guardar();
+  }
+  }
+
+async  guardar(){
   this.presentLoading();
 
 const name = this.newproducto.nombre;
@@ -187,6 +224,25 @@ this.newproducto.foto = res;
 }
 
 
+validacion(){
+  if (this.newproducto.nombre=== ''|| this.newproducto.costo ===0 || this.newproducto.precio ===0
+  || this.newproducto.precioMin===0){
+
+
+
+    this.alerta2('Todos los campos son queridos');
+  return false;
+  }
+
+  else
+  {
+
+
+    return true;
+
+
+}
+}
 /*
 
 getUserInfo(uid: string){
@@ -217,19 +273,56 @@ await this.loading.present();
 
 }
 
-/*
 
-getuid(){
-  this.firebaseauthService.stateauth().subscribe(res =>{
-    if(res !== null){
-      this.newproducto.iduser= res.uid;
 
-    }
+  async alerta2(msgAlerta: string){
+  const alert = await this.alertController.create({
+    cssClass: 'normal',
+    header: 'Alerta!',
+    message: '<strong>'+msgAlerta +'</strong>',
+    buttons: [
+      {
+        text: 'Ok',
+        role: 'Pk',
+        cssClass: 'secondary',
+        handler: (blah) => {
 
-    else{ this.newproducto.iduser= '';}
+        }
+      }
+    ]
+
   });
 
+  await alert.present();
+}
 
-}*/
+
+async alerta(msgAlerta: string){
+  const alert = await this.alertController.create({
+    cssClass: 'normal',
+    header: 'Alerta!',
+    message: '<strong>'+msgAlerta +'</strong>',
+    buttons: [
+      {
+        text: 'Ok',
+        role: 'Pk',
+        cssClass: 'secondary',
+        handler: (blah) => {
+
+        }
+      }, {
+        text: 'Ingresar',
+        handler: () => {
+          this.navCtrl.navigateRoot('/login');
+        }
+      }
+    ]
+
+  });
+
+  await alert.present();
+}
 
 }
+
+

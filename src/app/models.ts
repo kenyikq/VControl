@@ -7,7 +7,8 @@
    foto: string;
    nombre: string;
    unds: number;
-   fecha: Date;
+   fecha: string;
+   mes: string;
    costo: number;
    gasto: number;
    precio: number;

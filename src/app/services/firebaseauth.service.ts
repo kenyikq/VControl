@@ -13,7 +13,7 @@ export class FirebaseauthService {
 
   login(email: string ,password: string){
    return this.auth.signInWithEmailAndPassword(email,password).catch(error => {
-    this.alerta( error);
+    this.alerta( 'Verifique sus datos y/o conexion a internet: '+ error);
 
   });
   }
@@ -49,7 +49,7 @@ export class FirebaseauthService {
     const alert = await this.alertController.create({
       cssClass: 'normal',
       header: 'Alerta!',
-      message: '<strong>'+msgAlerta +'</strong>',
+      message: '<strong>'+msgAlerta +'</strong> ',
       buttons: [
         {
           text: 'Ok',

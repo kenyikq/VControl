@@ -29,6 +29,7 @@
     "angularfire2": "^5.4.2",
     "chart.js": "^3.6.2",
     "firebase": "^9.6.1",
+    "moment": "^2.29.1",
     "promise-polyfill": "^8.2.1",
     "rxfire": "^6.0.0",
     "rxjs": "^6.6.7",
