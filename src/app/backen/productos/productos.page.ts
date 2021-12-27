@@ -35,7 +35,6 @@ newproducto: Producto = {
   gasto: 0,
   precio: 0,
   precioMin: 0,
-  ganancia: 0,
   descripcion: {
     procesador: {tipo: '', gen: ''},
     ram: {tipo: '', cant: ''},
@@ -107,7 +106,6 @@ nuevo(){
     gasto: 0,
     precio: 0,
     precioMin: 0,
-    ganancia: 0,
     descripcion: {
       procesador: {tipo: 'Core i5', gen: '4ta'},
       ram: {tipo: 'DDR3', cant: '8gb'},
@@ -122,8 +120,7 @@ nuevo(){
 
         ;});
 
-    this.actualizarProducto= true;
-    console.log('esta ganacia:', this.newproducto.ganancia);
+
 
 
 }

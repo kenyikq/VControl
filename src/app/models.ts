@@ -13,7 +13,6 @@
    gasto: number;
    precio: number;
    precioMin: number;
-   ganancia: number;
    descripcion: {
     procesador: {tipo: string; gen: string};
     ram: {cant: string; tipo: string};
@@ -30,5 +29,16 @@
   email: string;
   password: string;
   fecha: Date;
+
+}
+
+export interface Factura{
+fecha: string;
+cliente: string;
+articulo: string;
+cant: number;
+precioVenta: number;
+descuento: number;
+total: number;
 
 }
