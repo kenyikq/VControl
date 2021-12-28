@@ -34,11 +34,16 @@
 
 export interface Factura{
 fecha: string;
+fechaVencimiento: string;
 cliente: string;
-articulo: string;
-cant: number;
-precioVenta: number;
-descuento: number;
-total: number;
+articulo: Array<Articulo>;
 
+}
+
+export interface Articulo{
+  descripcion: string;
+  cant: number;
+  precioVenta: number;
+  descuento: number;
+  total: number;
 }

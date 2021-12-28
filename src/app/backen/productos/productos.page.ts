@@ -107,7 +107,7 @@ nuevo(){
     precio: 0,
     precioMin: 0,
     descripcion: {
-      procesador: {tipo: 'Core i5', gen: '4ta'},
+      procesador: {tipo: 'Core i5', gen: '4ta'}, 
       ram: {tipo: 'DDR3', cant: '8gb'},
       almacenamiento: {tipo: 'HHD', cant: '320'},
       pantalla: '14'}
@@ -120,7 +120,7 @@ nuevo(){
 
         ;});
 
-
+this.actualizarProducto= true;
 
 
 }

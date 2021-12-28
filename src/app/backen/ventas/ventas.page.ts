@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { Factura, Producto } from 'src/app/models';
+import { Articulo, Factura, Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
+
 
 @Component({
   selector: 'app-ventas',
@@ -12,6 +13,7 @@ import * as moment from 'moment';
   styleUrls: ['./ventas.page.scss'],
 })
 export class VentasPage implements OnInit {
+  articulos: Factura[]= [];
 
 productos: Producto[]= [];
 img='';
@@ -40,16 +42,25 @@ producto: Producto = {
     pantalla: ''}
   };
 
-  newfactura: Factura = {
-    fecha: moment(new Date()).toString(),
-    cliente: '',
-    articulo: this.producto.nombre,
-    cant: 1,
-    precioVenta: 0,
-    descuento: 0,
-    total: 0
+  newArticulo: Articulo =
+    { descripcion: 'prueba',
+      cant: 1,
+      precioVenta: 0,
+      descuento: 0,
+      total: 0
 
     };
+
+  newfactura: Factura = {
+    fecha: moment(new Date()).toString(),
+    fechaVencimiento: this.sumarDias(new Date(), 90).toString(),
+    cliente: '',
+    articulo: [],
+
+
+    };
+
+arr = [];
 
   constructor(public firestoreService: FirestoreService,
               public firestorage: FirestorageService,
@@ -67,7 +78,7 @@ producto: Producto = {
 
       if (res !== null){
         this.iduser= res.uid;
-      this.path=this.iduser+'.factura';
+        this.path=this.iduser+'.producto';
 
       this.getproductos();
 
@@ -83,7 +94,32 @@ producto: Producto = {
   }
 
   ngOnInit() {
-    this.calcular();
+
+
+  }
+  agregarFila(){
+
+const art =this.newfactura.articulo;
+const arr = [];
+
+
+if(this.newArticulo.descripcion !=='' && this.newArticulo.cant !==0){
+  this.newfactura.articulo.push(this.newArticulo );
+  console.log(this.newfactura.articulo);
+}
+
+
+
+    this.newArticulo =
+    { descripcion: '',
+      cant: 1,
+      precioVenta: 0,
+      descuento: 0,
+      total: 0
+
+    };
+
+
 
   }
 
@@ -99,6 +135,7 @@ producto: Producto = {
     this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
        //console.log(res);
        this.productos= res;
+
 
      } );
   }
@@ -131,12 +168,13 @@ producto: Producto = {
 
   calcular(){
 
-    const ini = moment(new Date()).add(3, 'months');
-
-    const d = new Date().getMonth() + 10;
-
-    console.log(ini);
+ const d = new Date();
+console.log('este es el resultado:',this.sumarDias(d, 90));
 }
 
+sumarDias(fecha, dias){
+  fecha.setDate(fecha.getDate() + dias);
+  return fecha;
+}
 
 }

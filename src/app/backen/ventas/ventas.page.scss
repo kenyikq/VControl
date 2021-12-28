@@ -43,7 +43,7 @@ ion-content{
     p{
         margin-top: 20px;
         font-size: 1rem;
-        color:#7b7b7b;
+        color:black;
     }
   }
   
@@ -85,7 +85,7 @@ ion-content{
         p{
             margin-top: 20px;
             font-size: 1rem;
-            color:#7b7b7b;
+            color:black;
         }
     }
     
@@ -146,6 +146,8 @@ ion-content{
     border-radius: 30px;
     margin: 20px;
     color: white;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
   
   
@@ -207,9 +209,10 @@ ion-content{
   padding: 2%!important;
   border-style: double;
   border-radius: 25px!important;
-  background-color: #f8f9fa;
-  margin-left: 20%!important;
-  margin-right: 20%!important;
+  background-color: white;
+  margin-left: 10%!important;
+  margin-right: 10%!important;
+  margin-top: 30px;
   
   
   @media screen and (max-width:590px) {
@@ -220,9 +223,29 @@ ion-content{
   margin-right: 5%!important;
   
   }
+  }
+
+  .encabezadoFactura{
+    padding: 2%!important;
+    border-style: double;
+    border-radius: 25px!important;
+    background-color: white;
+    margin-bottom: 30px;
+    
+    
+    
+    @media screen and (max-width:590px) {
+    
+      padding-left: 1%;
+    padding-right: 1%!important;
+    margin-left: 1%!important;
+    margin-right: 1%!important;
+    
+    }
   
   
   }
+
   .listaProductos{
   padding-left: 4%;
   padding-right: 4%;
@@ -266,5 +289,9 @@ ion-content{
     
   
     
+  }
+
+  .thead-dark{
+    text-align: center;
   }
   

@@ -26,171 +26,98 @@
   
 <ion-content>
   
-
-  
-  <h3  class="titulo p-3 encabezado">Facturación</h3>
     <div  class="datosProducto">
-      
-      <ion-label><p class="titulo">Ventas de Laptops y más</p></ion-label>
-        <p>EL Pino, La Vega, Prox Planta de Gas Hers Diaz Gas</p>
-      
-          
     
-      
-    <!--ion-item style="--border-width: 0 0 0px 0 !important;"-->
-    <ion-label style="margin-left: 48%;" >Factura: {{100}}</ion-label> 
-    <ion-label style="position: absolute; margin-top: 33px; left: 49%;">Fecha:</ion-label> <ion-datetime displayFormat="DD-MM-YYYY"  style="--padding-start: 68%;" cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY"></ion-datetime>
-           
+      <h3  class="titulo p-3 encabezado">Facturación</h3>
 
+      <!--Encabezado Factura-->
       
+    <div  class="encabezadoFactura">
+     <div style="text-align: center;"> <ion-label><p style=" margin-top: 10px;" class="titulo">Ventas de Laptops y más</p></ion-label>
+      <p style="font-size: 14px;margin-top: 8px;">EL Pino, La Vega, Prox Planta de Gas Hers Diaz Gas</p></div> 
+   
+      <ion-item  style="--border-width: 0 0 0px 0 !important; margin-right: 46px;">
+        <ion-input disabled="true"  > <ion-label  style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
+        <ion-label style="margin-top: 6px;">Factura: {{100}}</ion-label>
         
+     </ion-item>
+      <ion-item  style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
+        <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute; margin-top: -15px;   margin-left: 10px;"></ion-label></ion-input>
+        <ion-label style="margin-top: 6px;">Fecha:</ion-label>
+        <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
+     </ion-item>
+     <ion-item  style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
+      <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
+      <ion-label style="margin-top: 6px;">Vence:</ion-label>
+      <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fechaVencimiento"></ion-datetime>
+   </ion-item>
+      
+  
+   
+   
+    </div>
      
       
-   
-
-        <ion-item ><ion-label  style="position:absolute;position: absolute;font-size: 49px; color: red; transform: rotate( -45deg);">Vendido</ion-label>
-          <img style="width: 100%;" class="image"  [src]="">
-        </ion-item>
-  
-       
       
       <ion-list>
 
         <ion-item>
-             <ion-label    class="normal" >Articulo:</ion-label>
-             <ion-input   class="normal" type="string" inputmode="text" placeholder="Nombre del articulo"></ion-input>
+             <ion-label    class="normal" >Cliente:</ion-label>
+             <ion-input   class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
          
         </ion-item>
-
-        <ion-item>
-          <ion-label  class="normal">Tipo de Articulo:</ion-label>
-          <ion-select class="normal" >
-            <ion-select-option value="Laptop">Laptop</ion-select-option>
-            <ion-select-option value="Accesorio">Accesorio</ion-select-option>
-            <ion-select-option value="Disco Duro">Disco Duro</ion-select-option>
-          </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
-            class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
-        </ion-item>
-
-        <ion-item>
-
-        <ion-label style="margin-top: 40px; background-color: #fd4a4a; border-radius: 30px; margin-left: auto; 
-        margin-right: auto; text-align: center;" class="subtitulo">Detalles del Productos:</ion-label>
-      </ion-item>
-       
-        <ion-item>
-
-          <ion-label  class="normal"  class="normal">Procesador:</ion-label>
-          
-          <ion-select  class="normal" >
-            <ion-select-option value="Core i3">Core i3</ion-select-option>
-            <ion-select-option value="Core i5">Core i5</ion-select-option>
-            <ion-select-option value="Core i7">Core i7</ion-select-option>
-            <ion-select-option value="AMD">AMD</ion-select-option>
-            <ion-select-option value="Celeron">Celeron</ion-select-option>
-          </ion-select>
-
-          <ion-select  class="normal"  >
-            <ion-select-option value="1ra">1ra</ion-select-option>
-            <ion-select-option value="2da">2da</ion-select-option>
-            <ion-select-option value="3ra">3ra</ion-select-option>
-            <ion-select-option value="4ta">4ta</ion-select-option>
-            <ion-select-option value="5ta">5ta</ion-select-option>
-            <ion-select-option value="6ta">6ta</ion-select-option>
-            <ion-select-option value="7ma">7ma</ion-select-option>
-            <ion-select-option value="8va">8va</ion-select-option>
-            <ion-select-option value="9na">9na</ion-select-option>
-          </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
-            class="normal" style="position: absolute;    margin-left: 10px;">Gen</ion-label></ion-input>
-
-          
-        </ion-item>
-
-        <ion-item>
-
-          <ion-label  class="normal">Ram:</ion-label>
-          
-          <ion-select  class="normal"  >
-            <ion-select-option value="2gb">2gb</ion-select-option>
-            <ion-select-option value="4gb">4gb</ion-select-option>
-            <ion-select-option value="6gb">6gb</ion-select-option>
-            <ion-select-option value="8gb">8gb</ion-select-option>
-            <ion-select-option value="12gb">12gb</ion-select-option>
-            <ion-select-option value="16gb">16gb</ion-select-option>
-          </ion-select>
-
-          <ion-select  class="normal" >
-            <ion-select-option value="DDR2">DDR2</ion-select-option>
-            <ion-select-option value="DDR3">DDR3</ion-select-option>
-            <ion-select-option value="DDR4">DDR4</ion-select-option>
-            <ion-select-option value="DDR5">DDR5</ion-select-option>
-            </ion-select>  <ion-input disabled="true" inputmode="number" > <ion-label   
-              class="normal" style="position: absolute;    margin-left: 44px;"></ion-label></ion-input>    
-        </ion-item>
-        <ion-item>
-
-          <ion-label  class="normal">Almacenamiento:</ion-label>
-          
-          <ion-select class="normal" >
-            <ion-select-option value="SSD">SSD</ion-select-option>
-            <ion-select-option value="HHD">HHD</ion-select-option>
-            <ion-select-option value="M2">M2</ion-select-option>
-            <ion-select-option value="eMC">eMC</ion-select-option>
-          </ion-select>
-
-          <ion-input  class="normal" type="number" inputmode="number" placeholder="cantidad"> <ion-label   
-            class="normal" style="position: absolute;    margin-left: 44px;">GB</ion-label></ion-input>
-          
-        </ion-item>
-
-        <ion-item>
-          <ion-label  class="normal">Pantalla:</ion-label>
         
-        <ion-select class="normal" >
+        <ion-item class="normal" >
+          <ion-label  class="normal">Articulo:</ion-label>
+          <ion-select [(ngModel)]="newArticulo.descripcion" class="normal"  >
+            <ion-select-option *ngFor="let producto of productos" [value]="producto.nombre">{{producto.nombre}}</ion-select-option>
+           </ion-select>
+
+           <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
+            <ion-label >Cant:</ion-label> <ion-input [(ngModel)]="newArticulo.cant" inputmode="number"></ion-input>
+            <ion-label>Desc:</ion-label> <ion-input inputmode="number"></ion-input>
+        
           
-          <ion-select-option value="10">10</ion-select-option>
-          <ion-select-option value="11">11</ion-select-option>
-          <ion-select-option value="12">12</ion-select-option>
-          <ion-select-option value="12.5">12.5</ion-select-option>
-          <ion-select-option value="13">13</ion-select-option>
-          <ion-select-option value="14">14</ion-select-option>
-          <ion-select-option value="15">15.5</ion-select-option>
-          <ion-select-option value="15.5">15.5</ion-select-option>
-        </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
-          class="normal" style="position: absolute;    margin-left: 10px;">Pulg</ion-label></ion-input>
+          </ion-item>
+
+          <div class="container">
+            <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+              <ion-button  (click)="nuevo()" >
+                <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
+                
+              </ion-button>
+                      
+              </ion-buttons>
+            <div class="row">
+              <table border="1" class="table" id="tablaprueba">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Articulo</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Importe</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="text-align: center;" *ngFor="let articulo of newfactura.articulo">
+                    <td>{{articulo.descripcion}}</td>
+                    <td>${{articulo.precioVenta}}</td>
+                  </tr>
+                  <tr></tbody>
+                  <tbody>
+                 
+              </table>
+          
+              <div class="form-group">
+                <button type="button" class="btn btn-primary mr-2" (click)="agregarFila()">Agregar Fila</button>
+                <button type="button" class="btn btn-danger" onclick="eliminarFila()">Eliminar Fila</button>
+              </div>
+           </div>
+        </div>
+
+  
+
       
-        </ion-item>
-        
-        <ion-item>
-          <ion-label style="background-color: #fd4a4a; border-radius: 30px; margin-left: auto; margin-top: 40px;
-          margin-right: auto; text-align: center;" class="subtitulo">Detalles Monetario:</ion-label></ion-item>
-        
-
-        <ion-item style="width: 168px;">
-          <ion-label    class="normal" >Costo:</ion-label>
-           <ion-input  class="normal" type="number" inputmode="number" placeholder="$"></ion-input>
-          </ion-item>
-
-
-                <ion-item style="width: 127px; margin-top: -50px; margin-left: 179px; position: absolute; ">
-            <ion-label  class="normal" >Und:</ion-label>
-             <ion-input   class="normal" type="number" inputmode="number" placeholder="1"></ion-input>
-          </ion-item>
-
-          <ion-item style="width: 200px">
-            <ion-label   class="normal" placeholder="">Gasto:</ion-label>
-             <ion-input style="width: 168px;" class="normal" type="number" inputmode="number" placeholder="0"></ion-input>
-             
-            
-              
-            </ion-item>
-
-        
-          
-          
-           
-
-       
 
       </ion-list>
       
@@ -201,16 +128,9 @@
 <!--Listado de los articulos-->
 
    <div style="margin-top: 40px; margin-bottom: 30px;"  class="contenedorControles">
-    <h3  class="titulo p-2 encabezado">Listado de Productos</h3>
    
     <div id="lista" class="listaProductos">
-      <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
-        <ion-button  (click)="nuevo()" >
-          <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
-          
-        </ion-button>
-                
-        </ion-buttons>
+      
     
     <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
       <ion-label style="text-align: center;" class="normal">Articulo</ion-label>
