@@ -5,6 +5,7 @@ import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
+import { provideRoutes } from '@angular/router';
 
 
 @Component({
@@ -21,7 +22,10 @@ newFile= '';
 isActive = true;
 path = null;
 iduser=null;
-
+agregarArticulo= false;
+editarArticulo= false;
+indice= null;
+codigo= null;
 producto: Producto = {
   id: this.firestoreService.getid(),
   codigo: 1000,
@@ -44,7 +48,7 @@ producto: Producto = {
 
   newArticulo: Articulo =
     { descripcion: 'prueba',
-      cant: 1,
+      cant: 0,
       precioVenta: 0,
       descuento: 0,
       total: 0
@@ -60,7 +64,7 @@ producto: Producto = {
 
     };
 
-arr = [];
+nombresArt = [];
 
   constructor(public firestoreService: FirestoreService,
               public firestorage: FirestorageService,
@@ -97,16 +101,50 @@ arr = [];
 
 
   }
+
+  comprobarExistencia(){
+
+  // const array = this.newfactura.articulo;
+
+//array.forEach((articulo) => { //Recorro primer arreglo
+  //Luego recorro la propiedad descripcion dentro del segundo arreglo
+ // this.nombresArt.push(articulo.descripcion);
+//});
+//nombre.indexOf(articuloNombre)
+const index= this.nombresArt.indexOf(this.newArticulo.descripcion);// Preguntar por el indice del articulo
+
+
+
+
+  }
+
+
   agregarFila(){
+this.getArticulo();
 
-const art =this.newfactura.articulo;
-const arr = [];
+if(this.indice!==null && this.newArticulo.cant !==0){
 
-
-if(this.newArticulo.descripcion !=='' && this.newArticulo.cant !==0){
-  this.newfactura.articulo.push(this.newArticulo );
-  console.log(this.newfactura.articulo);
+  this.newfactura.articulo[this.indice]=this.newArticulo;
 }
+
+else{
+
+  if(this.nombresArt.indexOf(this.newArticulo.descripcion)!== -1 && this.newArticulo.cant !==0){
+
+  const index = this.nombresArt.indexOf(this.newArticulo.descripcion);//actuliza el valor dentro del arry
+
+  this.newfactura.articulo[index]=this.newArticulo;
+}
+
+else{
+  this.newfactura.articulo.push(this.newArticulo );
+  this.nombresArt.push(this.newArticulo.descripcion);
+}
+
+
+
+}
+
 
 
 
@@ -119,12 +157,35 @@ if(this.newArticulo.descripcion !=='' && this.newArticulo.cant !==0){
 
     };
 
+this.agregarArticulo= false;
+this.editarArticulo= false;
+this.indice= null;
 
 
   }
 
+
+  mostrarDatos(articulo: Articulo){
+    this.agregarArticulo= true;
+
+    this.newArticulo = articulo;//llena los campos con los datos del articulo seleccionado
+
+    this.indice = this.newfactura.articulo.indexOf(articulo);//obtiene el indice del elemento del arry
+
+    this.editarArticulo= true;//para ocultar el boton de eliminar
+  }
+
+  eliminarFila(){
+    console.log(this.indice);
+    this.newfactura.articulo.splice(this.indice, 1);
+    this.nombresArt.splice(this.indice, 1);//como si fuera un index
+    this.editarArticulo= false;
+    this.agregarArticulo = false;
+    this.indice= null;
+  }
+
   nuevo(){
-    console.log('nuevo');
+    this.agregarArticulo= true;
   }
 
   guardarDatos(){
@@ -139,6 +200,22 @@ if(this.newArticulo.descripcion !=='' && this.newArticulo.cant !==0){
 
      } );
   }
+
+  getArticulo(){
+
+
+this.firestoreService.getCollectionquery<Producto>(this.path, 'codigo', '==', this.codigo).subscribe(res=>{
+console.log(res);
+this.newArticulo.cant= res[0].unds;
+this.newArticulo.descripcion= res[0].nombre;
+this.newArticulo.precioVenta= res[0].precio;
+
+});
+
+
+
+  }
+
 
   async alerta(msgAlerta: string){
     const alert = await this.alertController.create({

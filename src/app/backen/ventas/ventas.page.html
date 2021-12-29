@@ -34,19 +34,19 @@
       
     <div  class="encabezadoFactura">
      <div style="text-align: center;"> <ion-label><p style=" margin-top: 10px;" class="titulo">Ventas de Laptops y más</p></ion-label>
-      <p style="font-size: 14px;margin-top: 8px;">EL Pino, La Vega, Prox Planta de Gas Hers Diaz Gas</p></div> 
+      <p style="font-size: 11px;margin-top: 8px;">EL Pino, La Vega, Prox Planta de Gas Hers Diaz Gas</p></div> 
    
       <ion-item  style="--border-width: 0 0 0px 0 !important; margin-right: 46px;">
         <ion-input disabled="true"  > <ion-label  style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
-        <ion-label style="margin-top: 6px;">Factura: {{100}}</ion-label>
+        <ion-label class="normal" style="margin-top: 6px;">Factura: {{100}}</ion-label>
         
-     </ion-item>
-      <ion-item  style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
+     </ion-item >
+      <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
         <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute; margin-top: -15px;   margin-left: 10px;"></ion-label></ion-input>
         <ion-label style="margin-top: 6px;">Fecha:</ion-label>
         <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
      </ion-item>
-     <ion-item  style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
+     <ion-item  class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
       <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
       <ion-label style="margin-top: 6px;">Vence:</ion-label>
       <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fechaVencimiento"></ion-datetime>
@@ -67,51 +67,67 @@
          
         </ion-item>
         
-        <ion-item class="normal" >
+        <ion-item *ngIf="agregarArticulo===true" class="normal" >
           <ion-label  class="normal">Articulo:</ion-label>
-          <ion-select [(ngModel)]="newArticulo.descripcion" class="normal"  >
-            <ion-select-option *ngFor="let producto of productos" [value]="producto.nombre">{{producto.nombre}}</ion-select-option>
+          <ion-select [(ngModel)]="codigo" class="normal" (ionChange)="getArticulo()" >
+            <ion-select-option *ngFor="let producto of productos" [value]="producto.codigo">{{producto.nombre}}</ion-select-option>
            </ion-select>
 
            <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
             <ion-label >Cant:</ion-label> <ion-input [(ngModel)]="newArticulo.cant" inputmode="number"></ion-input>
             <ion-label>Desc:</ion-label> <ion-input inputmode="number"></ion-input>
-        
+           
           
           </ion-item>
+          
+          <div style="text-align: right;" *ngIf="agregarArticulo===true" class="form-group">
+            <button type="button" style="background-color: #62ab87; border-color: #62ab87;" class="btn btn-primary mr-2" (click)="agregarFila()">Agregar</button>
+            <button *ngIf="editarArticulo===true" type="button" style="background-color: red; border-color: red;" class="btn btn-danger" (click)="eliminarFila()">Eliminar</button>
+          </div>
 
           <div class="container">
-            <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+            
+            <ion-buttons *ngIf="agregarArticulo===false" slot="end" style="position: absolute; margin-top: -40px; right: -23px;" >
               <ion-button  (click)="nuevo()" >
-                <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
+                <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Artículo</ion-label>
                 
               </ion-button>
                       
               </ion-buttons>
             <div class="row">
               <table border="1" class="table" id="tablaprueba">
-                <thead class="thead-dark">
+                <thead class="thead-dark normal" style= "font-weight: bold;" >
                   <tr>
                     <th>Articulo</th>
+                    <th></th>
                     <th>Cantidad</th>
                     <th>Precio</th>
                     <th>Importe</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="normal">
                   <tr style="text-align: center;" *ngFor="let articulo of newfactura.articulo">
                     <td>{{articulo.descripcion}}</td>
-                    <td>${{articulo.precioVenta}}</td>
+                    <td>
+                      
+                        <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos(articulo)">
+                          <ion-icon slot="icon-only"  color="danger"  name="create-outline"  ></ion-icon>
+                        </ion-button>
+                                              
+                      
+                    </td>
+                    <td>{{articulo.cant}}</td>
+                    <td>${{articulo.precioVenta| currency: '' }}</td>
+                    <td>${{(articulo.precioVenta * articulo.cant) | currency: ''}}</td>
                   </tr>
                   <tr></tbody>
                   <tbody>
                  
               </table>
+
+             
           
-              <div class="form-group">
-                <button type="button" class="btn btn-primary mr-2" (click)="agregarFila()">Agregar Fila</button>
-                <button type="button" class="btn btn-danger" onclick="eliminarFila()">Eliminar Fila</button>
-              </div>
+              
            </div>
         </div>
 

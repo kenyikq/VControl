@@ -19,9 +19,9 @@ getDoc<Tipo>(path: string, id: string ){
   return collection.doc(id).valueChanges();
 }
 
-deleteDoc(path: string, id: string ){
+deleteDoc<Tipo>(path: string, id: string ){
 
-  const collection= this.database.collection(path);
+  const collection= this.database.collection<Tipo>(path);
   return collection.doc(id).delete();
 
 }

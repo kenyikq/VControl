@@ -30,7 +30,7 @@ newproducto: Producto = {
   nombre: '',
   unds: 0,
   fecha: moment(new Date()).format('DD-MM-YYYY'),
-  mes: moment(new Date()).format('MMMM'),
+  mes: moment(new Date()).format('MMMM').toString(),
   costo: 0,
   gasto: 0,
   precio: 0,
@@ -82,7 +82,7 @@ actualizarProducto= false;
 
     }
 
-
+console.log(this.newproducto.mes);
     }
 
 
@@ -101,13 +101,13 @@ nuevo(){
     nombre: '',
     unds: 1,
     fecha: moment(new Date()).toString(),//para mostrar la fecha anctual al crear nuevo producto
-    mes: moment(new Date()).format('MMMM'),
+    mes: moment(new Date()).format('MMMM').toString(),
     costo: 0,
     gasto: 0,
     precio: 0,
     precioMin: 0,
     descripcion: {
-      procesador: {tipo: 'Core i5', gen: '4ta'}, 
+      procesador: {tipo: 'Core i5', gen: '4ta'},
       ram: {tipo: 'DDR3', cant: '8gb'},
       almacenamiento: {tipo: 'HHD', cant: '320'},
       pantalla: '14'}
@@ -135,7 +135,6 @@ this.actualizarProducto= true;
   mostrarDatos(producto: Producto){
     this.actualizarProducto = true;
     this.newproducto = producto;
-    this.newproducto.mes= producto.mes;
   }
 
 
@@ -217,7 +216,7 @@ this.newproducto.foto = res;
         else{this.navCtrl.navigateRoot('/productos');}
            });
     });
-
+console.log(this.newproducto);
 }
 
 
