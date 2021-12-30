@@ -26,6 +26,10 @@ agregarArticulo= false;
 editarArticulo= false;
 indice= null;
 codigo= null;
+subtotal= null;
+descuento= null;
+total=0;
+cont = 0;
 producto: Producto = {
   id: this.firestoreService.getid(),
   codigo: 1000,
@@ -48,10 +52,10 @@ producto: Producto = {
 
   newArticulo: Articulo =
     { descripcion: 'prueba',
-      cant: 0,
-      precioVenta: 0,
-      descuento: 0,
-      total: 0
+      cant: null,
+      precioVenta: null,
+      descuento: null,
+      total: null
 
     };
 
@@ -117,7 +121,21 @@ const index= this.nombresArt.indexOf(this.newArticulo.descripcion);// Preguntar 
 
 
   }
+calculoTotalesFactura(){
+  this.descuento= null;
+   this.subtotal = null;
+this.cont =this.cont+1;
+ this.newfactura.articulo.forEach((articulo)=>{
+    articulo.total= (articulo.precioVenta* articulo.cant);
+   this.descuento=this.descuento + articulo.descuento;
+   this.subtotal = this.subtotal + articulo.total;
+   console.log('este es el sub total ',this.cont ,this.subtotal);
 
+ });
+  this.total= -this.descuento + this.subtotal;
+
+console.log(this.total);
+}
 
   agregarFila(){
 this.getArticulo();
@@ -129,7 +147,7 @@ if(this.indice!==null && this.newArticulo.cant !==0){
 
 else{
 
-  if(this.nombresArt.indexOf(this.newArticulo.descripcion)!== -1 && this.newArticulo.cant !==0){
+  if(this.nombresArt.indexOf(this.newArticulo.descripcion)!== -1 && this.newArticulo.cant !==null){
 
   const index = this.nombresArt.indexOf(this.newArticulo.descripcion);//actuliza el valor dentro del arry
 
@@ -137,8 +155,11 @@ else{
 }
 
 else{
+
+  if(this.newArticulo.cant !==null && this.newArticulo.descripcion !==''){
   this.newfactura.articulo.push(this.newArticulo );
-  this.nombresArt.push(this.newArticulo.descripcion);
+    this.nombresArt.push(this.newArticulo.descripcion);}
+  else{this.alerta('Debe de elegir al menos un producto');}
 }
 
 
@@ -150,17 +171,17 @@ else{
 
     this.newArticulo =
     { descripcion: '',
-      cant: 1,
-      precioVenta: 0,
-      descuento: 0,
-      total: 0
+      cant: null,
+      precioVenta: null,
+      descuento: null,
+      total: null
 
     };
 
 this.agregarArticulo= false;
 this.editarArticulo= false;
 this.indice= null;
-
+this.calculoTotalesFactura();
 
   }
 
@@ -176,12 +197,12 @@ this.indice= null;
   }
 
   eliminarFila(){
-    console.log(this.indice);
     this.newfactura.articulo.splice(this.indice, 1);
     this.nombresArt.splice(this.indice, 1);//como si fuera un index
     this.editarArticulo= false;
     this.agregarArticulo = false;
     this.indice= null;
+    this.calculoTotalesFactura();
   }
 
   nuevo(){
@@ -191,6 +212,25 @@ this.indice= null;
   guardarDatos(){
     console.log('guardar datos');
   }
+cancelar(){
+  this.descuento=null;
+  this.subtotal=null;
+  this.total= null;
+  this.newfactura.articulo=[];
+  this.newfactura.cliente='';
+  this.newArticulo =
+    { descripcion: '',
+      cant: null,
+      precioVenta: null,
+      descuento: null,
+      total: null
+
+    };
+  this.editarArticulo= false;
+    this.agregarArticulo = false;
+    this.indice= null;
+}
+
   getproductos() {
 
     this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
@@ -205,7 +245,7 @@ this.indice= null;
 
 
 this.firestoreService.getCollectionquery<Producto>(this.path, 'codigo', '==', this.codigo).subscribe(res=>{
-console.log(res);
+
 this.newArticulo.cant= res[0].unds;
 this.newArticulo.descripcion= res[0].nombre;
 this.newArticulo.precioVenta= res[0].precio;
@@ -230,11 +270,6 @@ this.newArticulo.precioVenta= res[0].precio;
           handler: (blah) => {
 
           }
-        }, {
-          text: 'Ingresar',
-          handler: () => {
-            this.navCtrl.navigateRoot('/login');
-          }
         }
       ]
 
@@ -243,11 +278,7 @@ this.newArticulo.precioVenta= res[0].precio;
     await alert.present();
   }
 
-  calcular(){
 
- const d = new Date();
-console.log('este es el resultado:',this.sumarDias(d, 90));
-}
 
 sumarDias(fecha, dias){
   fecha.setDate(fecha.getDate() + dias);
