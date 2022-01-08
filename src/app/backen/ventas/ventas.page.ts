@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { Articulo, Factura, Producto } from 'src/app/models';
+import { Articulo, Cliente, Factura, Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
 import { provideRoutes } from '@angular/router';
+import { async } from '@firebase/util';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -16,6 +18,7 @@ import { provideRoutes } from '@angular/router';
 export class VentasPage implements OnInit {
   articulos: Factura[]= [];
 
+clientes: Cliente[]= [];
 productos: Producto[]= [];
 img='';
 newFile= '';
@@ -25,11 +28,15 @@ iduser=null;
 agregarArticulo= false;
 editarArticulo= false;
 indice= null;
-codigo= null;
 subtotal= null;
 descuento= null;
 total=0;
 cont = 0;
+loading: any;
+codigo = null;
+codclient=null;
+subscribir: Subscription;
+
 producto: Producto = {
   id: this.firestoreService.getid(),
   codigo: 1000,
@@ -50,8 +57,18 @@ producto: Producto = {
     pantalla: ''}
   };
 
+  newCliente: Cliente =
+  {
+    //id: this.firestoreService.getid(),
+    codigo: 1000,
+    nombre:'',
+    telefono:'',
+    fecha: moment(new Date()).format('DD-MM-YYYY'),
+  };
+
   newArticulo: Articulo =
-    { descripcion: 'prueba',
+    { codigo: 0,
+      descripcion: 'prueba',
       cant: null,
       precioVenta: null,
       descuento: null,
@@ -60,9 +77,10 @@ producto: Producto = {
     };
 
   newfactura: Factura = {
+    codigo: 0, //funcionara como id
     fecha: moment(new Date()).toString(),
     fechaVencimiento: this.sumarDias(new Date(), 90).toString(),
-    cliente: '',
+    cliente: this.newCliente.nombre,
     articulo: [],
 
 
@@ -80,15 +98,16 @@ nombresArt = [];
   ) {
 
 
+
     if ( this.log.stateauth())
     {
     this.log.stateauth().subscribe( res=>{
 
       if (res !== null){
         this.iduser= res.uid;
-        this.path=this.iduser+'.producto';
+        this.path='usuario/'+this.iduser+'/producto';
 
-      this.getproductos();
+      this.getdatos();// obtiene todos los articulos y todos lo clientes y los almacenas en sus respect variables
 
       }else {
         this.alerta('Necesitas ingresar con tu usuario para usar el modulo de Facturación');
@@ -124,17 +143,15 @@ const index= this.nombresArt.indexOf(this.newArticulo.descripcion);// Preguntar 
 calculoTotalesFactura(){
   this.descuento= null;
    this.subtotal = null;
-this.cont =this.cont+1;
  this.newfactura.articulo.forEach((articulo)=>{
     articulo.total= (articulo.precioVenta* articulo.cant);
    this.descuento=this.descuento + articulo.descuento;
    this.subtotal = this.subtotal + articulo.total;
-   console.log('este es el sub total ',this.cont ,this.subtotal);
 
  });
   this.total= -this.descuento + this.subtotal;
 
-console.log(this.total);
+//console.log(this.total);
 }
 
   agregarFila(){
@@ -147,11 +164,11 @@ if(this.indice!==null && this.newArticulo.cant !==0){
 
 else{
 
-  if(this.nombresArt.indexOf(this.newArticulo.descripcion)!== -1 && this.newArticulo.cant !==null){
+  if(this.nombresArt.indexOf(this.newArticulo.descripcion)!== -1 && this.newArticulo.cant !==null){//
 
-  const index = this.nombresArt.indexOf(this.newArticulo.descripcion);//actuliza el valor dentro del arry
+  const index = this.nombresArt.indexOf(this.newArticulo.descripcion);//encuentra el valor dentro del arry
 
-  this.newfactura.articulo[index]=this.newArticulo;
+  this.newfactura.articulo[index]=this.newArticulo;//actuliza el valor dentro del arry
 }
 
 else{
@@ -170,7 +187,8 @@ else{
 
 
     this.newArticulo =
-    { descripcion: '',
+    { codigo: 0,
+      descripcion: '',
       cant: null,
       precioVenta: null,
       descuento: null,
@@ -207,11 +225,23 @@ this.calculoTotalesFactura();
 
   nuevo(){
     this.agregarArticulo= true;
+
   }
 
-  guardarDatos(){
-    console.log('guardar datos');
+ async guardarDatos(){
+
+if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
+  await this.gestionarCliente().then(
+      res=> {this.guardarFactura();});
+      this.goAnOtherPage('/ventas');
+   }
+   else{
+     this.alerta('Favor llenar los datos del cliente correctamente');
+   }
+
   }
+
+
 cancelar(){
   this.descuento=null;
   this.subtotal=null;
@@ -219,27 +249,46 @@ cancelar(){
   this.newfactura.articulo=[];
   this.newfactura.cliente='';
   this.newArticulo =
-    { descripcion: '',
+    { codigo: 0,
+      descripcion: '',
       cant: null,
       precioVenta: null,
       descuento: null,
       total: null
 
     };
+
+    this.newCliente =
+    {
+      //id: this.firestoreService.getid(),
+      codigo: 1000,
+      nombre:'',
+      telefono:'',
+      fecha: moment(new Date()).format('DD-MM-YYYY'),
+    };
+
   this.editarArticulo= false;
     this.agregarArticulo = false;
     this.indice= null;
 }
 
-  getproductos() {
+  getdatos() {
+    const path='usuario/'+this.iduser+'/clientes';
+
+
+
+    this.firestoreService.getCollection<Cliente>(path).subscribe( res => {
+      this.clientes=res;
+
+    } );
 
     this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
-       //console.log(res);
        this.productos= res;
-
-
      } );
+
+
   }
+
 
   getArticulo(){
 
@@ -249,12 +298,31 @@ this.firestoreService.getCollectionquery<Producto>(this.path, 'codigo', '==', th
 this.newArticulo.cant= res[0].unds;
 this.newArticulo.descripcion= res[0].nombre;
 this.newArticulo.precioVenta= res[0].precio;
+this.newArticulo.codigo= res[0].codigo;
 
 });
 
 
 
   }
+
+
+  getCliente(){
+    const path='usuario/'+this.iduser+'/clientes';
+
+    this.firestoreService.getCollectionquery<Cliente>(path, 'codigo', '==', this.codclient).subscribe(res=>{
+
+    this.newCliente.nombre= res[0].nombre;
+    this.newCliente.telefono= res[0].telefono;
+    this.newCliente.codigo= res[0].codigo;
+
+
+
+
+    });
+
+    this.codclient=null;
+      }
 
 
   async alerta(msgAlerta: string){
@@ -278,11 +346,79 @@ this.newArticulo.precioVenta= res[0].precio;
     await alert.present();
   }
 
-
-
 sumarDias(fecha, dias){
   fecha.setDate(fecha.getDate() + dias);
   return fecha;
 }
 
+async presentToast(msg: string) {
+  const toast = await this.toastCtrl.create({
+   message: msg,
+   duration: 2000,
+   position: 'bottom'
+ });
+
+toast.present();
+}
+
+async gestionarCliente(){
+  const path= 'usuario/'+this.iduser+'/clientes';
+
+const telefonos = [];
+
+  this.clientes.forEach((cliente)=>{
+    telefonos.push(cliente.telefono);
+
+ });
+
+  if(telefonos.includes(this.newCliente.codigo) === false)//si el cliente no existe
+ {
+  await this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
+    if(resp){
+    this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
+    } });
+
+    this.firestoreService.createDoc(this.newCliente, path, this.newCliente.codigo.toString()).then(res=>{
+
+    }).catch(err=>{
+      console.log('Error al crear cliente ',err);
+    });
+
+ } ;
+
+
+
+}
+
+
+
+async  guardarFactura(){
+  this.presentLoading();
+  const path='usuario/'+this.iduser+'/clientes/'+this.newCliente.codigo+'/factura';
+ await this.firestoreService.getultimodoc<Factura>(path).subscribe(res=>{
+    if(res){
+    this.newfactura.codigo=  res[0].codigo + 1;
+    }
+
+  });
+
+   this.firestoreService.createDoc(this.newfactura, path, this.newfactura.codigo.toString()).then( ans =>{
+      this.loading.dismiss().then( respuesta => {
+
+        this.presentToast('Acción ralizada con exito');
+       });
+    }).catch(err=>{this.alerta('Error: '+err);});
+
+}
+
+async presentLoading(){
+  this.loading = await this.loadingController.create({
+   cssClass: 'normal',
+   message:'Guardando',
+  });
+  await this.loading.present();
+  }
+
+  goAnOtherPage(pagina: string) {
+    this.navCtrl.navigateRoot(pagina);}
 }

@@ -33,6 +33,7 @@
 }
 
 export interface Factura{
+codigo: number;
 fecha: string;
 fechaVencimiento: string;
 cliente: string;
@@ -41,9 +42,17 @@ articulo: Array<Articulo>;
 }
 
 export interface Articulo{
+  codigo: number;
   descripcion: string;
   cant: number;
   precioVenta: number;
   descuento: number;
   total: number;
+}
+
+export interface Cliente{
+  codigo: number;
+  nombre: string;
+  telefono: string;
+  fecha: string;
 }

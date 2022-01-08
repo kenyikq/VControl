@@ -39,7 +39,7 @@
    
       <ion-item  style="--border-width: 0 0 0px 0 !important; margin-right: 46px;">
         <ion-input disabled="true"  > <ion-label  style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
-        <ion-label class="normal" style="margin-top: 6px;">Factura: {{100}}</ion-label>
+        <ion-label class="normal" style="margin-top: 6px;">Factura: {{newfactura.codigo}}</ion-label>
         
      </ion-item >
       <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
@@ -64,11 +64,23 @@
 
         <ion-item>
              <ion-label    class="normal" >Cliente:</ion-label>
-             <ion-input [(ngModel)]="newfactura.cliente"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
+             <ion-input required [(ngModel)]="newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
          
-        </ion-item>
+             <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
+              <label for="client"><ion-icon  slot="icon-only" name="search"></ion-icon></label>
+              <ion-select [(ngModel)]="codclient" style="position: absolute;" class="normal" (ionChange)="getCliente()" >
+                <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.codigo">{{cliente.nombre}}</ion-select-option>
+               </ion-select>    
+              </ion-buttons>
+        
+            </ion-item>
+        <ion-item>
+          <ion-label    class="normal" >Celular:</ion-label>
+          <ion-input required [(ngModel)]="newCliente.telefono"  class="normal" type="string" inputmode="number" placeholder="809-894-5555"></ion-input>
+      
+     </ion-item>
         <div *ngIf="agregarArticulo===true">
-           <ion-item  class="normal" >
+          <ion-card style="margin-top: 35px;"><ion-item  class="normal" >
           <ion-label  class="normal">Articulo:</ion-label>
           <ion-select [(ngModel)]="codigo" class="normal" (ionChange)="getArticulo()" >
             <ion-select-option *ngFor="let producto of productos" [value]="producto.codigo">{{producto.nombre}}</ion-select-option>
@@ -76,14 +88,14 @@
 
            <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
                      
-          </ion-item>
+          </ion-item> 
           
           <ion-item  class="normal">
           <ion-label style="margin-right: 50px;">Precio: {{newArticulo.precioVenta}}</ion-label>
           <ion-label >Cant:</ion-label> <ion-input [(ngModel)]="newArticulo.cant" inputmode="number"></ion-input>
           <ion-label>Desc:</ion-label> <ion-input  [(ngModel)]="newArticulo.descuento" type="number" inputmode="number"></ion-input>
            
-          </ion-item></div>
+          </ion-item></ion-card> </div>
        
 
           <div style="text-align: right; margin-bottom: 10px;" *ngIf="agregarArticulo===true" class="form-group">
@@ -151,8 +163,8 @@
        </ion-item>
           
         </div>
-        <div *ngIf="total > 0" class="action-buttons" style=" margin-top: 40px !important; text-align: center;">
-          <ion-button class="action-button"  *ngIf="isActive=== true "  shape="round"  (click)="guardarDatos()">  Facturar  </ion-button>
+        <div  class="action-buttons" style=" margin-top: 40px !important; text-align: center;">
+          <ion-button class="action-button"  *ngIf="total > 0" shape="round"  (click)="guardarDatos()">  Facturar  </ion-button>
           <ion-button class="action-button" shape="round"  style="color: red; --border-color: red;"  (click)="cancelar()"class="signup-button"  fill="outline " >Cancelar </ion-button>
          
            </div>

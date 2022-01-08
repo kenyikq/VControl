@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+      <ion-button [routerLink]= "['/home']" >
+        <ion-icon style="width: 22px;" color="danger" name="home" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      <ion-button [routerLink]= "['/registro']" >
+        <ion-icon color="danger" name="person-circle-outline" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      
+      </ion-buttons>
+    <ion-title style="text-align: center; margin-right: 5%;" class="subtitulo">
+      Moviemientos
+    </ion-title>
+
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+     </ion-buttons>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+  <div class= "container" >
+            
+    <ion-buttons *ngIf="agregarMovimiento===false" slot="end" style="position: absolute; margin-top: -40px; right: -23px;" >
+      <ion-button  (click)="nuevo()" >
+        <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Artículo</ion-label>
+        
+      </ion-button>
+              
+      </ion-buttons>
+    <div class="row">
+      <table border="1" style="background: white !important; opacity: 50% importat !important;"  class="table" id="table">
+        <thead class="thead-dark normal" style= "font-weight: bold;" >
+          <tr>
+            <th>Articulo</th>
+            <th></th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Importe</th>
+          </tr>
+        </thead>
+        <tbody class="normal">
+          <tr style="text-align: center;" *ngFor="let movimiento of movimientos">
+            <td>{{movimientos}}</td>
+            <td>
+              
+                <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos()">
+                  <ion-icon slot="icon-only"  color="danger"  name="create-outline"  ></ion-icon>
+                </ion-button>
+                                      
+              
+            </td>
+            <td>{{'dato'}}</td>
+            <td>{{'dato'}}</td>
+            <td>{{'dato'}}</td>
+          </tr>
+          <tr></tbody>
+          <tbody>
+         
+      </table>
+
+
+   </div>
+  </div>
+</div>
+</ion-content>

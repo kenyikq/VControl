@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { ClientesComponent } from './backen/clientes/clientes.component';
+import { MovimientosContablesComponent } from './backen/movimientos-contables/movimientos-contables.component';
 import { ProductosPage } from './backen/productos/productos.page';
 import { VentasPage } from './backen/ventas/Ventas.page';
 import { EstadisticaComponent } from './pages/estadistica/estadistica.component';
@@ -13,8 +15,9 @@ const routes: Routes = [
   { path: 'registro', component: RegistroComponent},
   { path: 'login', component: LoginComponent},
   { path: 'estadistica', component: EstadisticaComponent},
-  { path: 'ventas', component: VentasPage}
-
+  { path: 'ventas', component: VentasPage},
+  { path: 'moviemientos', component: MovimientosContablesComponent},
+  { path: 'clientes', component: ClientesComponent}
 ];
 
 

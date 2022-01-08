@@ -23,7 +23,7 @@ newFile= '';
 
 
 newproducto: Producto = {
-  id: this.firestoreService.getid(),
+  id: 'P1000',
   codigo: 1000,
   tipoArticulo :'',
   foto: '',
@@ -70,7 +70,7 @@ actualizarProducto= false;
 
         if (res !== null){
           this.iduser= res.uid;
-        this.path=this.iduser+'.producto';
+        this.path='usuario/'+this.iduser+'/producto';
 
         this.getproductos();
 
@@ -94,7 +94,7 @@ console.log(this.newproducto.mes);
 nuevo(){
 
    this.newproducto = {
- id: this.firestoreService.getid(),
+ id: 'P1000',
     codigo: 1000,
     tipoArticulo :'Laptop',
     foto: '',
@@ -117,6 +117,7 @@ nuevo(){
       {
         const sum: number =res[0].codigo + 1;
         this.newproducto.codigo= sum;}
+        this.newproducto.id='P'+this.newproducto.codigo;
 
         ;});
 
@@ -206,6 +207,13 @@ const file = this.newFile;
 const res = await this.firestorage.uploadImg(file, this.path, name);
 this.newproducto.foto = res;
 
+await this.firestoreService.getultimodoc<Producto>(this.path).subscribe(resp=>{
+  if(resp){
+  this.newproducto.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del producto
+  this.newproducto.id='P'+this.newproducto.codigo;
+  }
+});
+
     this.firestoreService.createDoc(this.newproducto, this.path, this.newproducto.id).then( ans =>{
       this.loading.dismiss().then( respuesta => {
         this.actualizarProducto = false;
@@ -216,7 +224,7 @@ this.newproducto.foto = res;
         else{this.navCtrl.navigateRoot('/productos');}
            });
     });
-console.log(this.newproducto);
+
 }
 
 

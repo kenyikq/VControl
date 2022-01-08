@@ -32,6 +32,11 @@
           <ion-label class="normal">Productos</ion-label>
           <ion-icon slot="start" name="help-buoy"></ion-icon>
         </ion-item>
+
+        <ion-item id="1" (click)="seleccionA('5')"  button="true" detail="true" [routerLink]="['/clientes']">
+          <ion-label class="normal">Clientes</ion-label>
+          <ion-icon slot="start" name="person"></ion-icon>
+        </ion-item>
         
           <ion-item id="2" (click)="seleccionA('2')"  *ngIf="login" button="true" detail="true" [routerLink]="['/ventas']">
           <ion-label class="normal">Ventas</ion-label>
@@ -41,7 +46,7 @@
           <ion-label class="normal">Estadistica</ion-label>
           <ion-icon slot="start" name="pie-chart-outline"></ion-icon>
         </ion-item>
-        <ion-item id= "4"(click)="seleccionA('4')" button="true" detail="true" [routerLink]="['/accion-callejera']">
+        <ion-item id= "4"(click)="seleccionA('4')" button="true" detail="true" [routerLink]="['/moviemientos']">
           <ion-label class="normal">Movimientos</ion-label>
           <ion-icon  slot="start" name="help"></ion-icon>
         </ion-item>
