@@ -91,9 +91,9 @@
           </ion-item> 
           
           <ion-item  class="normal">
-          <ion-label style="margin-right: 50px;">Precio: {{newArticulo.precioVenta}}</ion-label>
+          <ion-label style="margin-right: 50px;">Precio: {{newArticulo.precioVenta | currency: '' }}</ion-label>
           <ion-label >Cant:</ion-label> <ion-input [(ngModel)]="newArticulo.cant" inputmode="number"></ion-input>
-          <ion-label>Desc:</ion-label> <ion-input  [(ngModel)]="newArticulo.descuento" type="number" inputmode="number"></ion-input>
+          <ion-label>Desc:</ion-label> <ion-input  [(ngModel)]="newArticulo.descuento " type="number" inputmode="number"></ion-input>
            
           </ion-item></ion-card> </div>
        

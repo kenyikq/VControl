@@ -5,7 +5,7 @@ import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
-import { provideRoutes } from '@angular/router';
+import { AngularFirestore} from '@angular/fire/compat/firestore';
 import { async } from '@firebase/util';
 import { Subscription } from 'rxjs';
 
@@ -88,7 +88,8 @@ producto: Producto = {
 
 nombresArt = [];
 
-  constructor(public firestoreService: FirestoreService,
+  constructor(public db: AngularFirestore,
+              public firestoreService: FirestoreService,
               public firestorage: FirestorageService,
               public log: FirebaseauthService,
               public loadingController: LoadingController,
@@ -127,12 +128,12 @@ nombresArt = [];
 
   comprobarExistencia(){
 
-  // const array = this.newfactura.articulo;
+   const array = this.newfactura.articulo;
 
-//array.forEach((articulo) => { //Recorro primer arreglo
+array.forEach((articulo) => { //Recorro primer arreglo
   //Luego recorro la propiedad descripcion dentro del segundo arreglo
- // this.nombresArt.push(articulo.descripcion);
-//});
+ this.nombresArt.push(articulo.descripcion);
+});
 //nombre.indexOf(articuloNombre)
 const index= this.nombresArt.indexOf(this.newArticulo.descripcion);// Preguntar por el indice del articulo
 
@@ -160,6 +161,7 @@ this.getArticulo();
 if(this.indice!==null && this.newArticulo.cant !==0){
 
   this.newfactura.articulo[this.indice]=this.newArticulo;
+
 }
 
 else{
@@ -169,13 +171,15 @@ else{
   const index = this.nombresArt.indexOf(this.newArticulo.descripcion);//encuentra el valor dentro del arry
 
   this.newfactura.articulo[index]=this.newArticulo;//actuliza el valor dentro del arry
+
 }
 
 else{
 
   if(this.newArticulo.cant !==null && this.newArticulo.descripcion !==''){
   this.newfactura.articulo.push(this.newArticulo );
-    this.nombresArt.push(this.newArticulo.descripcion);}
+    this.nombresArt.push(this.newArticulo.descripcion);
+    }
   else{this.alerta('Debe de elegir al menos un producto');}
 }
 
@@ -229,16 +233,19 @@ this.calculoTotalesFactura();
   }
 
  async guardarDatos(){
+/*
 
 if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
   await this.gestionarCliente().then(
-      res=> {this.guardarFactura();});
-      this.goAnOtherPage('/ventas');
+      res=> {this.guardarFactura();
+      });
+
    }
    else{
      this.alerta('Favor llenar los datos del cliente correctamente');
-   }
-
+   }*/
+   this.reducirInventario();
+  // this.goAnOtherPage('/ventas');
   }
 
 
@@ -256,6 +263,15 @@ cancelar(){
       descuento: null,
       total: null
 
+    };
+
+    this.newCliente =
+    {
+      //id: this.firestoreService.getid(),
+      codigo: 1000,
+      nombre:'',
+      telefono:'',
+      fecha: moment(new Date()).format('DD-MM-YYYY'),
     };
 
     this.newCliente =
@@ -316,7 +332,7 @@ this.newArticulo.codigo= res[0].codigo;
     this.newCliente.telefono= res[0].telefono;
     this.newCliente.codigo= res[0].codigo;
 
-
+    this.codigofactura();
 
 
     });
@@ -386,29 +402,62 @@ const telefonos = [];
 
  } ;
 
-
+ this.newfactura.cliente=this.newCliente.nombre;
 
 }
 
 
 
 async  guardarFactura(){
-  this.presentLoading();
+
   const path='usuario/'+this.iduser+'/clientes/'+this.newCliente.codigo+'/factura';
- await this.firestoreService.getultimodoc<Factura>(path).subscribe(res=>{
-    if(res){
-    this.newfactura.codigo=  res[0].codigo + 1;
-    }
-
-  });
-
-   this.firestoreService.createDoc(this.newfactura, path, this.newfactura.codigo.toString()).then( ans =>{
+  this.presentLoading();
+ this.newfactura.cliente=this.newCliente.nombre;
+  this.firestoreService.createDoc(this.newfactura, path, this.newfactura.codigo.toString()).then( ans =>{
       this.loading.dismiss().then( respuesta => {
-
         this.presentToast('Acción ralizada con exito');
+        this.goAnOtherPage('/home');
        });
     }).catch(err=>{this.alerta('Error: '+err);});
 
+}
+
+codigofactura(){
+  const path='usuario/'+this.iduser+'/clientes/'+this.newCliente.codigo+'/factura';
+
+    this.firestoreService.getultimodoc<Factura>(path).subscribe(resp=>{
+      if(resp){
+       this.newfactura.codigo = resp[0].codigo + 1;
+       console.log(this.newfactura.codigo);
+        }
+       else{console.log('no encotro nada');}
+
+     });
+
+}
+async reducirInventario(){
+ const pathprod ='usuario/'+this.iduser+'/producto';
+
+console.log(this.newfactura.articulo.length);
+let cont= 0;
+        this.newfactura.articulo.forEach((articulo)=>{
+          cont= cont+1;
+          if(cont<= this.newfactura.articulo.length  ){
+       this.subscribir=this.firestoreService.getCollectionquery<Producto>(pathprod, 'id','==','P'+articulo.codigo).subscribe
+          (res=>{
+
+           const stockActual= res[0].unds-articulo.cant;
+
+         this.db.collection(pathprod).doc('P'+articulo.codigo.toString()).update({unds: stockActual});
+          console.log('esta es la cantidad restante',stockActual);
+          console.log('contador',cont);
+
+          if(this.newfactura.articulo.length === cont)
+          {this.subscribir.unsubscribe();
+          return;}
+          });
+        }
+        });
 }
 
 async presentLoading(){
