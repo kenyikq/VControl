@@ -68,7 +68,7 @@ producto: Producto = {
 
   newArticulo: Articulo =
     { codigo: 0,
-      descripcion: 'prueba',
+      descripcion: '',
       cant: null,
       precioVenta: null,
       descuento: null,
@@ -233,7 +233,7 @@ this.calculoTotalesFactura();
   }
 
  async guardarDatos(){
-/*
+
 
 if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
   await this.gestionarCliente().then(
@@ -243,9 +243,10 @@ if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
    }
    else{
      this.alerta('Favor llenar los datos del cliente correctamente');
-   }*/
+   }
+
    this.reducirInventario();
-  // this.goAnOtherPage('/ventas');
+   this.goAnOtherPage('home');
   }
 
 
@@ -437,23 +438,28 @@ codigofactura(){
 }
 async reducirInventario(){
  const pathprod ='usuario/'+this.iduser+'/producto';
+ let stockActual = 0;
 
-console.log(this.newfactura.articulo.length);
-let cont= 0;
+
+this.cont= 0;
         this.newfactura.articulo.forEach((articulo)=>{
-          cont= cont+1;
-          if(cont<= this.newfactura.articulo.length  ){
-       this.subscribir=this.firestoreService.getCollectionquery<Producto>(pathprod, 'id','==','P'+articulo.codigo).subscribe
-          (res=>{
 
-           const stockActual= res[0].unds-articulo.cant;
+          if(this.cont <= this.newfactura.articulo.length  ){
 
-         this.db.collection(pathprod).doc('P'+articulo.codigo.toString()).update({unds: stockActual});
-          console.log('esta es la cantidad restante',stockActual);
-          console.log('contador',cont);
+       this.firestoreService.getCollectionget<Producto>(pathprod, 'id','==','P'+articulo.codigo).subscribe
+       (res=>{
+           stockActual= res[0].unds-articulo.cant;
+           this.cont=this.cont +1;
+           console.log('producto',res);
+if(stockActual >= 0){
+  this.db.collection(pathprod).doc('P'+articulo.codigo.toString()).update({unds: stockActual});
 
-          if(this.newfactura.articulo.length === cont)
-          {this.subscribir.unsubscribe();
+}
+  else{ this.alerta('No cuenta con inventario suficiente');}
+
+          if(this.newfactura.articulo.length === this.cont)
+          {
+            console.log('ultimo if');
           return;}
           });
         }

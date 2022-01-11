@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore} from '@angular/fire/compat/firestore';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,16 @@ getCollectionquery<Tipo>(path: string, campo: string, condicion: any, busqueda: 
 
 
   return collection.valueChanges();
+
+}
+
+getCollectionget<Tipo>(path: string, campo: string, condicion: any, busqueda: string){
+  const collection= this.database.collection <Tipo>(path,
+    ref => ref.where(campo, condicion, busqueda) );
+
+
+
+  return collection.valueChanges().pipe(take(1)); //permite capturar la informacicon una sola vez
 
 }
 
