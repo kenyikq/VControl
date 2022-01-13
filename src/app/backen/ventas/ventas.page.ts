@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { Articulo, Cliente, Factura, Producto } from 'src/app/models';
+import { Articulo, Cliente, Factura, MovimientosContables, Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { AngularFirestore} from '@angular/fire/compat/firestore';
 import { async } from '@firebase/util';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -82,9 +83,20 @@ producto: Producto = {
     fechaVencimiento: this.sumarDias(new Date(), 90).toString(),
     cliente: this.newCliente.nombre,
     articulo: [],
+    total: 0,
 
 
     };
+
+     transaccion: MovimientosContables={
+    codigo: 0,
+    tipoTransaccion:'',
+    descripcion:'',
+    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    mes: moment(new Date()).format('MMMM'),
+    monto: 0
+
+  };
 
 nombresArt = [];
 
@@ -151,8 +163,9 @@ calculoTotalesFactura(){
 
  });
   this.total= -this.descuento + this.subtotal;
+  this.newfactura.total = this.total;
 
-//console.log(this.total);
+
 }
 
   agregarFila(){
@@ -232,7 +245,7 @@ this.calculoTotalesFactura();
 
   }
 
- async guardarDatos(){
+ async guardarDatos(){ //Guarda los datos de la factura y reduce inventario
 
 
 if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
@@ -420,7 +433,7 @@ async  guardarFactura(){
         this.goAnOtherPage('/home');
        });
     }).catch(err=>{this.alerta('Error: '+err);});
-
+this.crearTransaccion();
 }
 
 codigofactura(){
@@ -476,4 +489,31 @@ async presentLoading(){
 
   goAnOtherPage(pagina: string) {
     this.navCtrl.navigateRoot(pagina);}
+
+    async crearTransaccion(){
+    const path= 'usuario/'+this.iduser+'/movimientosContable';
+    let codigo=0;
+
+await this.firestoreService.getultimodoc<MovimientosContables>(path).pipe(take(1)).subscribe(res=>{
+  console.log(res);
+  if (res.length>0){
+  codigo= res[0].codigo +1;
+  }
+  else{ codigo = 1;}
+
+       this.transaccion.descripcion='venta de mercancia';
+     this.transaccion.tipoTransaccion='Venta';
+     this.transaccion.fecha= this.newfactura.fecha;
+     this.transaccion.mes= this.newfactura.fecha;
+     this.transaccion.monto= this.newfactura.total;
+     this.transaccion.codigo=codigo;
+
+     this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
+
+      });
+
+
+     }
 }
+
+

@@ -38,6 +38,7 @@ fecha: string;
 fechaVencimiento: string;
 cliente: string;
 articulo: Array<Articulo>;
+total: number;
 
 }
 
@@ -55,4 +56,14 @@ export interface Cliente{
   nombre: string;
   telefono: string;
   fecha: string;
+}
+
+export interface MovimientosContables{
+  codigo: number;
+  tipoTransaccion: string;
+  descripcion: string;
+  fecha: string;
+  mes: string;
+  monto: number;
+
 }

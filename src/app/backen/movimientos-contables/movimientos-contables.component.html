@@ -23,41 +23,91 @@
 
 <ion-content>
   <div class="contenedor">
-  <div class= "container" >
+  <div class= "" >
             
-    <ion-buttons *ngIf="agregarMovimiento===false" slot="end" style="position: absolute; margin-top: -40px; right: -23px;" >
-      <ion-button  (click)="nuevo()" >
-        <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Artículo</ion-label>
+    <h1  class="titulo p-3 encabezado">Resumen de transacciones</h1>
+
+      <div style="justify-content: center;" *ngIf="agregarTransaccion ===true">
+        <div  Style="text-align: center; width: 300px; position: absolute; margin:10%;  @media screen and (max-width:600px) { margin:3%; }">       
+           <ion-card  style="margin-top: -19px; ">
+          <h2 class="subtitulo">Nueva Transacción</h2>
+          <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -5px">
+            <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;  margin-left: 10px;"></ion-label></ion-input>
+            <ion-label style="margin-top: 6px;">Fecha:</ion-label>
+            <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="transaccion.fecha"></ion-datetime>
+         </ion-item>
+          
+          <ion-item  class="normal" >
+            <ion-label>Tipo Transacción</ion-label>
+          <ion-select [(ngModel)]="transaccion.tipoTransaccion" class="normal" placeholder="Seleccionar" >
+            <ion-select-option value="Compra de Mercancía">Compra de Mercancía</ion-select-option>
+            <ion-select-option value="Venta">Venta</ion-select-option>
+            <ion-select-option value="Gasto">Gasto</ion-select-option>
+            <ion-select-option value="Capital">Capital</ion-select-option>
+           </ion-select>     <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
+
+            
+        </ion-item> 
         
-      </ion-button>
+        <ion-item  class="normal">
+          <ion-label    class="normal" >Descripción:</ion-label>
+        <ion-input required [(ngModel)]="transaccion.descripcion"  class="normal" type="string" inputmode="number" placeholder="Concepto"></ion-input>
+   
+        </ion-item>
+      
+        <ion-item>
+          <ion-label class="normal">Monto:</ion-label> <ion-input  [(ngModel)]="transaccion.monto " type="number" inputmode="number"></ion-input>
+    </ion-item>
+
+    <div style="text-align: center; margin-bottom: 10px; margin-top: 10px;" *ngIf="agregarTransaccion===true" class="form-group">
+      <button type="button" style="background-color: #62ab87; border-color: #62ab87;" class="btn btn-primary mr-2" (click)="agregarFila()">Agregar</button>
+      <button type="button" style="margin-left:11px; background-color: red; border-color: red;" class="btn btn-danger" (click)="eliminarFila(transaccion)">Eliminar</button>
+    </div>
+
+      </ion-card> </div>
+     
+
+        
+
+        </div>
+
+          
+          <ion-buttons *ngIf="agregarTransaccion===false" slot="end" style="position: absolute; margin-top: -31px; right: 10%;" >
+            <ion-button  (click)="crearnuevaTransaccion()" >
+              <ion-icon style="color: white;"  slot="start"  (click)="crearnuevaTransaccion()" name="add"></ion-icon>  <ion-label style="text-align: center;color: white;" class="normal">Transacción</ion-label>
               
-      </ion-buttons>
-    <div class="row">
+            </ion-button>
+                    
+            </ion-buttons>
+    <div class="row" style="margin-left: 8%; margin-right: 8%;  @media screen and (max-width:600px) { margin-left:3%; margin-right:3% } " >
       <table border="1" style="background: white !important; opacity: 50% importat !important;"  class="table" id="table">
         <thead class="thead-dark normal" style= "font-weight: bold;" >
-          <tr>
-            <th>Articulo</th>
+          <tr style="text-align: center;">
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Transacción</th>
+            <th>Descripción</th>
+            <th>Monto</th>
             <th></th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Importe</th>
+            
           </tr>
         </thead>
         <tbody class="normal">
-          <tr style="text-align: center;" *ngFor="let movimiento of movimientos">
-            <td>{{movimientos}}</td>
+          <tr style="text-align: center;" *ngFor="let transaccion of transacciones">
+            <td>{{transaccion.codigo}}</td>
+            <td>{{transaccion.fecha | date: 'dd-MM-yyyy'}}</td>
+            <td>{{transaccion.tipoTransaccion}}</td>
+            <td>{{transaccion.descripcion}}</td>
+            <td>{{transaccion.monto}}</td>
             <td>
               
-                <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos()">
+                <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos(transaccion)">
                   <ion-icon slot="icon-only"  color="danger"  name="create-outline"  ></ion-icon>
                 </ion-button>
                                       
               
             </td>
-            <td>{{'dato'}}</td>
-            <td>{{'dato'}}</td>
-            <td>{{'dato'}}</td>
-          </tr>
+            
           <tr></tbody>
           <tbody>
          

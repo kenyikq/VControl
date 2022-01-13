@@ -1,10 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { Producto } from 'src/app/models';
+import { MovimientosContables, Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
+import { async } from '@firebase/util';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -40,6 +42,16 @@ newproducto: Producto = {
     ram: {tipo: '', cant: ''},
     almacenamiento: {tipo: '', cant: ''},
     pantalla: ''}
+  };
+
+     transaccion: MovimientosContables={
+    codigo: 0,
+    tipoTransaccion:'',
+    descripcion:'',
+    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    mes: moment(new Date()).format('MMMM'),
+    monto: 0
+
   };
 
 
@@ -82,7 +94,7 @@ actualizarProducto= false;
 
     }
 
-console.log(this.newproducto.mes);
+
     }
 
 
@@ -192,6 +204,7 @@ getproductos() {
   }
 
   guardarDatos(){
+
     this.validacion();
   if(this.validacion())
   {
@@ -200,7 +213,7 @@ getproductos() {
   }
 
 async  guardar(){
-  this.presentLoading();
+   this.presentLoading();
 
 const name = this.newproducto.nombre;
 const file = this.newFile;
@@ -217,6 +230,7 @@ await this.firestoreService.getultimodoc<Producto>(this.path).subscribe(resp=>{
     this.firestoreService.createDoc(this.newproducto, this.path, this.newproducto.id).then( ans =>{
       this.loading.dismiss().then( respuesta => {
         this.actualizarProducto = false;
+        this.crearTransaccion();
         this.presentToast('Acción ralizada con exito');
         if(this.newproducto.id==='' || null){
           this.navCtrl.navigateRoot('/home');
@@ -247,15 +261,31 @@ validacion(){
 
 }
 }
-/*
 
-getUserInfo(uid: string){
-  const path ='usuario';
-this. subinfo = this.firestoreService.getDoc<Usuario>(path,uid).subscribe(res=>{
-this.usuario = res;
-});
+async crearTransaccion(){
+ const path= 'usuario/'+this.iduser+'/movimientosContable';
+let codigo=0;
+
+await this.firestoreService.getultimodoc<MovimientosContables>(path).pipe(take(1)).subscribe(res=>{
+  console.log(res);
+  if (res.length>0){
+  codigo= res[0].codigo +1;
+  }
+  else{ codigo = 1;}
+
+this.transaccion.descripcion='Compra de '+this.newproducto.nombre;
+this.transaccion.tipoTransaccion='Compra de Mercancía';
+this.transaccion.fecha= this.newproducto.fecha;
+this.transaccion.mes= this.newproducto.mes;
+this.transaccion.codigo=codigo;
+this.transaccion.monto= this.newproducto.costo + this.newproducto.gasto;
+
+this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
+console.log('Este es el codigo ' ,codigo);
+ });
+
+
 }
-*/
 
 
 async presentToast(msg: string) {

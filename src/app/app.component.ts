@@ -70,6 +70,7 @@ seleccionA(id: string){
   this.inactive('pri');
   this.inactive('3');
   this.inactive('4');
+  this.inactive('5');
   this.active(id);
 }
 //para marcar como seleccionado la opcion dentro del menu

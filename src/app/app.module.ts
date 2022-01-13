@@ -12,8 +12,10 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import {  AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { PagesModule } from './pages/pages.module';
-
-
+import { LOCALE_ID } from '@angular/core';//para la fecha en espanol
+import localeEs from '@angular/common/locales/es';//para la fecha en espanol
+import { registerLocaleData } from '@angular/common';//para la fecha en espanol
+registerLocaleData(localeEs, 'es');//para la fecha en espanol
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +31,7 @@ import { PagesModule } from './pages/pages.module';
   AngularFireAuthModule,
 
 ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: LOCALE_ID, useValue: 'es',}], //para la fecha
   bootstrap: [AppComponent],
 })
 export class AppModule {}
