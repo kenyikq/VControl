@@ -40,7 +40,7 @@ getid(){
 // eslint-disable-next-line @typescript-eslint/naming-convention
 getCollection<Tipo>(path: string){
   const collection= this.database.collection <Tipo>(path,
-    ref => ref.orderBy('fecha'));
+    ref => ref.orderBy('codigo'));
   return collection.valueChanges();
 }
 

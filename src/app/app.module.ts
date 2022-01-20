@@ -15,10 +15,14 @@ import { PagesModule } from './pages/pages.module';
 import { LOCALE_ID } from '@angular/core';//para la fecha en espanol
 import localeEs from '@angular/common/locales/es';//para la fecha en espanol
 import { registerLocaleData } from '@angular/common';//para la fecha en espanol
+import { ReplacePipe } from './pipe-personalizado/pipe-personalizado.component';
 registerLocaleData(localeEs, 'es');//para la fecha en espanol
 
+
+
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,],
   entryComponents: [],
   imports: [BrowserModule,  BackenModule, PagesModule,
     IonicModule.forRoot(),

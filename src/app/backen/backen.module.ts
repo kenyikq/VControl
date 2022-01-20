@@ -7,9 +7,11 @@ import { RouterModule } from '@angular/router';
 import { VentasPage } from './ventas/Ventas.page';
 import { MovimientosContablesComponent } from './movimientos-contables/movimientos-contables.component';
 import { ClientesComponent } from './clientes/clientes.component';
+import { ReplacePipe } from 'src/app/pipe-personalizado/pipe-personalizado.component';
 
 @NgModule({
   declarations: [
+    ReplacePipe,
     ProductosPage,
     VentasPage,
     MovimientosContablesComponent,

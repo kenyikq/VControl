@@ -25,12 +25,17 @@
   <div class="contenedor">
   <div class= "" >
             
-    <h1  class="titulo p-3 encabezado">Resumen de transacciones</h1>
+    <h1  class="titulo p-3 encabezado" style="font-size: 22 !important;">Resumen de transacciones</h1>
 
       <div style="justify-content: center;" *ngIf="agregarTransaccion ===true">
-        <div  Style="text-align: center; width: 300px; position: absolute; margin:10%;  @media screen and (max-width:600px) { margin:3%; }">       
-           <ion-card  style="margin-top: -19px; ">
-          <h2 class="subtitulo">Nueva Transacción</h2>
+        <div   Style="text-align: center; width: 300px; position: absolute; margin:10%;  @media screen and (max-width:600px) { margin:3%; }">       
+           <ion-card  style="margin-top: -19px;border-radius: 40px; border: 3px solid #C00; width: 300px; ">
+         <ion-item><h2 class="subtitulo" style="margin-top: 56px; margin-left: 52px;">Nueva Transacción</h2>
+          <ion-button class="icono" style="    width: 54px; margin-top: -29px;--background: none;position: absolute;
+          right: 19px"  (click)="nuevo()">
+            <ion-icon slot="icon-only"  color="danger"  name="close"  ></ion-icon>
+          </ion-button></ion-item> 
+                         
           <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -5px">
             <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;  margin-left: 10px;"></ion-label></ion-input>
             <ion-label style="margin-top: 6px;">Fecha:</ion-label>
@@ -61,7 +66,7 @@
 
     <div style="text-align: center; margin-bottom: 10px; margin-top: 10px;" *ngIf="agregarTransaccion===true" class="form-group">
       <button type="button" style="background-color: #62ab87; border-color: #62ab87;" class="btn btn-primary mr-2" (click)="agregarFila()">Agregar</button>
-      <button type="button" style="margin-left:11px; background-color: red; border-color: red;" class="btn btn-danger" (click)="eliminarFila(transaccion)">Eliminar</button>
+      <button type="button" *ngIf="actualizarTransaccion===true" style="margin-left:11px; background-color: red; border-color: red;" class="btn btn-danger" (click)="eliminarFila(transaccion)">Eliminar</button>
     </div>
 
       </ion-card> </div>
@@ -79,14 +84,14 @@
             </ion-button>
                     
             </ion-buttons>
-    <div class="row" style="margin-left: 8%; margin-right: 8%;  @media screen and (max-width:600px) { margin-left:3%; margin-right:3% } " >
+    <div  class="row" style="margin-left: 5%; margin-right: 5%;  @media screen and (max-width:600px) { margin-left:3%; margin-right:3% } " >
       <table border="1" style="background: white !important; opacity: 50% importat !important;"  class="table" id="table">
         <thead class="thead-dark normal" style= "font-weight: bold;" >
           <tr style="text-align: center;">
             <th>#</th>
             <th>Fecha</th>
             <th>Transacción</th>
-            <th>Descripción</th>
+            <th class="hide">Descripción</th>
             <th>Monto</th>
             <th></th>
             
@@ -97,8 +102,8 @@
             <td>{{transaccion.codigo}}</td>
             <td>{{transaccion.fecha | date: 'dd-MM-yyyy'}}</td>
             <td>{{transaccion.tipoTransaccion}}</td>
-            <td>{{transaccion.descripcion}}</td>
-            <td>{{transaccion.monto}}</td>
+            <td class="hide">{{transaccion.descripcion}}</td>
+            <td>{{transaccion.monto| replace }}</td>
             <td>
               
                 <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos(transaccion)">

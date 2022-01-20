@@ -81,7 +81,7 @@
     <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
       <ion-label style="text-align: center;" class="normal">Código</ion-label>
         <ion-label style="text-align: center;" class="normal">CLiente</ion-label>
-      <ion-label style="text-align: center;" class="normal">Telefono</ion-label>
+      <ion-label style="text-align: center;" class="normal hide">Telefono</ion-label>
       <ion-label  style="text-align: center;" class="normal">Acciones</ion-label>
     </ion-item>
 
@@ -90,7 +90,7 @@
   <ion-item *ngFor="let cliente of clientes">
     <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> C {{ cliente.codigo }}</ion-label>
     <ion-label style="text-align: center;" class="normal">{{ cliente.nombre }}</ion-label >
-    <ion-label style="text-align: center;" class="normal">{{ cliente.telefono }}</ion-label >
+    <ion-label style="text-align: center;" class="normal hide">{{ cliente.telefono }}</ion-label >
               <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;position: absolute; right: 10%;
                 top: -2px;" class="ionbutton" slot="end">
           <ion-button style="margin-right: -19px;" (click)="mostrarDatos(cliente)">

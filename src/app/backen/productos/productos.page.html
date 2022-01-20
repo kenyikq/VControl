@@ -179,7 +179,7 @@
              
              </ion-item>
              <ion-item>
-              <ion-label    class="normal">Costo Neto: {{(newproducto.costo + newproducto.gasto)}}</ion-label>
+              <ion-label    class="normal">Costo Neto: {{(newproducto.costo + newproducto.gasto)| replace }}</ion-label>
               
             </ion-item>
 
@@ -240,8 +240,8 @@
     <ion-card style="border-radius: 22px;">
   <ion-item *ngFor="let producto of productos">
     <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> {{ producto.nombre }}</ion-label>
-    <ion-label style="text-align: center;" class="normal">{{ producto.costo + producto.gasto }}</ion-label >
-    <ion-label style="text-align: center;" class="normal">{{ producto.precio }}</ion-label >
+    <ion-label style="text-align: center;" class="normal">{{ producto.costo + producto.gasto | replace}}</ion-label >
+    <ion-label style="text-align: center;" class="normal">{{ producto.precio | replace}}</ion-label >
       <ion-label style="text-align: center;" class="normal">{{ producto.unds }}</ion-label >
         <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;" class="ionbutton" slot="end">
           <ion-button style="margin-right: -19px;" (click)="mostrarDatos(producto)">

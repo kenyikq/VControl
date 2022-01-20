@@ -2,7 +2,12 @@ ion-content{
     --background: linear-gradient(0deg,rgba(0,0,0,0.7), rgba(0,0,0,0.1)),
     url("/assets/fondo.PNG") no-repeat center center / cover;
   }
-
+  .hide{ //oculta si el ancho es menor que 500
+    visibility: inherit;
+    @media screen and (max-width:500px) {
+      visibility: hidden;
+      position: absolute;
+    }}
   
   
   h1{

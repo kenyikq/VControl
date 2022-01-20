@@ -63,7 +63,34 @@ export interface MovimientosContables{
   tipoTransaccion: string;
   descripcion: string;
   fecha: string;
+  anio: string;
+  dia: string;
   mes: string;
   monto: number;
+
+}
+
+export interface GraficoTransacciones{
+mes: string;
+capital: number;
+venta: number;
+compra: number;
+gasto: number;
+
+}
+
+export interface Messes{
+enero: number;
+febrero: number;
+marzo: number;
+abril: number;
+mayo: number;
+junio: number;
+julio: number;
+agosto: number;
+septiembre: number;
+octubre: number;
+noviembre: number;
+diciembre: number;
 
 }

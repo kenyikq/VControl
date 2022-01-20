@@ -1,7 +1,10 @@
-
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js';
-
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, } from '@angular/core';
+import { AlertController, NavController } from '@ionic/angular';
+import { Chart } from 'chart.js'; //para usarlo debes intstalar npm install chart.js@2.9.4 --save
+import * as moment from 'moment';
+import { take } from 'rxjs/operators';
+import { GraficoTransacciones, Messes, MovimientosContables } from 'src/app/models';
+import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
@@ -9,49 +12,83 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   templateUrl: './estadistica.component.html',
   styleUrls: ['./estadistica.component.scss'],
 })
-export class EstadisticaComponent /*implements AfterViewInit, OnInit*/ {
+export class EstadisticaComponent implements AfterViewInit, OnInit {
   // Importing ViewChild. We need @ViewChild decorator to get a reference to the local variable
   // that we have added to the canvas element in the HTML template.
   @ViewChild('barCanvas') private barCanvas: ElementRef;
   @ViewChild('doughnutCanvas') private doughnutCanvas: ElementRef;
   @ViewChild('lineCanvas') private lineCanvas: ElementRef;
-}
 
- /* barChart: any;
+
+  barChart: any;
   doughnutChart: any;
   lineChart: any;
+  iduser= '';
 
-  tipoAbuso: GraficoTipoAbuso = {
-    indigenica: 0,
-    explotacion: 0,
-    sexual: 0,
-    agresion: 0,
-    otro: 0,
-  };
+transaciones: GraficoTransacciones ={
+mes: moment(new Date()).format('MMMM'),
+capital: 0,
+venta: 0,
+compra: 0,
+gasto: 0,
 
- seguimiento: GraficoSeguimiento = {
-    recibido: 0,
-    evaluando: 0,
-    enProceso: 0,
-    cerrado: 0,};
-  path='/reporte';
+};
+
+meses: Messes={
+enero: 0,
+febrero: 0,
+marzo: 0,
+abril: 0,
+mayo: 0,
+junio: 0,
+julio: 0,
+agosto: 0,
+septiembre: 0,
+octubre: 0,
+noviembre: 0,
+diciembre: 0,
+
+};
 
 
+path= null;
 
+  constructor(public firestoreService: FirestoreService,
+              public log: FirebaseauthService,
+              public alertController: AlertController,
+              public navCrt: NavController,
+    ) {
+     if ( this.log.stateauth())
+    {
+    this.log.stateauth().subscribe( res=>{
 
+      if (res !== null){
+        this.iduser= res.uid;
+      this.path='usuario/'+this.iduser+'/movimientosContable';
 
-  constructor(public firestoreService: FirestoreService) { }
+        this.getEstado();
+
+      }else {
+        this.alerta('Necesitas ingresar con tu usuario para usar el modulo de estadisticas');
+
+      }
+    });
+
+  }
+
+  }
 
   // When we try to call our chart to initialize methods in ngOnInit() it shows an error nativeElement of undefined.
   // So, we need to call all chart methods in ngAfterViewInit() where @ViewChild and @ViewChildren will be resolved.
   ngOnInit( ){
 
   }
+
   async ngAfterViewInit() {
-await this.getcasos();
-    this.getSeguimiento();
-    this.doughnutChartMethod();
-   // this.lineChartMethod();
+
+        this.doughnutChartMethod();
+        this. barChartMethod();
+        this.lineChartMethod();
 
 
 
@@ -59,71 +96,129 @@ await this.getcasos();
   }
 
 
- async getcasos(){
 
- await this.firestoreService.getCollectionquery<Reporte>(this.path, 'tipoAbuso', '==', 'Indigencia').subscribe( ind => {
-   this.tipoAbuso.indigenica = ind.push();
+ async getEstado(){
+const path='usuario/'+this.iduser+'/movimientosContable';
 
 
+ await this.firestoreService.getCollectionquery<MovimientosContables>(this.path, 'tipoTransaccion', '==', 'Capital',).subscribe( ind => {
+  let capital=0;
+  ind.forEach((transaccion)=>{
+     this.transaciones.capital = this.transaciones.capital +transaccion.monto;
+     capital=capital + transaccion.monto;
+   });
 
   } );
-  await this.firestoreService.getCollectionquery<Reporte>(this.path, 'tipoAbuso', '==', 'Explotación Infantil').subscribe( exp => {
-    this.tipoAbuso.explotacion = exp.push();
 
 
-   } );
-
-   await this.firestoreService.getCollectionquery<Reporte>(this.path, 'tipoAbuso', '==', 'Agresión Física').subscribe( exp => {
-    this.tipoAbuso.agresion = exp.push();
-
-   } );
-
-   await this.firestoreService.getCollectionquery<Reporte>(this.path, 'tipoAbuso', '==', 'Otro').subscribe( exp => {
-    this.tipoAbuso.otro = exp.length;
+  await this.firestoreService.getCollectionquery<MovimientosContables>
+  (this.path, 'tipoTransaccion', '==', 'Gasto').subscribe( exp => {
+    exp.forEach((transaccion)=>{
+      this.transaciones.gasto = this.transaciones.gasto +transaccion.monto;
+    });
 
    } );
 
-   await this.firestoreService.getCollectionquery<Reporte>(this.path, 'tipoAbuso', '==', 'Abuso Sexual').subscribe( exp => {
-    this.tipoAbuso.sexual = exp.length;
+   await this.firestoreService.getCollectionquery<MovimientosContables>
+   (this.path, 'tipoTransaccion', '==', 'Venta').subscribe( exp => {
+    exp.forEach((transaccion)=>{
+      this.transaciones.venta = this.transaciones.venta +transaccion.monto;
+    });
+
+   } );
+
+      await this.firestoreService.getCollectionquery<MovimientosContables>
+      (this.path, 'tipoTransaccion', '==', 'Compra de Mercancía').subscribe( exp => {
+    exp.forEach((transaccion)=>{
+      this.transaciones.compra = this.transaciones.compra +transaccion.monto;
+    });
+console.log(this.transaciones);
     this.barChartMethod();
    } );
 
 
+   }
+
+
+seleccionA(id: string){
+  this.seleccion();
+  this.inactive('pri');
+  this.inactive('3');
+  this.inactive('4');
+  this.inactive('5');
+  this.active(id);
 }
+//para marcar como seleccionado la opcion dentro del menu
+async seleccion(){
+
+  this.inactive('1');
+  this.inactive('2');
+
+
+
+
+
+
+}
+active(id: string){
+  const active = document.getElementById(id);
+  active.classList.value.match('active');
+
+  active.classList.add('active');
+}
+
 inactive(id: string){
   const active = document.getElementById(id);
 
   active.classList.remove('active');
 }
 
-seleccionA(){
-  this.inactive('1');
-  this.inactive('pri');
-  this.inactive('3');
-  this.inactive('4');
-  this.inactive('2');
+async alerta(msgAlerta: string){
+  if(this.iduser=== null){
+    const alert = await this.alertController.create({
+    cssClass: 'normal',
+    header: 'Alerta!',
+    message: '<strong>'+msgAlerta +'</strong>',
+     buttons: [
+      {
+        text: 'Ok',
+        role: 'Pk',
+        cssClass: 'secondary',
+        handler: (blah) => {
+
+        }
+      }, {
+        text: 'Ingresar',
+        handler: () => {
+          this.navCrt.navigateRoot('/login');
+        }
+      }
+    ]
+  });
+  await alert.present();
 }
+else{
+  const alert = await this.alertController.create({
+    cssClass: 'normal',
+    header: 'Alerta!',
+    message: '<strong>'+msgAlerta +'</strong>',
+    buttons: [
+      {
+        text: 'Ok',
+        role: 'Pk',
+        cssClass: 'secondary',
+        handler: (blah) => {
 
-getSeguimiento(){
-  this.firestoreService.getCollectionquery<Reporte>(this.path, 'estatus', '==', 'Recibido').subscribe( res => {
-    this.seguimiento.recibido = res.length;
+        }
+      }
+    ]
 
-   } );
-   this.firestoreService.getCollectionquery<Reporte>(this.path, 'estatus', '==', 'Evaluando').subscribe( res => {
-    this.seguimiento.evaluando = res.length;
+  });
 
-   } );
-   this.firestoreService.getCollectionquery<Reporte>(this.path, 'estatus', '==', 'En proceso').subscribe( res => {
-    this.seguimiento.enProceso = res.length;
+  await alert.present();
 
-
-   } );
-   this.firestoreService.getCollectionquery<Reporte>(this.path, 'estatus', '==', 'Cerrado').subscribe( res => {
-    this.seguimiento.cerrado = res.length;
-    this.doughnutChartMethod();
-   } );
 }
-
+}
 
 
  async  barChartMethod() {
@@ -132,11 +227,10 @@ getSeguimiento(){
    this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-        labels: ['Agresión', 'Indigencia', 'Explotacion', 'Abuso Sexual', 'Otro'],
+        labels: ['Capital', 'Compras', 'Gastos', 'Ventas'],
         datasets: [{
-          label: 'Casos',
-          data: [this.tipoAbuso.agresion,this.tipoAbuso.indigenica, this.tipoAbuso.explotacion,
-             this.tipoAbuso.sexual, this.tipoAbuso.otro,],
+          label: '`Transacciones`',
+          data: Object.values(this.transaciones) ,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -168,7 +262,7 @@ getSeguimiento(){
 
 
 
-  }
+  };
 
   doughnutChartMethod() {
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
@@ -177,7 +271,7 @@ getSeguimiento(){
         labels: ['Recibidos', 'Evaluando', 'Procesando', 'Cerrado'],
         datasets: [{
           label: 'Estatus',
-          data: [this.seguimiento.recibido, this.seguimiento.evaluando, this.seguimiento.enProceso, this.seguimiento.cerrado],
+          data: [30,15, 10, 5],
           backgroundColor: [
             'rgba(255, 159, 64, 0.2)',
             'rgba(255, 99, 132, 0.2)',
@@ -228,7 +322,7 @@ getSeguimiento(){
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [this.seguimiento.recibido, this.seguimiento.evaluando, this.seguimiento.enProceso, this.seguimiento.cerrado],
+            data: [this.transaciones.compra, this.transaciones.capital, this.transaciones.venta, this.transaciones.gasto],
             spanGaps: false,
           }
         ]
@@ -236,6 +330,8 @@ getSeguimiento(){
     });
   }
 }
+
+
 
 
 /*

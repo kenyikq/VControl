@@ -94,6 +94,8 @@ producto: Producto = {
     descripcion:'',
     fecha: moment(new Date()).format('DD-MM-YYYY'),
     mes: moment(new Date()).format('MMMM'),
+    anio: moment(new Date()).format('YYYY'),
+    dia: moment(new Date()).format('DD'),
     monto: 0
 
   };
@@ -312,7 +314,7 @@ cancelar(){
 
     } );
 
-    this.firestoreService.getCollection<Producto>(this.path).subscribe( res => {
+    this.firestoreService.getCollectionquery<Producto>(this.path,'unds','>','0').subscribe( res => {
        this.productos= res;
      } );
 
@@ -504,7 +506,9 @@ await this.firestoreService.getultimodoc<MovimientosContables>(path).pipe(take(1
        this.transaccion.descripcion='venta de mercancia';
      this.transaccion.tipoTransaccion='Venta';
      this.transaccion.fecha= this.newfactura.fecha;
-     this.transaccion.mes= this.newfactura.fecha;
+     this.transaccion.mes= moment( this.newfactura.fecha).format('MMMM');
+     this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
+     this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
      this.transaccion.monto= this.newfactura.total;
      this.transaccion.codigo=codigo;
 

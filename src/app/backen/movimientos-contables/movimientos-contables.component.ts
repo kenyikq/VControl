@@ -6,6 +6,7 @@ import { AlertController, LoadingController, NavController, ToastController } fr
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { take } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-movimientos-contables',
   templateUrl: './movimientos-contables.component.html',
@@ -22,7 +23,9 @@ export class MovimientosContablesComponent implements OnInit {
     tipoTransaccion:'',
     descripcion:'',
     fecha: moment(new Date()).format('DD-MM-YYYY'),
+    anio: moment(new Date()).format('YYYY'),
     mes: moment(new Date()).format('MMMM'),
+    dia: moment(new Date()).format('DD'),
     monto: 0
 
   };
@@ -39,6 +42,7 @@ export class MovimientosContablesComponent implements OnInit {
     public toastCtrl: ToastController,
     public alertController: AlertController,
   ) {
+
     if ( this.log.stateauth())
     {
     this.log.stateauth().subscribe( res=>{
@@ -61,8 +65,9 @@ export class MovimientosContablesComponent implements OnInit {
   ngOnInit() {}
 
   crearnuevaTransaccion(){
+    this.nuevo();
     this.agregarTransaccion= true;
-    this.actualizarTransaccion = false;
+
   }
 
   nuevo(){
@@ -74,11 +79,13 @@ export class MovimientosContablesComponent implements OnInit {
       tipoTransaccion:'',
       descripcion:'',
       fecha: moment(new Date()).format('MM-DD-YYYY'),
+      anio: moment(new Date()).format('MMMM'),
+    dia: moment(new Date()).format('DD'),
       mes: moment(new Date()).format('MMMM'),
       monto: 0
 
 };
-console.log('estes es nuevo');
+
   }
 
 getTransacciones() {
@@ -92,7 +99,7 @@ getTransacciones() {
 
 mostrarDatos(transaction: MovimientosContables){
   this.agregarTransaccion = true;
-  this.actualizarTransaccion=false;
+  this.actualizarTransaccion=true;
   this.transaccion = transaction;
   console.log('Esta es la transaccion ',transaction);
 }
@@ -124,7 +131,10 @@ mostrarDatos(transaction: MovimientosContables){
         }, {
           text: 'Okay',
           handler: () => {
-            this.firestoreService.deleteDoc(this.path,transaccion.codigo.toString());
+            this.firestoreService.deleteDoc(this.path,transaccion.codigo.toString()).then(
+
+
+            );
             this.presentToast('Transaccion eliminada');
 
             this.nuevo();
@@ -151,7 +161,8 @@ await this.firestoreService.getultimodoc<MovimientosContables>(path).pipe(take(1
   else{ codigo = 1;}
 
 this.transaccion.codigo=codigo;
-
+this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
+this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 
 this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
 
@@ -159,9 +170,10 @@ this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
 }
 
 else{
-  this.transaccion.codigo=codigo;
+  codigo= this.transaccion.codigo;
 
-  console.log('Esta es la transaccion else ',this.transaccion);
+  this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
+  this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
 
 }
