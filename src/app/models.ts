@@ -67,6 +67,7 @@ export interface MovimientosContables{
   dia: string;
   mes: string;
   monto: number;
+  idTransaccion: string;
 
 }
 

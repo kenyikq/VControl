@@ -96,7 +96,8 @@ producto: Producto = {
     mes: moment(new Date()).format('MMMM'),
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
-    monto: 0
+    monto: 0,
+    idTransaccion: '',
 
   };
 

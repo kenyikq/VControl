@@ -26,7 +26,8 @@ export class MovimientosContablesComponent implements OnInit {
     anio: moment(new Date()).format('YYYY'),
     mes: moment(new Date()).format('MMMM'),
     dia: moment(new Date()).format('DD'),
-    monto: 0
+    monto: 0,
+    idTransaccion: 'Mov'
 
   };
   iduser='';
@@ -82,7 +83,8 @@ export class MovimientosContablesComponent implements OnInit {
       anio: moment(new Date()).format('MMMM'),
     dia: moment(new Date()).format('DD'),
       mes: moment(new Date()).format('MMMM'),
-      monto: 0
+      monto: 0,
+      idTransaccion: 'mov',
 
 };
 

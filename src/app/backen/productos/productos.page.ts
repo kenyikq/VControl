@@ -49,6 +49,7 @@ export class ProductosPage implements OnInit {
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
     monto: 0,
+    idTransaccion:'',
   };
 
   totales: GraficoTransacciones = {
@@ -161,7 +162,7 @@ export class ProductosPage implements OnInit {
     const alert = await this.alertController.create({
       cssClass: 'normal',
       header: 'Confirmacion!',
-      message: '<strong>Resuro que desea eliminar el Articulo</strong>?',
+      message: '<strong>Seguro que desea eliminar el Articulo</strong>?',
       buttons: [
         {
           text: 'Cancel',
@@ -174,8 +175,13 @@ export class ProductosPage implements OnInit {
         {
           text: 'Okay',
           handler: () => {
-            this.firestoreService.deleteDoc(this.path, producto.id);
-            this.presentToast('Producto eliminado');
+            this.firestoreService.deleteDoc(this.path, producto.id).then(res=>{
+              this.firestoreService.deleteDoc('usuario/' + this.iduser + '/movimientosContable',producto.id);//elimina la transaccion
+              this.newproducto.gasto= producto.gasto* (-1);
+              this.newproducto.costo= producto.costo* (-1);
+            }).finally(()=>{this.getionTotales();});// toma los datos del prodcucto y los reduce del totalCompra
+
+            this.presentToast('Accion realizada Exitosamente');
           },
         },
       ],
@@ -302,6 +308,7 @@ export class ProductosPage implements OnInit {
         this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
         this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
         this.transaccion.codigo = codigo;
+        this.transaccion.idTransaccion=this.newproducto.id;
         this.transaccion.monto =
           this.newproducto.costo + this.newproducto.gasto;
 
