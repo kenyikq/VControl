@@ -14,6 +14,7 @@ export class FirebaseauthService {
   login(email: string ,password: string){
    return this.auth.signInWithEmailAndPassword(email,password).catch(error => {
     this.alerta( 'Verifique sus datos y/o conexion a internet: '+ error);
+    return false;
 
   });
   }

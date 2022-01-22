@@ -135,12 +135,15 @@ login(){
     password: this.usuario.password,
     };
     this.log.login(credenciales.email, credenciales.password).then(res =>{
-      this.presentLoading().then(respuesta =>{
-        this.loading.dismiss();
-        this.goAnOtherPage('/home');
+      if(res){
+        this.presentLoading().then(respuesta =>{
+          this.loading.dismiss();
+          this.goAnOtherPage('/home');
 
-      });
-this.presentToast('Ingreso Exitoso');
+        });
+  this.presentToast('Ingreso Exitoso');
+      }
+
     }).catch(err =>{
       alert('Error al ingresar, Verifique sus datos');
     });
