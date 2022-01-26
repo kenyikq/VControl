@@ -145,6 +145,7 @@ export class ProductosPage implements OnInit {
   mostrarDatos(producto: Producto) {
     this.actualizarProducto = true;
     this.newproducto = producto;
+    this.transaccion.codigo=producto.codigo;
   }
 
   async newImg(event: any) {
@@ -236,7 +237,7 @@ export class ProductosPage implements OnInit {
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
     this.totales.compra =
       this.totales.compra + transaccion;
-    console.log('esta es la respuesta de los totales ', this.totales);
+
     this.firestoreService.createDoc(this.totales, path, mes);
   }
 
@@ -297,27 +298,17 @@ export class ProductosPage implements OnInit {
 
       if(res.length === 0){
 
-       this.firestoreService
-        .getultimodoc<MovimientosContables>(path)
-        .pipe(take(1))
-        .subscribe((resp) => {
             transaccion=this.newproducto.costo+this.newproducto.gasto;
 
-          if (resp.length > 0) {
-
-            this.transaccion.codigo = resp[0].codigo + 1;
+            this.transaccion.codigo = this.newproducto.codigo;
             this.agregartransaccion();
-          } else {
-            this.transaccion.codigo = 1;
-            this.agregartransaccion();
-          }
-        });
+            this.getionTotales(transaccion);
 
-        this.getionTotales(transaccion);
 
       }
 
-      else{this.transaccion.codigo = res[0].codigo;
+      else{
+        console.log(this.transaccion);
         transaccion=(this.newproducto.gasto+this.newproducto.costo)-(res[0].monto);
         this.getionTotales(transaccion).then(()=>{this.agregartransaccion();});
 
