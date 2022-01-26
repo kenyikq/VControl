@@ -97,6 +97,7 @@ export class ProductosPage implements OnInit {
   }
 
   ngOnInit() {}
+
   nuevo() {
     this.newproducto = {
       id: 'P1000',
@@ -159,6 +160,7 @@ export class ProductosPage implements OnInit {
   }
 
   async deleteproducto(producto: Producto) {
+
     const alert = await this.alertController.create({
       cssClass: 'normal',
       header: 'Confirmacion!',
@@ -177,9 +179,10 @@ export class ProductosPage implements OnInit {
           handler: () => {
             this.firestoreService.deleteDoc(this.path, producto.id).then(res=>{
               this.firestoreService.deleteDoc('usuario/' + this.iduser + '/movimientosContable',producto.id);//elimina la transaccion
-              this.newproducto.gasto= producto.gasto* (-1);
-              this.newproducto.costo= producto.costo* (-1);
-            }).finally(()=>{this.getionTotales();});// toma los datos del prodcucto y los reduce del totalCompra
+              const diferencia = (producto.gasto + producto.costo)* (-1);//convierte el monto en negativo para afectar totales
+              this.getionTotales(diferencia);
+              this.firestoreService.deleteDoc('usuario/' + this.iduser + '/movimientosContable','T'+producto.id);//elimina la transaccion
+            }).finally(()=>{this.limpiarCampos();});// toma los datos del prodcucto y los reduce del totalCompra
 
             this.presentToast('Accion realizada Exitosamente');
           },
@@ -216,24 +219,23 @@ export class ProductosPage implements OnInit {
   }
 
   guardarDatos() {
+
     if (this.validacion()) {
+       this.crearTransaccion();
       this.guardar()
-        .then((res) => {
-          this.getionTotales();
-        })
         .finally(() => {
-          this.limpiarCampos();
-        });
+         this.limpiarCampos();});
+
     }
   }
 
-  async getionTotales() {
+  async getionTotales(transaccion: number) {
     const anio = moment(new Date()).format('YYYY');
     const mes = moment(new Date()).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
     this.totales.compra =
-      this.totales.compra + this.newproducto.gasto + this.newproducto.costo;
+      this.totales.compra + transaccion;
     console.log('esta es la respuesta de los totales ', this.totales);
     this.firestoreService.createDoc(this.totales, path, mes);
   }
@@ -259,14 +261,13 @@ export class ProductosPage implements OnInit {
     this.firestoreService
       .createDoc(this.newproducto, this.path, this.newproducto.id)
       .then((ans) => {
-        this.crearTransaccion();
         this.loading.dismiss().then((respuesta) => {
           this.actualizarProducto = false;
           this.presentToast('Acción ralizada con exito');
           if (this.newproducto.id === '' || null) {
             this.navCtrl.navigateRoot('/home');
           } else {
-            this.navCtrl.navigateRoot('/productos');
+
           }
         });
       });
@@ -288,36 +289,70 @@ export class ProductosPage implements OnInit {
 
   async crearTransaccion() {
     const path = 'usuario/' + this.iduser + '/movimientosContable';
-    let codigo = 0;
+    let transaccion =0;
 
-    await this.firestoreService
-      .getultimodoc<MovimientosContables>(path)
-      .pipe(take(1))
-      .subscribe((res) => {
-        console.log(res);
-        if (res.length > 0) {
-          codigo = res[0].codigo + 1;
-        } else {
-          codigo = 1;
-        }
+    await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==','T'+this.newproducto.id).
+    pipe(take(1)).subscribe(res=>{
 
-        this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
-        this.transaccion.tipoTransaccion = 'Compra de Mercancía';
-        this.transaccion.fecha = this.newproducto.fecha;
-        this.transaccion.mes = moment(this.transaccion.fecha).format('MMMM');
-        this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
-        this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
-        this.transaccion.codigo = codigo;
-        this.transaccion.idTransaccion=this.newproducto.id;
-        this.transaccion.monto =
-          this.newproducto.costo + this.newproducto.gasto;
 
-        this.firestoreService.createDoc(
-          this.transaccion,
-          path,
-          codigo.toString()
-        );
-      });
+      if(res.length === 0){
+
+       this.firestoreService
+        .getultimodoc<MovimientosContables>(path)
+        .pipe(take(1))
+        .subscribe((resp) => {
+            transaccion=this.newproducto.costo+this.newproducto.gasto;
+
+          if (resp.length > 0) {
+
+            this.transaccion.codigo = resp[0].codigo + 1;
+            this.agregartransaccion();
+          } else {
+            this.transaccion.codigo = 1;
+            this.agregartransaccion();
+          }
+        });
+
+        this.getionTotales(transaccion);
+
+      }
+
+      else{this.transaccion.codigo = res[0].codigo;
+        transaccion=(this.newproducto.gasto+this.newproducto.costo)-(res[0].monto);
+        this.getionTotales(transaccion).then(()=>{this.agregartransaccion();});
+
+      }
+
+
+    });
+
+
+
+
+
+  }
+
+
+  agregartransaccion(){
+    const path = 'usuario/' + this.iduser + '/movimientosContable';
+
+    console.log('Este es el prod trans', this.newproducto);
+    this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
+    this.transaccion.tipoTransaccion = 'Compra de Mercancía';
+    this.transaccion.fecha = this.newproducto.fecha;
+    this.transaccion.mes = moment(this.newproducto.fecha).format('MMMM');
+    this.transaccion.anio = moment(this.newproducto.fecha).format('YYYY');
+    this.transaccion.dia = moment(this.newproducto.fecha).format('DD');
+    this.transaccion.idTransaccion='T'+this.newproducto.id;
+    this.transaccion.monto =
+      this.newproducto.costo + this.newproducto.gasto;
+
+    this.firestoreService.createDoc(
+      this.transaccion,
+      path,
+      'T'+this.newproducto.id
+    );
+
   }
 
   async presentToast(msg: string) {
