@@ -35,18 +35,18 @@ gasto: 0,
 };
 
 meses: Messes={
-enero: 0,
-febrero: 0,
-marzo: 0,
-abril: 0,
-mayo: 0,
-junio: 0,
-julio: 0,
-agosto: 0,
-septiembre: 0,
-octubre: 0,
-noviembre: 0,
-diciembre: 0,
+enero: 5,
+febrero: 15,
+marzo: 20,
+abril: 25,
+mayo: 30,
+junio: 35,
+julio: 40,
+agosto: 45,
+septiembre: 50,
+octubre: 55,
+noviembre: 60,
+diciembre: 65,
 
 };
 
@@ -114,6 +114,7 @@ path= null;
       }
 
     this.barChartMethod();
+    this. lineChartMethod();
    } );
 
 
@@ -236,7 +237,7 @@ else{
             }
           }]
         }
-      }
+      },
     });
 
 
@@ -302,7 +303,7 @@ else{
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: this.meses,
+            data: Object.values(this.meses) ,
             spanGaps: false,
           }
         ]

@@ -306,6 +306,7 @@ export class ProductosPage implements OnInit {
             this.agregartransaccion();
             this.getionTotales(transaccion);
 
+
       }
 
       else{
