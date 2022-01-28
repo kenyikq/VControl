@@ -98,41 +98,21 @@ path= null;
 
 
  async getEstado(){
-const path='usuario/'+this.iduser+'/movimientosContable';
+  const anio = moment(new Date()).format('YYYY');
+  const mes = moment(new Date()).format('MMMM');
+  const path1 =
+    'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
+  this.firestoreService
+    .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
+    .subscribe((res) => {
+      console.log('Get movimientos: ', res);
 
- await this.firestoreService.getCollectionquery<MovimientosContables>(this.path, 'tipoTransaccion', '==', 'Capital',).subscribe( ind => {
-  let capital=0;
-  ind.forEach((transaccion)=>{
-     this.transaciones.capital = this.transaciones.capital +transaccion.monto;
-     capital=capital + transaccion.monto;
-   });
+      if (res.length > 0) {
 
-  } );
+        this.transaciones = res[0];
+      }
 
-
-  await this.firestoreService.getCollectionquery<MovimientosContables>
-  (this.path, 'tipoTransaccion', '==', 'Gasto').subscribe( exp => {
-    exp.forEach((transaccion)=>{
-      this.transaciones.gasto = this.transaciones.gasto +transaccion.monto;
-    });
-
-   } );
-
-   await this.firestoreService.getCollectionquery<MovimientosContables>
-   (this.path, 'tipoTransaccion', '==', 'Venta').subscribe( exp => {
-    exp.forEach((transaccion)=>{
-      this.transaciones.venta = this.transaciones.venta +transaccion.monto;
-    });
-
-   } );
-
-      await this.firestoreService.getCollectionquery<MovimientosContables>
-      (this.path, 'tipoTransaccion', '==', 'Compra de Mercancía').subscribe( exp => {
-    exp.forEach((transaccion)=>{
-      this.transaciones.compra = this.transaciones.compra +transaccion.monto;
-    });
-console.log(this.transaciones);
     this.barChartMethod();
    } );
 
@@ -227,16 +207,16 @@ else{
    this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-        labels: ['Capital', 'Compras', 'Gastos', 'Ventas'],
+        labels: Object.keys(this.transaciones) ,
         datasets: [{
-          label: '`Transacciones`',
+          label: '',
           data: Object.values(this.transaciones) ,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)'
+            'red',
+            'yellow',
+            'green',
+            'blue',
+            'orange'
           ],
           borderColor: [
             'rgba(255,99,132,1)',
@@ -322,7 +302,7 @@ else{
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [this.transaciones.compra, this.transaciones.capital, this.transaciones.venta, this.transaciones.gasto],
+            data: this.meses,
             spanGaps: false,
           }
         ]

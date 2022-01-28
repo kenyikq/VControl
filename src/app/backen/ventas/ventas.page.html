@@ -82,8 +82,8 @@
         <div *ngIf="agregarArticulo===true">
           <ion-card style="margin-top: 35px;"><ion-item  class="normal" >
           <ion-label  class="normal">Articulo:</ion-label>
-          <ion-select [(ngModel)]="codigo" class="normal" (ionChange)="getArticulo()" placeholder="Seleccionar">
-            <ion-select-option *ngFor="let producto of productos" [value]="producto.codigo">{{producto.nombre}}</ion-select-option>
+          <ion-select [(ngModel)]="producto" class="normal" (ionChange)="getArticulo(producto)" placeholder="Seleccionar">
+            <ion-select-option *ngFor="let producto of productos" [value]="producto">{{producto.nombre+' Cant:'+ producto.unds}}</ion-select-option>
            </ion-select>
 
            <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
@@ -113,7 +113,7 @@
                       
               </ion-buttons>
             <div class="row">
-              <table border="1" class="table" id="tablaprueba">
+              <table border="1" class="table" id="tablaprueba" >
                 <thead class="thead-dark normal" style= "font-weight: bold;" >
                   <tr>
                     <th>Articulo</th>

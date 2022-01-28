@@ -27,6 +27,8 @@
   
   <h3 *ngIf="actualizarProducto === true" class="titulo p-3 encabezado">Datos del producto</h3>
     <div *ngIf="actualizarProducto === true" class="datosProducto">
+      <!-- Default Segment -->
+
       <ion-item>
         <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
         <ion-label style="margin-top: 6px;">Fecha:</ion-label>
@@ -220,41 +222,64 @@
     <h3  class="titulo p-2 encabezado">Listado de Productos</h3>
    
     <div id="lista" class="listaProductos">
-      <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+
+      <ion-segment (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="disponibles">
+          <ion-label>Disponibles</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="vendidos">
+          <ion-label>Vendidos</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      <ion-buttons slot="end"  >
         <ion-button  (click)="nuevo()" >
           <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
           
         </ion-button>
                 
         </ion-buttons>
-    
-    <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
-      <ion-label style="text-align: center;" class="normal">Articulo</ion-label>
-        <ion-label style="text-align: center;" class="normal">Costo N</ion-label>
-      <ion-label style="text-align: center;" class="normal">Precio</ion-label>
-      <ion-label style="text-align: center;" class="normal">Stock</ion-label>
-      <ion-label  style="text-align: center;" class="normal">Acciones</ion-label>
-    </ion-item>
 
-  <div  style="border-radius: 40px;">
-    <ion-card style="border-radius: 22px;">
-  <ion-item *ngFor="let producto of productos">
-    <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> {{ producto.nombre }}</ion-label>
-    <ion-label style="text-align: center;" class="normal">{{ producto.costo + producto.gasto | replace}}</ion-label >
-    <ion-label style="text-align: center;" class="normal">{{ producto.precio | replace}}</ion-label >
-      <ion-label style="text-align: center;" class="normal">{{ producto.unds }}</ion-label >
-        <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;" class="ionbutton" slot="end">
-          <ion-button style="margin-right: -19px;" (click)="mostrarDatos(producto)">
-            <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
-          </ion-button>
-          <ion-button class="icono"  (click)="deleteproducto(producto)">
-            <ion-icon slot="icon-only" color="danger"  name="trash-bin"  ></ion-icon>
-          </ion-button>
-        </ion-buttons></ion-label>
-     
-  </ion-item>
-</ion-card>
-</div>
+        <div class="row">
+          <table border="1" class="table" id="tablaprueba" style="opacity: 108%; background: white !important;">
+            <thead class="thead-dark normal" style= "font-weight: bold;" >
+              <tr style="text-align: center;" >
+                <th>Articulo</th>
+                <th>Costo N</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody class="normal">
+              <tr style="text-align: center;" *ngFor="let producto of productos">
+                <td>{{ producto.nombre }}</td>
+                <td>
+                  {{ producto.costo + producto.gasto | replace}}
+                    
+                </td>
+                <td>{{ producto.precio | replace}}</td>
+                <td>{{ producto.unds }}</td>
+                <td style="width: 90px;"> 
+                  <ion-buttons style="margin-top: -16px"   class="ionbutton" slot="end">
+                    <ion-button  (click)="mostrarDatos(producto)">
+                      <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
+                    </ion-button>
+                    <ion-button class="icono"  (click)="deleteproducto(producto)" style="margin-left: -13px;">
+                      <ion-icon slot="icon-only" color="danger"  name="trash-bin"  ></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </td>
+              </tr>
+              <tr></tbody>
+              <tbody>
+             
+          </table>
+
+
+       </div>
+    
+   
+
 
     
   </div>

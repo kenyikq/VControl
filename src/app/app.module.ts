@@ -30,7 +30,6 @@ registerLocaleData(localeEs, 'es');//para la fecha en espanol
     FormsModule,
     ReactiveFormsModule,
   AngularFireModule.initializeApp(environment.firebaseConfig),
-  AngularFirestoreModule.enablePersistence(),
   BrowserModule, AngularFireStorageModule,
   AngularFireAuthModule,
 

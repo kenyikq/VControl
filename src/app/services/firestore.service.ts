@@ -45,24 +45,23 @@ getCollection<Tipo>(path: string){
 }
 
 getultimodoc<Tipo>(path: string){
-  const collection= this.database.collection<Tipo>(path,
-    ref => ref.orderBy('fecha').limitToLast(1));
-  return collection.valueChanges();
+ const collection = this.database.collection<Tipo>(path, ref=>ref.orderBy('fecha').limitToLast(1));
+  return collection.valueChanges().pipe(take(1));
 }
 
-getCollectionquery<Tipo>(path: string, campo: string, condicion: any, busqueda: string){
-  const collection= this.database.collection <Tipo>(path,
-    ref => ref.where(campo, condicion, busqueda) );
+getCollectionquery<Tipo>(path: string, campo: string, condicion: any, busqueda: any){
+  const collection = this.database.collection<Tipo>(path, ref=>ref.where(campo,condicion,busqueda))
+  .valueChanges();
 
-
-
-  return collection.valueChanges();
+  return collection;
 
 }
 
-getCollectionget<Tipo>(path: string, campo: string, condicion: any, busqueda: string){
-  const collection= this.database.collection <Tipo>(path,
-    ref => ref.where(campo, condicion, busqueda) );
+
+
+getCollectionget<Tipo>(path: string, campo: string, condicion: any, busqueda: any){
+  const collection= this.database.collection <Tipo>(path);
+    collection.ref.where(campo, condicion, busqueda);
 
 
 

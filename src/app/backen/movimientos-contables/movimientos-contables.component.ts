@@ -33,6 +33,7 @@ export class MovimientosContablesComponent implements OnInit {
   iduser='';
   path=null;
   actualizarTransaccion = false;
+  cont=0;
 
 
   constructor(
@@ -86,14 +87,18 @@ export class MovimientosContablesComponent implements OnInit {
       monto: 0,
       idTransaccion: 'mov',
 
+
 };
+this.cont=0;
 
   }
 
 getTransacciones() {
+  this.cont=0;
 
-  this.firestoreService.getCollection<MovimientosContables>(this.path).subscribe( res => {
+  this.firestoreService.getCollection<MovimientosContables>(this.path).pipe().subscribe( res => {
      //console.log(res);
+     this.cont=0;
      this.transacciones= res;
 
    } );
@@ -261,5 +266,19 @@ validacion(){
    });
 
   toast.present();
+  }
+
+  fila(){
+    const i =this.transacciones.length;
+    console.log(this.transacciones.length);
+    do {
+      if(this.cont>this.transacciones.length){
+        this.cont=0;
+      }
+      this.cont=this.cont+1;
+    return this.cont;
+  }
+  while (this.cont < i);
+
   }
 }

@@ -86,7 +86,7 @@ export class ProductosPage implements OnInit {
           this.iduser = res.uid;
           this.path = 'usuario/' + this.iduser + '/producto';
 
-          this.getDatos();
+          this.limpiarCampos();
         } else {
           this.alerta(
             'Necesitas ingresar con tu usuario para usar el modulo de Productos'
@@ -104,14 +104,14 @@ export class ProductosPage implements OnInit {
       codigo: 1000,
       tipoArticulo: 'Laptop',
       foto: '',
-      nombre: 'p',
+      nombre: '',
       unds: 1,
       fecha: moment(new Date()).toString(), //para mostrar la fecha anctual al crear nuevo producto
       mes: moment(new Date()).format('MMMM').toString(),
-      costo: 900,
-      gasto: 100,
-      precio: 1200,
-      precioMin: 1100,
+      costo: 0,
+      gasto: 0,
+      precio: 0,
+      precioMin: 0,
       descripcion: {
         procesador: { tipo: 'Core i5', gen: '4ta' },
         ram: { tipo: 'DDR3', cant: '8gb' },
@@ -120,6 +120,7 @@ export class ProductosPage implements OnInit {
       },
     };
     this.firestoreService.getultimodoc<Producto>(this.path).subscribe((res) => {
+
       if (res !== null) {
         const sum: number = res[0].codigo + 1;
         this.newproducto.codigo = sum;
@@ -195,12 +196,14 @@ export class ProductosPage implements OnInit {
   }
 
   getDatos() {
-    this.firestoreService
-      .getCollection<Producto>(this.path)
-      .subscribe((res) => {
-        //console.log(res);
-        this.productos = res;
-      });
+    const collection = this.firestoreService.database.collection<Producto>(this.path,
+      ref=>ref.where('unds','>=',1))
+    .valueChanges().subscribe((res) => {
+      //console.log(res);
+      this.productos = res;
+    });
+
+
 
     const anio = moment(new Date()).format('YYYY');
     const mes = moment(new Date()).format('MMMM');
@@ -257,6 +260,7 @@ export class ProductosPage implements OnInit {
           this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
           this.newproducto.id = 'P' + this.newproducto.codigo;
         }
+
       });
 
     this.firestoreService
@@ -292,24 +296,21 @@ export class ProductosPage implements OnInit {
     const path = 'usuario/' + this.iduser + '/movimientosContable';
     let transaccion =0;
 
+
     await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==','T'+this.newproducto.id).
     pipe(take(1)).subscribe(res=>{
 
-
       if(res.length === 0){
 
-            transaccion=this.newproducto.costo+this.newproducto.gasto;
-
-            this.transaccion.codigo = this.newproducto.codigo;
+            transaccion=(this.newproducto.costo+this.newproducto.gasto)* this.newproducto.unds;
             this.agregartransaccion();
             this.getionTotales(transaccion);
-
 
       }
 
       else{
-        console.log(this.transaccion);
-        transaccion=(this.newproducto.gasto+this.newproducto.costo)-(res[0].monto);
+
+        transaccion=((this.newproducto.gasto+this.newproducto.costo)*this.newproducto.unds)-(res[0].monto);
         this.getionTotales(transaccion).then(()=>{this.agregartransaccion();});
 
       }
@@ -324,19 +325,29 @@ export class ProductosPage implements OnInit {
   }
 
 
-  agregartransaccion(){
+ async agregartransaccion(){
     const path = 'usuario/' + this.iduser + '/movimientosContable';
+    const pathT= 'usuario/'+this.iduser+'/movimientosContable';
+    let codigo=0;
 
-    console.log('Este es el prod trans', this.newproducto);
+await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(1)).subscribe(res=>{
+
+  if (res.length>0){
+  codigo= res[0].codigo +1;
+  }
+  else{ codigo = 1;}
+});
+
     this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
     this.transaccion.tipoTransaccion = 'Compra de Mercancía';
     this.transaccion.fecha = this.newproducto.fecha;
     this.transaccion.mes = moment(this.newproducto.fecha).format('MMMM');
     this.transaccion.anio = moment(this.newproducto.fecha).format('YYYY');
     this.transaccion.dia = moment(this.newproducto.fecha).format('DD');
+    this.transaccion.codigo=codigo;
     this.transaccion.idTransaccion='T'+this.newproducto.id;
     this.transaccion.monto =
-      this.newproducto.costo + this.newproducto.gasto;
+     ( this.newproducto.costo + this.newproducto.gasto)*this.newproducto.unds;
 
     this.firestoreService.createDoc(
       this.transaccion,
