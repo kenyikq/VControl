@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MovimientosContables } from 'src/app/models';
+import { GraficoTransacciones, MovimientosContables } from 'src/app/models';
 import * as moment from 'moment';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
@@ -35,6 +35,14 @@ export class MovimientosContablesComponent implements OnInit {
   actualizarTransaccion = false;
   cont=0;
 
+  totales: GraficoTransacciones = {
+    mes: moment(new Date()).format('MMMM'),
+    capital: 0,
+    venta: 0,
+    compra: 0,
+    gasto: 0,
+  };
+
 
   constructor(
     public firestoreService: FirestoreService,
@@ -54,6 +62,7 @@ export class MovimientosContablesComponent implements OnInit {
       this.path='usuario/'+this.iduser+'/movimientosContable';
 
       this.getTransacciones();
+      this.getDatos();
 
       }else {
         this.alerta('Necesitas ingresar con tu usuario para usar el modulo de trasacciones');
@@ -91,6 +100,23 @@ export class MovimientosContablesComponent implements OnInit {
 };
 this.cont=0;
 
+  }
+  getDatos() {
+    const anio = moment(new Date()).format('YYYY');
+    const mes = moment(new Date()).format('MMMM');
+    const path =
+      'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+
+    this.firestoreService
+      .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
+      .pipe(take(1))
+      .subscribe((res) => {
+        console.log('Get movimientos: ', res);
+
+        if (res.length > 0) {
+          this.totales = res[0];
+        }
+      });
   }
 
 getTransacciones() {
@@ -172,6 +198,7 @@ this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
 this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 
 this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
+this.getionTotales(this.transaccion.monto);
 
  });
 }
@@ -182,7 +209,7 @@ else{
   this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
   this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
-
+this.getionTotales(this.transaccion.monto);
 }
 
 this.agregarTransaccion=false;
@@ -280,5 +307,17 @@ validacion(){
   }
   while (this.cont < i);
 
+  }
+
+
+  async getionTotales(transaccion: number) {
+    const anio = moment(new Date()).format('YYYY');
+    const mes = moment(new Date()).format('MMMM');
+    const path =
+      'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+    this.totales.compra =
+      this.totales.compra + transaccion;
+
+    this.firestoreService.createDoc(this.totales, path, mes);
   }
 }
