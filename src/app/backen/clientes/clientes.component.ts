@@ -162,7 +162,7 @@ export class ClientesComponent implements OnInit {
     }
   });
 
-      this.firestoreService.createDoc(this.newCliente, this.path, this.newCliente.codigo.toString()).then( ans =>{
+      this.firestoreService.createDoc(this.newCliente, this.path, 'C'+this.newCliente.codigo.toString()).then( ans =>{
         this.loading.dismiss().then( respuesta => {
           this.actualizarCliente = false;
           this.presentToast('Acción ralizada con exito');

@@ -214,7 +214,6 @@ export class ProductosPage implements OnInit {
       .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
       .pipe(take(1))
       .subscribe((res) => {
-        console.log('Get movimientos: ', res);
 
         if (res.length > 0) {
           this.totales = res[0];
@@ -327,7 +326,6 @@ export class ProductosPage implements OnInit {
 
 
  async agregartransaccion(){
-    const path = 'usuario/' + this.iduser + '/movimientosContable';
     const pathT= 'usuario/'+this.iduser+'/movimientosContable';
     let codigo=0;
 
@@ -345,6 +343,7 @@ await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(
     this.transaccion.mes = moment(this.newproducto.fecha).format('MMMM');
     this.transaccion.anio = moment(this.newproducto.fecha).format('YYYY');
     this.transaccion.dia = moment(this.newproducto.fecha).format('DD');
+    console.log('este es ecodigo de transaccion', codigo);
     this.transaccion.codigo=codigo;
     this.transaccion.idTransaccion='T'+this.newproducto.id;
     this.transaccion.monto =
@@ -352,7 +351,7 @@ await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(
 
     this.firestoreService.createDoc(
       this.transaccion,
-      path,
+      pathT,
       'T'+this.newproducto.id
     );
 

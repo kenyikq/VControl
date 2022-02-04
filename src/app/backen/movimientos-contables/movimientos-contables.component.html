@@ -45,8 +45,6 @@
           <ion-item  class="normal" >
             <ion-label>Tipo Transacción</ion-label>
           <ion-select [(ngModel)]="transaccion.tipoTransaccion" class="normal" placeholder="Seleccionar" >
-            <ion-select-option value="Compra de Mercancía">Compra de Mercancía</ion-select-option>
-            <ion-select-option value="Venta">Venta</ion-select-option>
             <ion-select-option value="Gasto">Gasto</ion-select-option>
             <ion-select-option value="Capital">Capital</ion-select-option>
            </ion-select>     <ion-input disabled="true"  > <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
@@ -106,7 +104,8 @@
             <td>{{transaccion.monto| replace }}</td>
             <td>
               
-                <ion-button class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos(transaccion)">
+                <ion-button *ngIf="transaccion.tipoTransaccion !== 'Compra de Mercancía'&&transaccion.tipoTransaccion !== 'Venta'" 
+                class="icono" style="width: 53px ; margin-top: -13px; --background: none;"  (click)="mostrarDatos(transaccion)">
                   <ion-icon slot="icon-only"  color="danger"  name="create-outline"  ></ion-icon>
                 </ion-button>
                                       
