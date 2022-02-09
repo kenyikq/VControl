@@ -14,6 +14,7 @@
    precio: number;
    precioMin: number;
    descripcion: {
+     caracteristicas: string;
     procesador: {tipo: string; gen: string};
     ram: {cant: string; tipo: string};
     almacenamiento: {cant: string; tipo: string};

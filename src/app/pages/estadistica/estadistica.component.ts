@@ -208,24 +208,6 @@ else{
    this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-<<<<<<< HEAD
-        labels: ['Capital','Compra','Gasto','Venta'] ,
-        datasets: [{
-          label: '',
-          data: [this.transaciones.capital, this.transaciones.compra, this.transaciones.gasto, this.transaciones.venta ] ,
-          backgroundColor: [
-            'orange',
-            'rgba(255, 206, 86, 1)',
-            'red',
-            'rgba(75, 192, 192, 1)'
-
-          ],
-          borderColor: [
-            'orange',
-            'rgba(255, 206, 86, 1)',
-            'red',
-            'rgba(75, 192, 192, 1)'
-=======
         labels: ['Capital','Compra','Gasto','Venta'],
         datasets: [{
           label: '',
@@ -242,7 +224,6 @@ else{
             'yellow',
             'red',
             'green',
->>>>>>> 43071fb09a979ebf2e7ec682ab2e4af54cf190a1
           ],
           borderWidth: 2
         }]

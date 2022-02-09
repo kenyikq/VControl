@@ -33,6 +33,7 @@ export class ProductosPage implements OnInit {
     precio: 0,
     precioMin: 0,
     descripcion: {
+      caracteristicas:'',
       procesador: { tipo: '', gen: '' },
       ram: { tipo: '', cant: '' },
       almacenamiento: { tipo: '', cant: '' },
@@ -87,6 +88,8 @@ export class ProductosPage implements OnInit {
           this.path = 'usuario/' + this.iduser + '/producto';
 
           this.limpiarCampos();
+          this.getDatos();
+
         } else {
           this.alerta(
             'Necesitas ingresar con tu usuario para usar el modulo de Productos'
@@ -113,11 +116,14 @@ export class ProductosPage implements OnInit {
       precio: 0,
       precioMin: 0,
       descripcion: {
-        procesador: { tipo: 'Core i5', gen: '4ta' },
-        ram: { tipo: 'DDR3', cant: '8gb' },
-        almacenamiento: { tipo: 'HHD', cant: '320' },
-        pantalla: '14',
+        caracteristicas:'',
+        procesador: { tipo: null, gen: null },
+        ram: { tipo: null, cant: null },
+        almacenamiento: { tipo: null, cant: null },
+        pantalla: null,
       },
+
+
     };
     this.firestoreService.getultimodoc<Producto>(this.path).subscribe((res) => {
 
@@ -131,6 +137,18 @@ export class ProductosPage implements OnInit {
     this.actualizarProducto = true;
   }
 
+  caracteristicasArticulos(){
+  if(this.newproducto.tipoArticulo==='laptop'){
+this.newproducto.descripcion= {
+  caracteristicas:'',
+  procesador: { tipo: 'Core i5', gen: '4ta' },
+  ram: { tipo: 'DDR3', cant: '8gb' },
+  almacenamiento: { tipo: 'HHD', cant: '320' },
+  pantalla: '14',
+};
+  }
+  }
+
   limpiarCampos() {
     this.nuevo();
     //this.getDatos();
@@ -140,11 +158,17 @@ export class ProductosPage implements OnInit {
   goAnOtherPage() {
     this.navCtrl.navigateRoot('/home');
   }
-  segmentChanged(ev: any) {
 
-this.valueSelected= ev.detail.value;
+  segmentChanged(ev: any){
+    this.valueSelected= ev.detail.value;
+    this.filtrar();
+  }
+
+  filtrar() {
+
+
 console.log(this.valueSelected);
-    if(ev.detail.value=== 'disponibles'){
+    if(this.valueSelected=== 'disponibles'){
 
      const collection = this.firestoreService.database.collection<Producto>(this.path,
       ref=>ref.where('unds','>=',1))
@@ -153,7 +177,7 @@ console.log(this.valueSelected);
       this.productos = res;
     });}
 
-    if(ev.detail.value=== 'vendidos'){
+    if(this.valueSelected=== 'vendidos'){
 
       const collection = this.firestoreService.database.collection<Producto>(this.path,
        ref=>ref.where('unds','==',0))
@@ -162,13 +186,12 @@ console.log(this.valueSelected);
        this.productos = res;
      });}
      else{
-
-      const collection = this.firestoreService.database.collection<Producto>(this.path,
-       ref=>ref.where('unds','>=',-1))
-     .valueChanges().subscribe((res) => {
-       //console.log(res);
-       this.productos = res;
-     });}
+console.log(this.valueSelected);
+      const collection = this.firestoreService.database.collection<Producto>(this.path)
+      .valueChanges().subscribe((res) => {
+        //console.log(res);
+        this.productos = res;
+      });}
 
   }
 
@@ -225,15 +248,7 @@ console.log(this.valueSelected);
   }
 
   getDatos() {
-    const collection = this.firestoreService.database.collection<Producto>(this.path,
-      ref=>ref.where('unds','>=',1))
-    .valueChanges().subscribe((res) => {
-      //console.log(res);
-      this.productos = res;
-    });
-
-
-
+this.filtrar();
     const anio = moment(new Date()).format('YYYY');
     const mes = moment(new Date()).format('MMMM');
     const path =
@@ -260,7 +275,7 @@ console.log(this.valueSelected);
 
     }
   }
-
+//revisar aqui
   async getionTotales(transaccion: number) {
     const anio = moment(new Date()).format('YYYY');
     const mes = moment(new Date()).format('MMMM');
@@ -269,7 +284,7 @@ console.log(this.valueSelected);
     this.totales.compra =
       this.totales.compra + transaccion;
 
-    this.firestoreService.createDoc(this.totales, path, mes);
+    this.firestoreService.updateDoc(this.totales, path, mes);
   }
 
   async guardar() {

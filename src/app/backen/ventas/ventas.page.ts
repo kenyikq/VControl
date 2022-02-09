@@ -61,6 +61,7 @@ producto: Producto = {
   precio: 0,
   precioMin: 0,
   descripcion: {
+    caracteristicas:'',
     procesador: {tipo: '', gen: ''},
     ram: {tipo: '', cant: ''},
     almacenamiento: {tipo: '', cant: ''},
@@ -328,6 +329,7 @@ cancelar(){
       precio: 0,
       precioMin: 0,
       descripcion: {
+        caracteristicas:'',
         procesador: {tipo: '', gen: ''},
         ram: {tipo: '', cant: ''},
         almacenamiento: {tipo: '', cant: ''},
