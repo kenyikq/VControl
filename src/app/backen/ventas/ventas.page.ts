@@ -264,7 +264,7 @@ this.calculoTotalesFactura();
 if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
   await this.gestionarCliente().then(
       res=> {this.guardarFactura();
-      //  this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
+     // this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
       });
 
    }
@@ -341,6 +341,7 @@ cancelar(){
 }
 
   getdatos() {
+  this.getCliente();
     const path='usuario/'+this.iduser+'/clientes';
 
 
@@ -352,7 +353,6 @@ cancelar(){
 
    const collection = this.firestoreService.database.collection<Producto>(this.path, ref=>ref.where('unds','>',0))
    .valueChanges().pipe(take(1)).subscribe(res => {
-       console.log(res);
        this.productos= res;
    } );
 
@@ -366,9 +366,7 @@ cancelar(){
        .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
        .pipe(take(1))
        .subscribe((res) => {
-         console.log('Get movimientos: ', res);
-
-         if (res.length > 0) {
+           if (res.length > 0) {
            this.totales = res[0];
          }
        });
@@ -392,7 +390,7 @@ this.newArticulo.codigo= prod.codigo;
     const path='usuario/'+this.iduser+'/clientes';
 
     this.firestoreService.getCollectionquery<Cliente>(path, 'codigo', '==', this.codclient).subscribe(res=>{
-
+console.log('cliente ',res);
     this.newCliente.nombre= res[0].nombre;
     this.newCliente.telefono= res[0].telefono;
     this.newCliente.codigo= res[0].codigo;
@@ -453,14 +451,14 @@ const telefonos = [];
  });
 
   if(telefonos.includes(this.newCliente.telefono) === false)//si el cliente no existe
- {
+ {console.log(telefonos.includes(this.newCliente.telefono));
   await this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
     if(resp){
     this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
     } });
 
     this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
-
+      this.codigofactura();
     }).catch(err=>{
       console.log('Error al crear cliente ',err);
     });
@@ -475,7 +473,7 @@ const telefonos = [];
 
 async  guardarFactura(){
 
-  const path='usuario/'+this.iduser+'/clientes/'+this.newCliente.codigo+'/factura';
+  const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
   this.presentLoading();
  this.newfactura.cliente=this.newCliente.nombre;
   this.firestoreService.createDoc(this.newfactura, path, 'F'+this.newfactura.codigo.toString()).then( ans =>{
@@ -491,13 +489,13 @@ async  guardarFactura(){
 }
 
 codigofactura(){
-  const path='usuario/'+this.iduser+'/clientes/'+this.newCliente.codigo+'/factura';
+  const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
 
     this.firestoreService.getultimodoc<Factura>(path).subscribe(resp=>{
-      if(resp){
+      if(resp.length>0){
+        console.log('este es el codigo',resp);
        this.newfactura.codigo = resp[0].codigo + 1;
-       console.log(this.newfactura.codigo);
-        }
+          }
        else{console.log('no encotro nada');}
 
      });
@@ -507,7 +505,6 @@ async reducirInventario(){
  const pathprod ='usuario/'+this.iduser+'/producto';
  let stockActual = 0;
 
-console.log('inventario ',this.newfactura.articulo);
 this.cont= 0;
         this.newfactura.articulo.forEach((articulo)=>{
 
@@ -517,7 +514,7 @@ this.cont= 0;
 
            stockActual= res[0].unds-articulo.cant;
            this.cont=this.cont +1;
-           console.log('producto',res);
+
 if(stockActual >= 0){
   this.db.collection(pathprod).doc('P'+articulo.codigo.toString()).update({unds: stockActual});
 
@@ -565,7 +562,8 @@ async presentLoading(){
       const path = 'usuario/' + this.iduser + '/movimientosContable';
       let transaccion =0;
 
-      await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==','TF'+this.newfactura.codigo).
+      await this.firestoreService.getCollectionquery<MovimientosContables>
+      (path,'idTransaccion','==',this.iduser+'TF'+this.newfactura.codigo).
       pipe(take(1)).subscribe(res=>{
 
         if(res.length === 0){
@@ -590,7 +588,6 @@ async presentLoading(){
     }
 
   async  agregartransaccion(){
-      const path = 'usuario/' + this.iduser + '/movimientosContable';
       const pathT= 'usuario/'+this.iduser+'/movimientosContable';
       let codigo=0;
 
@@ -610,12 +607,14 @@ async presentLoading(){
       this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
       this.transaccion.monto= this.newfactura.total;
       this.transaccion.codigo= codigo;
+      console.log('este es el codigo: ',codigo);
+      this.transaccion.idTransaccion= this.iduser+'TF'+codigo;
 
 
     this.firestoreService.createDoc(
         this.transaccion,
-        path,
-        'TF'+this.newfactura.codigo
+        pathT,
+        this.transaccion.idTransaccion
       );
 
   }

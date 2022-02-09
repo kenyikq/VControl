@@ -44,6 +44,7 @@ export class MovimientosContablesComponent implements OnInit {
   };
 
 
+
   constructor(
     public firestoreService: FirestoreService,
     public log: FirebaseauthService,
@@ -99,6 +100,7 @@ export class MovimientosContablesComponent implements OnInit {
 
 };
 this.cont=0;
+this.getTransacciones();
 
   }
   getDatos() {
@@ -128,13 +130,29 @@ getTransacciones() {
      this.transacciones= res;
 
    } );
+
+   const anio = moment(new Date()).format('YYYY');
+   const mes = moment(new Date()).format('MMMM');
+   const path =
+     'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+
+   this.firestoreService
+     .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
+     .pipe(take(1))
+     .subscribe((res) => {
+       console.log('Get movimientos: ', res);
+
+       if (res.length > 0) {
+         this.totales = res[0];
+       }
+     });
 }
 
 mostrarDatos(transaction: MovimientosContables){
   this.agregarTransaccion = true;
   this.actualizarTransaccion=true;
   this.transaccion = transaction;
-  console.log('Esta es la transaccion ',transaction);
+  console.log('Esta es la transaccion elegida',transaction);
 }
   agregarFila(){
     if(this.validacion()){
@@ -164,10 +182,11 @@ mostrarDatos(transaction: MovimientosContables){
         }, {
           text: 'Okay',
           handler: () => {
-            this.firestoreService.deleteDoc(this.path,transaccion.codigo.toString()).then(
+            this.transaccion=transaccion;
+            this.getionTotales(this.transaccion.monto*(-1));
+            this.firestoreService.deleteDoc(this.path,transaccion.idTransaccion).then(()=>{
 
-
-            );
+        } );
             this.presentToast('Transaccion eliminada');
 
             this.nuevo();
@@ -186,31 +205,41 @@ let codigo=0;
 
 if (this.actualizarTransaccion=== false){
 
-await this.firestoreService.getultimodoc<MovimientosContables>(path).pipe(take(1)).subscribe(res=>{
-  console.log(res);
-  if (res.length>0){
-  codigo= res[0].codigo +1;
-  }
-  else{ codigo = 1;}
+
 
 this.transaccion.codigo=codigo;
 this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
 this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
-
-this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
+this.transaccion.idTransaccion=this.firestoreService.getid();
+console.log('condigo aumentado', this.transaccion.codigo);
+this.firestoreService.createDoc(this.transaccion ,path, this.transaccion.idTransaccion);
 this.getionTotales(this.transaccion.monto);
 
- });
+
+
 }
 
 else{
-  codigo= this.transaccion.codigo;
 
+  codigo= this.transaccion.codigo;
   this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
   this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
-this.firestoreService.createDoc(this.transaccion ,path, codigo.toString());
-this.getionTotales(this.transaccion.monto);
+console.log('para actualizar ',this.transaccion.idTransaccion);
+  await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==',this.transaccion.idTransaccion).
+  pipe(take(1)).subscribe(res=>{
+    this.getionTotales(this.transaccion.monto - res[0].monto);
+    this.firestoreService.createDoc(this.transaccion ,path, this.transaccion.idTransaccion);
+
+console.log('resta:',(this.transaccion.monto - res[0].monto));
+
+  });
+
+
+
+
 }
+
+
 
 this.agregarTransaccion=false;
 
@@ -309,15 +338,36 @@ validacion(){
 
   }
 
-
   async getionTotales(transaccion: number) {
     const anio = moment(new Date()).format('YYYY');
     const mes = moment(new Date()).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-    this.totales.compra =
-      this.totales.compra + transaccion;
+      if(this.transaccion.tipoTransaccion==='Venta')
+      {
+        this.totales.venta =
+      this.totales.venta + transaccion;
+      this.firestoreService.createDoc(this.totales, path, mes);
 
-    this.firestoreService.createDoc(this.totales, path, mes);
+      }
+
+      else if(this.transaccion.tipoTransaccion==='Compra de Mercancía'){
+        this.totales.compra =
+        this.totales.compra + transaccion;
+        this.firestoreService.createDoc(this.totales, path, mes);
+      }
+
+      else if(this.transaccion.tipoTransaccion==='Gasto'){
+        this.totales.gasto =
+        this.totales.gasto + transaccion;
+        this.firestoreService.createDoc(this.totales, path, mes);
+      }
+
+      else{
+        this.totales.capital =
+        this.totales.capital + transaccion;
+        this.firestoreService.createDoc(this.totales, path, mes);
+      }
+
   }
 }
