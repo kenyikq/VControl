@@ -18,7 +18,7 @@ export class ProductosPage implements OnInit {
   productos: Producto[] = [];
   img = '';
   newFile = '';
-
+ valueSelected='todos';
   newproducto: Producto = {
     id: 'P1000',
     codigo: 1000,
@@ -133,7 +133,7 @@ export class ProductosPage implements OnInit {
 
   limpiarCampos() {
     this.nuevo();
-    this.getDatos();
+    //this.getDatos();
     this.actualizarProducto = false;
   }
 
@@ -141,8 +141,37 @@ export class ProductosPage implements OnInit {
     this.navCtrl.navigateRoot('/home');
   }
   segmentChanged(ev: any) {
-    console.log('Segment changed', ev);
+
+this.valueSelected= ev.detail.value;
+console.log(this.valueSelected);
+    if(ev.detail.value=== 'disponibles'){
+
+     const collection = this.firestoreService.database.collection<Producto>(this.path,
+      ref=>ref.where('unds','>=',1))
+    .valueChanges().subscribe((res) => {
+      //console.log(res);
+      this.productos = res;
+    });}
+
+    if(ev.detail.value=== 'vendidos'){
+
+      const collection = this.firestoreService.database.collection<Producto>(this.path,
+       ref=>ref.where('unds','==',0))
+     .valueChanges().subscribe((res) => {
+       //console.log(res);
+       this.productos = res;
+     });}
+     else{
+
+      const collection = this.firestoreService.database.collection<Producto>(this.path,
+       ref=>ref.where('unds','>=',-1))
+     .valueChanges().subscribe((res) => {
+       //console.log(res);
+       this.productos = res;
+     });}
+
   }
+
   mostrarDatos(producto: Producto) {
     this.actualizarProducto = true;
     this.newproducto = producto;

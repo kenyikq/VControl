@@ -223,7 +223,10 @@
    
     <div id="lista" class="listaProductos">
 
-      <ion-segment (ionChange)="segmentChanged($event)">
+      <ion-segment (ionChange)=" segmentChanged($event)" [value]="valueSelected" color="dark" scrollable="true">
+        <ion-segment-button value="todos">
+          <ion-label>Todos</ion-label>
+        </ion-segment-button>
         <ion-segment-button value="disponibles">
           <ion-label>Disponibles</ion-label>
         </ion-segment-button>
