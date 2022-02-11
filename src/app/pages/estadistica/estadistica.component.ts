@@ -106,15 +106,16 @@ path= null;
   this.firestoreService
     .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
     .subscribe((res) => {
-      console.log('Get movimientos: ', res);
+     
 
       if (res.length > 0) {
 
         this.transaciones = res[0];
       }
-
+     
     this.barChartMethod();
     this. lineChartMethod();
+    
    } );
 
 
@@ -128,6 +129,7 @@ seleccionA(id: string){
   this.inactive('4');
   this.inactive('5');
   this.active(id);
+
 }
 //para marcar como seleccionado la opcion dentro del menu
 async seleccion(){
@@ -146,11 +148,12 @@ active(id: string){
   active.classList.value.match('active');
 
   active.classList.add('active');
+  this.getEstado();
 }
 
 inactive(id: string){
   const active = document.getElementById(id);
-
+  this.getEstado();
   active.classList.remove('active');
 }
 
@@ -213,19 +216,25 @@ else{
           label: '',
           data: [this.transaciones.capital,this.transaciones.compra,this.transaciones.gasto, this.transaciones.venta] ,
           backgroundColor: [
-            'rgba(54, 162, 235, 1)',
+            '#E0FFFF',
             'yellow',
-            'red',
-            'green',
+            '#F08080',
+            '#ADFF2F',
 
           ],
           borderColor: [
             'rgba(54, 162, 235, 1)',
-            'yellow',
+            '#FFD700',
+            'red',
+            '#ADFF2F',
+          ],
+          borderWidth: 1.5,
+          hoverBackgroundColor: [
+            'rgba(54, 162, 235, 1)',
+            '#FFD700',
             'red',
             'green',
-          ],
-          borderWidth: 2
+          ]
         }]
       },
       options: {

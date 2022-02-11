@@ -34,6 +34,7 @@
 }
 
 export interface Factura{
+fechacreacion: string;
 codigo: number;
 fecha: string;
 fechaVencimiento: string;

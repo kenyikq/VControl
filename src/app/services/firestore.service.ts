@@ -38,9 +38,9 @@ getid(){
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-getCollection<Tipo>(path: string){
+getCollection<Tipo>(path: string, filas= 200){
   const collection= this.database.collection <Tipo>(path,
-    ref => ref.orderBy('fecha'));
+    ref => ref.orderBy('fecha').limitToLast(filas));
   return collection.valueChanges();
 }
 

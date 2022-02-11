@@ -64,7 +64,7 @@
 
         <ion-item>
              <ion-label    class="normal" >Cliente:</ion-label>
-             <ion-input required [(ngModel)]="newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
+             <ion-input [disabled]="disable" required [(ngModel)]="newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
          
              <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
               <label for="client"><ion-icon  slot="icon-only" name="search"></ion-icon></label>
@@ -76,7 +76,7 @@
             </ion-item>
         <ion-item>
           <ion-label    class="normal" >Celular:</ion-label>
-          <ion-input required [(ngModel)]="newCliente.telefono"  class="normal" type="string" inputmode="number" placeholder="809-894-5555"></ion-input>
+          <ion-input  pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" [disabled]="disable" inputmode="number" (ionBlur)="comprobarTelefono()" required [(ngModel)]="newCliente.telefono"  class="normal" type="tel"  placeholder="809-894-5555"></ion-input>
       
      </ion-item>
         <div *ngIf="agregarArticulo===true">
@@ -91,7 +91,7 @@
           </ion-item> 
           
           <ion-item  class="normal">
-          <ion-label style="margin-right: 50px;">Precio: {{newArticulo.precioVenta | currency: '' }}</ion-label>
+          <ion-label style="margin-right: 50px;">Precio: {{newArticulo.precioVenta | replace }} RD$</ion-label>
           <ion-label >Cant:</ion-label> <ion-input [(ngModel)]="newArticulo.cant" type="number" inputmode="number"></ion-input>
           <ion-label>Desc:</ion-label> <ion-input  [(ngModel)]="newArticulo.descuento " type="number" inputmode="number"></ion-input>
            
@@ -135,8 +135,8 @@
                       
                     </td>
                     <td>{{articulo.cant}}</td>
-                    <td>{{articulo.precioVenta| currency: '' }}</td>
-                    <td>{{(articulo.precioVenta * articulo.cant) | currency: ''}}</td>
+                    <td>{{articulo.precioVenta| replace }}</td>
+                    <td>{{(articulo.precioVenta * articulo.cant) | replace}}</td>
                   </tr>
                   <tr></tbody>
                   <tbody>
@@ -149,17 +149,17 @@
            
            
              <ion-item no-lines class="normal" style="--border-width: 0 0 0px 0 !important;--min-height: 39px; ">
-               <ion-label style="text-align: right; "> SubTotal: {{subtotal| currency: '' }}</ion-label>
+               <ion-label style="text-align: right; "> SubTotal: {{subtotal| replace }}.00 RD$</ion-label>
            </ion-item>
            
           
            <ion-item no-lines class="normal" style="--border-width: 0 0 0px 0 !important; --min-height: 39px;">
-             <ion-label style="text-align: right; margin-top: 6px;"> Descuento: {{descuento| currency: '' }}</ion-label>
+             <ion-label style="text-align: right; margin-top: 6px;"> Descuento: {{descuento|  replace }}.00 RD$</ion-label>
          </ion-item>
 
          
          <ion-item no-lines class="normal" style="--border-width: 0 0 0px 0 !important;--min-height: 39px; ">
-           <ion-label style="text-align: right; margin-top: 6px;"> Total a pagar: {{total| currency: '' }}</ion-label>
+           <ion-label style="text-align: right; margin-top: 6px;"> Total a pagar: {{total|  replace }}.00 RD$</ion-label>
        </ion-item>
           
         </div>

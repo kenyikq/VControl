@@ -91,6 +91,7 @@
             <th>Transacción</th>
             <th class="hide">Descripción</th>
             <th>Monto</th>
+          
             <th></th>
             
           </tr>
@@ -102,6 +103,7 @@
             <td>{{transaccion.tipoTransaccion}}</td>
             <td class="hide">{{transaccion.descripcion}}</td>
             <td>{{transaccion.monto| replace }}</td>
+            
             <td>
               
                 <ion-button *ngIf="transaccion.tipoTransaccion !== 'Compra de Mercancía'&&transaccion.tipoTransaccion !== 'Venta'" 

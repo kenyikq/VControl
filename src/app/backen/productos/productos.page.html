@@ -81,8 +81,8 @@
          placeholder="Descripcion del articulo"></ion-input>
     
    </ion-item>
-       <div *ngIf="newproducto.tipoArticulo === 'Laptop'">
-        <ion-item>
+       <div *ngIf="newproducto.tipoArticulo === 'Laptop'||newproducto.tipoArticulo === 'Disco Duro'">
+        <ion-item *ngIf="newproducto.tipoArticulo === 'Laptop'">
 
           <ion-label  class="normal"  class="normal">Procesador:</ion-label>
           
@@ -110,7 +110,7 @@
           
         </ion-item>
 
-        <ion-item>
+        <ion-item *ngIf="newproducto.tipoArticulo === 'Laptop'">
 
           <ion-label  class="normal">Ram:</ion-label>
           
@@ -130,8 +130,8 @@
             <ion-select-option value="DDR5">DDR5</ion-select-option>
             </ion-select>  <ion-input disabled="true" inputmode="number" > <ion-label   
               class="normal" style="position: absolute;    margin-left: 44px;"></ion-label></ion-input>    
-        </ion-item>
-        <ion-item>
+        </ion-item >
+        <ion-item *ngIf="newproducto.tipoArticulo === 'Laptop'||newproducto.tipoArticulo === 'Disco Duro'">
 
           <ion-label  class="normal">Almacenamiento:</ion-label>
           
@@ -147,7 +147,7 @@
           
         </ion-item>
 
-        <ion-item>
+        <ion-item *ngIf="newproducto.tipoArticulo === 'Laptop'">
           <ion-label  class="normal">Pantalla:</ion-label>
         
         <ion-select class="normal" [(ngModel)]="newproducto.descripcion.pantalla">

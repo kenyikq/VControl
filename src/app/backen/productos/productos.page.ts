@@ -125,6 +125,8 @@ export class ProductosPage implements OnInit {
 
 
     };
+
+    
     this.firestoreService.getultimodoc<Producto>(this.path).subscribe((res) => {
 
       if (res !== null) {
@@ -249,8 +251,8 @@ console.log(this.valueSelected);
 
   getDatos() {
 this.filtrar();
-    const anio = moment(new Date()).format('YYYY');
-    const mes = moment(new Date()).format('MMMM');
+    const anio = moment(this.newproducto.fecha).format('YYYY');
+    const mes = moment(this.newproducto.fecha).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -261,11 +263,14 @@ this.filtrar();
 
         if (res.length > 0) {
           this.totales = res[0];
-        }
+          
+        } 
       });
+      this.caracteristicasArticulos();
   }
 
   guardarDatos() {
+   
 
     if (this.validacion()) {
        this.crearTransaccion();
@@ -275,19 +280,34 @@ this.filtrar();
 
     }
   }
-//revisar aqui
+
   async getionTotales(transaccion: number) {
-    const anio = moment(new Date()).format('YYYY');
-    const mes = moment(new Date()).format('MMMM');
+  
+    const anio = moment(this.newproducto.fecha).format('YYYY');
+    const mes = moment(this.newproducto.fecha).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-    this.totales.compra =
-      this.totales.compra + transaccion;
 
-    this.firestoreService.updateDoc(this.totales, path, mes);
+  await    this.firestoreService
+      .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
+      .pipe(take(1))
+      .subscribe((res) => {
+
+        if (res.length > 0) {
+          this.totales = res[0];
+          console.log('resultado del query',this.totales);
+         
+          this.totales.compra =
+          this.totales.compra + transaccion;
+          this.firestoreService.createDoc(this.totales, path, mes);
+        }
+      });
+
+   
   }
 
   async guardar() {
+ 
     this.presentLoading();
 
     const name = this.newproducto.nombre;

@@ -43,7 +43,7 @@ export class MovimientosContablesComponent implements OnInit {
     gasto: 0,
   };
 
-
+filas=15;
 
   constructor(
     public firestoreService: FirestoreService,
@@ -121,10 +121,10 @@ this.getTransacciones();
       });
   }
 
-getTransacciones() {
+getTransacciones(filas=15) {
   this.cont=0;
 
-  this.firestoreService.getCollection<MovimientosContables>(this.path).pipe().subscribe( res => {
+  this.firestoreService.getCollection<MovimientosContables>(this.path,filas).pipe().subscribe( res => {
      //console.log(res);
      this.cont=0;
      this.transacciones= res;
@@ -211,7 +211,7 @@ this.transaccion.codigo=codigo;
 this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
 this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 this.transaccion.idTransaccion=this.firestoreService.getid();
-console.log('condigo aumentado', this.transaccion.codigo);
+
 this.firestoreService.createDoc(this.transaccion ,path, this.transaccion.idTransaccion);
 this.getionTotales(this.transaccion.monto);
 
@@ -224,7 +224,7 @@ else{
   codigo= this.transaccion.codigo;
   this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
   this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
-console.log('para actualizar ',this.transaccion.idTransaccion);
+
   await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==',this.transaccion.idTransaccion).
   pipe(take(1)).subscribe(res=>{
     this.getionTotales(this.transaccion.monto - res[0].monto);

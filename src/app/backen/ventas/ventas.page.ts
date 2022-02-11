@@ -10,6 +10,7 @@ import { async } from '@firebase/util';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ThisReceiver } from '@angular/compiler';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -30,14 +31,16 @@ iduser=null;
 agregarArticulo= false;
 editarArticulo= false;
 indice= null;
-subtotal= null;
-descuento= null;
+subtotal= 0;
+descuento= 0;
 total=0;
 cont = 0;
 loading: any;
 codigo = null;
 codclient=null;
 subscribir: Subscription;
+filas= 15;
+disable= false;
 
 totales: GraficoTransacciones = {
   mes: moment(new Date()).format('MMMM'),
@@ -80,14 +83,15 @@ producto: Producto = {
   newArticulo: Articulo =
     { codigo: 0,
       descripcion: '',
-      cant: null,
-      precioVenta: null,
-      descuento: null,
-      total: null
+      cant: 0,
+      precioVenta: 0,
+      descuento: 0,
+      total: 0
 
     };
 
   newfactura: Factura = {
+    fechacreacion: moment(new Date()).toString(),
     codigo: 0, //funcionara como id
     fecha: moment(new Date()).toString(),
     fechaVencimiento: this.sumarDias(new Date(), 90).toString(),
@@ -221,10 +225,10 @@ else{
     this.newArticulo =
     { codigo: 0,
       descripcion: '',
-      cant: null,
+      cant: 0,
       precioVenta: null,
-      descuento: null,
-      total: null
+      descuento: 0,
+      total: 0
 
     };
 
@@ -261,38 +265,37 @@ this.calculoTotalesFactura();
   }
 
  async guardarDatos(){ //Guarda los datos de la factura y reduce inventario
-
-if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
+  if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
   await this.gestionarCliente().then(
       res=> {this.guardarFactura();
-     // this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
+      this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
       });
-
+      this.disable=false;
    }
    else{
      this.alerta('Favor llenar los datos del cliente correctamente');
    }
 
-
+  
   }
 
 
 cancelar(){
-  this.descuento=null;
-  this.subtotal=null;
-  this.total= null;
+  this.descuento=0;
+  this.subtotal=0;
+  this.total= 0;
   this.newfactura.articulo=[];
   this.newfactura.cliente='';
   this.newArticulo =
     { codigo: 0,
       descripcion: '',
-      cant: null,
-      precioVenta: null,
-      descuento: null,
-      total: null
+      cant: 0,
+      precioVenta: 0,
+      descuento: 0,
+      total: 0
 
     };
-
+    this.disable=false;
     this.newCliente =
     {
       //id: this.firestoreService.getid(),
@@ -342,13 +345,13 @@ cancelar(){
 
 }
 
-  getdatos() {
+  getdatos(filas= 1000) {
   this.getCliente();
     const path='usuario/'+this.iduser+'/clientes';
 
 
 
-    this.firestoreService.getCollection<Cliente>(path).subscribe( res => {
+    this.firestoreService.getCollection<Cliente>(path,filas).subscribe( res => {
       this.clientes=res;
 
     } );
@@ -393,10 +396,11 @@ this.newArticulo.codigo= prod.codigo;
 
     this.firestoreService.getCollectionquery<Cliente>(path, 'codigo', '==', this.codclient).subscribe(res=>{
 console.log('cliente ',res);
+
     this.newCliente.nombre= res[0].nombre;
     this.newCliente.telefono= res[0].telefono;
     this.newCliente.codigo= res[0].codigo;
-
+this.disable=true;
     this.codigofactura();
 
 
@@ -445,32 +449,45 @@ toast.present();
 async gestionarCliente(){
   const path= 'usuario/'+this.iduser+'/clientes';
 
-const telefonos = [];
+ const collection = this.firestoreService.database.collection<Producto>(path, ref=>ref.where('telefono','==',this.newCliente.telefono))
+ .valueChanges().pipe(take(1)).subscribe(res => {
+    if(res.length==0){//si el cliente no existe
+      this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
+        if(resp.length>0){
+        this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
+  
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+        this.codigofactura();
+      }).catch(err=>{ console.log('Error al crear cliente ',err); });
+      }
+      else{this.newCliente.codigo=0;console.log('else clientes no existe, codigo: ',this.newCliente.codigo); 
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+        this.codigofactura();
+      }).catch(err=>{ console.log('Error al crear cliente ',err); }); } });
 
-  this.clientes.forEach((cliente)=>{
-    telefonos.push(cliente.telefono);
+      
+    }
 
- });
-
-  if(telefonos.includes(this.newCliente.telefono) === false)//si el cliente no existe
- {console.log(telefonos.includes(this.newCliente.telefono));
-  await this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
-    if(resp){
-    this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
-    } });
-
-    this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
-      this.codigofactura();
-    }).catch(err=>{
-      console.log('Error al crear cliente ',err);
-    });
-
- } ;
+    else{//si el cliente existe
+      console.log('el cliente existe');
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+        this.codigofactura();
+      }).catch(err=>{ console.log('Error al crear cliente ',err); });
+    }
+ } );
 
  this.newfactura.cliente=this.newCliente.nombre;
 
 }
 
+comprobarTelefono(){
+  const path= 'usuario/'+this.iduser+'/clientes';
+  const collection = this.firestoreService.database.collection<Producto>(path, ref=>ref.where('telefono','==',this.newCliente.telefono))
+  .valueChanges().pipe(take(1)).subscribe(res => {
+    if(res.length>0){console.log('EL telefono se encuentra registrado');}
+    else{console.log('EL telefono no se encuentra registrado');}
+  });
+}
 
 
 async  guardarFactura(){
@@ -495,11 +512,12 @@ codigofactura(){
 
     this.firestoreService.getultimodoc<Factura>(path).subscribe(resp=>{
       if(resp.length>0){
-        console.log('este es el codigo',resp);
+       
        this.newfactura.codigo = resp[0].codigo + 1;
           }
-       else{console.log('no encotro nada');}
-
+       else{console.log('no encotro nada');
+       this.newfactura.codigo =0;}
+      
      });
 
 }
@@ -536,14 +554,28 @@ if(stockActual >= 0){
 
 
 async getionTotales(transaccion: number) {
-  const anio = moment(new Date()).format('YYYY');
-  const mes = moment(new Date()).format('MMMM');
+  const anio = moment(this.newfactura.fecha).format('YYYY');
+  const mes = moment(this.newfactura.fecha).format('MMMM');
   const path =
     'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-  this.totales.venta =
-    this.totales.venta + transaccion;
+  
 
-  this.firestoreService.createDoc(this.totales, path, mes);
+
+await    this.firestoreService
+    .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
+    .pipe(take(1))
+    .subscribe((res) => {
+
+      if (res.length > 0) {
+        this.totales = res[0];
+        console.log('resultado del query',this.totales);
+       
+        this.totales.venta =
+    this.totales.venta + transaccion;
+        this.firestoreService.createDoc(this.totales, path, mes);
+      }
+    });
+
 }
 
 async presentLoading(){
@@ -565,15 +597,15 @@ async presentLoading(){
       let transaccion =0;
 
       await this.firestoreService.getCollectionquery<MovimientosContables>
-      (path,'idTransaccion','==',this.iduser+'TF'+this.newfactura.codigo).
+      (path,'idTransaccion','==','C'+this.newCliente.codigo+'TF'+this.newfactura.codigo).
       pipe(take(1)).subscribe(res=>{
 
-        if(res.length === 0){
+        if(res.length === 0){//corregir codigo
 
               transaccion=this.newfactura.total;
               this.agregartransaccion();
               this.getionTotales(transaccion);
-
+console.log('id transacion en crearT',res[0].idTransaccion);
 
         }
 
@@ -609,9 +641,9 @@ async presentLoading(){
       this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
       this.transaccion.monto= this.newfactura.total;
       this.transaccion.codigo= codigo;
-      console.log('este es el codigo: ',codigo);
-      this.transaccion.idTransaccion= this.iduser+'TF'+codigo;
+      this.transaccion.idTransaccion= 'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
 
+      console.log('este es el id: ',this.transaccion.idTransaccion);
 
     this.firestoreService.createDoc(
         this.transaccion,

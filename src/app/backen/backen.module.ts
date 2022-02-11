@@ -8,6 +8,7 @@ import { VentasPage } from './ventas/Ventas.page';
 import { MovimientosContablesComponent } from './movimientos-contables/movimientos-contables.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { ReplacePipe } from 'src/app/pipe-personalizado/pipe-personalizado.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,9 +17,10 @@ import { ReplacePipe } from 'src/app/pipe-personalizado/pipe-personalizado.compo
     VentasPage,
     MovimientosContablesComponent,
     ClientesComponent ,
+    
   ],
   imports: [
-    CommonModule, IonicModule, FormsModule, RouterModule
+    CommonModule, IonicModule, FormsModule, RouterModule,ReactiveFormsModule 
   ]
 })
 export class BackenModule { }
