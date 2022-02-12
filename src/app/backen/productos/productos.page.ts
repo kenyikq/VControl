@@ -7,7 +7,7 @@ import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
 import { async } from '@firebase/util';
 import { take } from 'rxjs/operators';
-import { pipe } from 'rxjs';
+import { pipe, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-productos',
@@ -54,7 +54,7 @@ export class ProductosPage implements OnInit {
   };
 
   totales: GraficoTransacciones = {
-    mes: moment(new Date()).format('MMMM'),
+    mes: moment(this.newproducto.fecha).format('MMMM'),
     capital: 0,
     venta: 0,
     compra: 0,
@@ -70,6 +70,7 @@ export class ProductosPage implements OnInit {
 
   path = null;
   iduser = null;
+  subscriber:Subscription;
 
   constructor(
     public firestoreService: FirestoreService,
@@ -89,6 +90,7 @@ export class ProductosPage implements OnInit {
 
           this.limpiarCampos();
           this.getDatos();
+          this.caracteristicasArticulos();
 
         } else {
           this.alerta(
@@ -135,7 +137,7 @@ export class ProductosPage implements OnInit {
       }
       this.newproducto.id = 'P' + this.newproducto.codigo;
     });
-
+    this.caracteristicasArticulos();
     this.actualizarProducto = true;
   }
 
@@ -163,37 +165,39 @@ this.newproducto.descripcion= {
 
   segmentChanged(ev: any){
     this.valueSelected= ev.detail.value;
-    this.filtrar();
+      this.filtrar();
   }
 
   filtrar() {
 
 
-console.log(this.valueSelected);
-    if(this.valueSelected=== 'disponibles'){
+    if(this.valueSelected === 'disponibles'){
 
-     const collection = this.firestoreService.database.collection<Producto>(this.path,
-      ref=>ref.where('unds','>=',1))
-    .valueChanges().subscribe((res) => {
-      //console.log(res);
+   const  subscriber = this.firestoreService.database.collection<Producto>(this.path,
+      ref=>ref.where('unds','!=',0))
+    .valueChanges().pipe(take(1)).subscribe((res) => {
+      console.log(res);
       this.productos = res;
     });}
 
     if(this.valueSelected=== 'vendidos'){
 
-      const collection = this.firestoreService.database.collection<Producto>(this.path,
+      const subscriber = this.firestoreService.database.collection<Producto>(this.path,
        ref=>ref.where('unds','==',0))
-     .valueChanges().subscribe((res) => {
-       //console.log(res);
+     .valueChanges().pipe(take(2)).subscribe((res) => {
+       console.log(res);
        this.productos = res;
      });}
-     else{
-console.log(this.valueSelected);
-      const collection = this.firestoreService.database.collection<Producto>(this.path)
+     if(this.valueSelected=== 'todos') {
+
+
+const  subscriber = this.firestoreService.database.collection<Producto>(this.path)
       .valueChanges().subscribe((res) => {
-        //console.log(res);
+        console.log(res);
         this.productos = res;
+        
       });}
+      
 
   }
 
@@ -260,11 +264,15 @@ this.filtrar();
       .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
       .pipe(take(1))
       .subscribe((res) => {
+        console.log('estes es el mes ',mes);
+        console.log('estos son los totales: ',this.totales);
 
         if (res.length > 0) {
           this.totales = res[0];
           
         } 
+
+        else{this.totales.compra = (this.newproducto.costo + this.newproducto.gasto) * this.newproducto.unds;}
       });
       this.caracteristicasArticulos();
   }
@@ -279,12 +287,14 @@ this.filtrar();
          this.limpiarCampos();});
 
     }
+    this.getDatos();
   }
 
   async getionTotales(transaccion: number) {
   
     const anio = moment(this.newproducto.fecha).format('YYYY');
     const mes = moment(this.newproducto.fecha).format('MMMM');
+    this.totales.mes= moment(this.newproducto.fecha).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -301,6 +311,11 @@ this.filtrar();
           this.totales.compra + transaccion;
           this.firestoreService.createDoc(this.totales, path, mes);
         }
+        else{
+          console.log(this.totales);
+          this.totales.compra =
+          this.totales.compra + transaccion;
+              this.firestoreService.createDoc(this.totales, path, mes);}
       });
 
    
@@ -356,6 +371,7 @@ this.filtrar();
   }
 
   async crearTransaccion() {
+    this.getDatos();
     const path = 'usuario/' + this.iduser + '/movimientosContable';
     let transaccion =0;
 

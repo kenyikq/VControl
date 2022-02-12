@@ -26,6 +26,8 @@
   
 <ion-content>
   
+        
+  
     <div  class="datosProducto">
     
       <h3  class="titulo p-3 encabezado">Facturación</h3>
@@ -45,7 +47,7 @@
       <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
         <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute; margin-top: -15px;   margin-left: 10px;"></ion-label></ion-input>
         <ion-label style="margin-top: 6px;">Fecha:</ion-label>
-        <ion-datetime cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
+        <ion-datetime cancelText="cancel"  doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
      </ion-item>
      <ion-item  class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
       <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
@@ -61,24 +63,40 @@
       
       
       <ion-list>
+<form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
+  <ion-item>
+    <ion-label    class="normal" >Cliente:</ion-label>
+    <ion-input [readonly]="disable"  formControlName="name" required [(ngModel)]="newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
 
-        <ion-item>
-             <ion-label    class="normal" >Cliente:</ion-label>
-             <ion-input [disabled]="disable" required [(ngModel)]="newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del cliente"></ion-input>
-         
-             <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
-              <label for="client"><ion-icon  slot="icon-only" name="search"></ion-icon></label>
-              <ion-select [(ngModel)]="codclient" style="position: absolute;" class="normal" (ionChange)="getCliente()" >
-                <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.codigo">{{cliente.nombre}}</ion-select-option>
-               </ion-select>    
-              </ion-buttons>
+  <!-- Error messages -->
+  <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal" *ngIf="isSubmitted && errorControl.name.errors?.required">
+    El nombre es requerido.
+  </span>
+  <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.name.errors?.minlength">
+    EL nombre debe tener mas de dos letras.
+  </span>
+
+    <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
+     <label for="client"><ion-icon  slot="icon-only" name="search"></ion-icon></label>
+     <ion-select [ngModelOptions]="{standalone: true}" [(ngModel)]="codclient" style="position: absolute;" class="normal" (ionChange)="getCliente()" >
+       <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.codigo">{{cliente.nombre}}</ion-select-option>
+      </ion-select>    
+     </ion-buttons>
+
+   </ion-item>
+<ion-item>
+ <ion-label    class="normal" >Celular:</ion-label>
+ <ion-input [readonly]="disable"  formControlName="celular"  inputmode="number" (ionBlur)="submitForm()" required [(ngModel)]="newCliente.telefono"  class="normal" type="tel"  placeholder="809-894-5555"></ion-input>
+ <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.required">
+  Numero Celular requerido.
+</span>
+<span  style="position: absolute;width: 250px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.pattern">
+  El formato no es correcto. Ejemplo: 809-782-8923.
+</span>
+</ion-item>
+
+</form>
         
-            </ion-item>
-        <ion-item>
-          <ion-label    class="normal" >Celular:</ion-label>
-          <ion-input  pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" [disabled]="disable" inputmode="number" (ionBlur)="comprobarTelefono()" required [(ngModel)]="newCliente.telefono"  class="normal" type="tel"  placeholder="809-894-5555"></ion-input>
-      
-     </ion-item>
         <div *ngIf="agregarArticulo===true">
           <ion-card style="margin-top: 35px;"><ion-item  class="normal" >
           <ion-label  class="normal">Articulo:</ion-label>
@@ -112,8 +130,8 @@
               </ion-button>
                       
               </ion-buttons>
-            <div class="row">
-              <table border="1" class="table" id="tablaprueba" >
+            <div class="row"  >
+              <table scrollable="true" border="1" class="table" id="tablaprueba" >
                 <thead class="thead-dark normal" style= "font-weight: bold;" >
                   <tr>
                     <th>Articulo</th>
@@ -177,5 +195,5 @@
       
     </div>
 
-  
+ 
 </ion-content>

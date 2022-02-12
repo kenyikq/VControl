@@ -20,7 +20,7 @@
 
 <ion-content>
 
-  
+  <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate> 
   <h3 class ="subtitulo p-3 encabezado"> Datos del Usuario</h3>
   <div  class="login-section">
     
@@ -29,7 +29,13 @@
       
       <ion-item>
         <ion-label   position="floating" class="normal">Nombre:</ion-label>
-        <ion-input [(ngModel)]="usuario.nombre" class="normal" type="string" inputmode="text" placeholder="Introduzca su Nombre" required></ion-input>
+        <ion-input  formControlName="name" [(ngModel)]="usuario.nombre" class="normal" type="string" inputmode="text" placeholder="Introduzca su Nombre" required></ion-input>
+        <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal" *ngIf="isSubmitted && errorControl.name.errors?.required">
+          El nombre es requerido.
+        </span>
+        <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.name.errors?.minlength">
+          EL nombre debe tener mas de dos letras.
+        </span>
       </ion-item>
       
     </div>
@@ -40,7 +46,14 @@
     <ion-icon lot="start" name="call-outline"></ion-icon>
         <ion-item>
       <ion-label  position="floating" class="normal">Contacto:</ion-label>
-      <ion-input [(ngModel)]="usuario.contacto" required class="normal" type="tel" inputmode="tel" placeholder="Introduzca su numero de contacto"></ion-input>
+      <ion-input formControlName="celular" [(ngModel)]="usuario.contacto" required class="normal" type="tel"
+       inputmode="tel" placeholder="Introduzca su numero de contacto"></ion-input>
+      <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.required">
+        Numero Celular requerido.
+      </span>
+      <span  style="position: absolute;width: 250px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.pattern">
+        El formato no es correcto. Ejemplo: 809-782-8923.
+      </span>
     </ion-item>
     
   </div>
@@ -51,9 +64,15 @@
     <ion-icon lot="start" name="mail-outline"></ion-icon>
         <ion-item>
       <ion-label  position="floating" class="normal">Correo:</ion-label>
-      <ion-input [(ngModel)]="usuario.email" class="normal" type="email" inputmode="email" 
+      <ion-input  formControlName="email" [(ngModel)]="usuario.email" class="normal" type="email" inputmode="email" 
       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"required
       placeholder="Introduzca su correo electrónico"></ion-input>
+      <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.email.errors?.required">
+        Correo requerido.
+      </span>
+      <span  style="position: absolute;width: 250px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.email.errors?.pattern">
+        El formato no es correcto. 
+      </span>
     </ion-item>
   </div>
 
@@ -63,7 +82,13 @@
     <ion-icon lot="start" name="lock-closed-outline"></ion-icon>
     <ion-item>
       <ion-label  position="floating" class="normal">Clave de Acceso:</ion-label>
-      <ion-input [(ngModel)]="usuario.password" required class="normal" type="password" inputmode="password" placeholder="Introduzca su clave de acceso"></ion-input>
+      <ion-input  formControlName="passw" [(ngModel)]="usuario.password" required class="normal" type="password" inputmode="password" placeholder="Introduzca su clave de acceso"></ion-input>
+      <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.passw.errors?.required">
+        Clave requerida.
+      </span>
+      <span  style="position: absolute;width: 250px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.passw.errors?.pattern">
+        El formato no es correcto. 
+      </span>
     </ion-item>
     <p *ngIf="usuario.password.length<8" style="color: #f8f9fa; text-align:center; " class="danger" padding>Debe tener al menos 8 caracteres.</p>
   </div>
@@ -75,7 +100,7 @@
     <ion-item >
       
       <ion-label   position="floating" required class="normal">Confirmar Clave de Acceso:</ion-label>
-      <ion-input  *ngIf="!uid.length" [(ngModel)]="confirmarPass" class="normal" type="password" inputmode="password" placeholder="Repita su clave de acceso"></ion-input>
+      <ion-input [ngModelOptions]="{standalone: true}"  *ngIf="!uid.length" [(ngModel)]="confirmarPass" class="normal" type="password" inputmode="password" placeholder="Repita su clave de acceso"></ion-input>
     </ion-item>
     
   </div>
@@ -98,5 +123,5 @@
 </div>
  
 </div>
-  
+</form>
 </ion-content>

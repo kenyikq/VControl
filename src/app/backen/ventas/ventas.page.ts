@@ -13,12 +13,15 @@ import { ThisReceiver } from '@angular/compiler';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
+
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.page.html',
   styleUrls: ['./ventas.page.scss'],
 })
 export class VentasPage implements OnInit {
+  ionicForm: FormGroup;
+  isSubmitted = false;
   articulos: Factura[]= [];
 
 clientes: Cliente[]= [];
@@ -42,13 +45,6 @@ subscribir: Subscription;
 filas= 15;
 disable= false;
 
-totales: GraficoTransacciones = {
-  mes: moment(new Date()).format('MMMM'),
-  capital: 0,
-  venta: 0,
-  compra: 0,
-  gasto: 0,
-};
 
 producto: Producto = {
   id: this.firestoreService.getid(),
@@ -102,6 +98,16 @@ producto: Producto = {
 
     };
 
+    totales: GraficoTransacciones = {
+      mes: moment(this.newfactura.fecha).format('MMMM'),
+      capital: 0,
+      venta: 0,
+      compra: 0,
+      gasto: 0,
+    };
+    
+  
+
      transaccion: MovimientosContables={
     codigo: 0,
     tipoTransaccion:'',
@@ -127,6 +133,7 @@ nombresArt = [];
               public navCtrl: NavController,
               public toastCtrl: ToastController,
               public alertController: AlertController,
+              public formBuilder: FormBuilder
   ) {
 
 
@@ -153,9 +160,29 @@ nombresArt = [];
   }
 
   ngOnInit() {
-
+    this.ionicForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+     // email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
+     celular: ['', [Validators.required, Validators.pattern('[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}')]]
+    });
 
   }
+
+  submitForm() {
+    this.isSubmitted = true;
+    if (!this.ionicForm.valid) {
+      console.log('Please provide all the required values!')
+      return false;
+    } else {
+      console.log(this.ionicForm.value);
+      return true;
+    }
+  }
+
+  get errorControl() {
+    return this.ionicForm.controls;
+  }
+ 
 
   comprobarExistencia(){
 
@@ -260,12 +287,14 @@ this.calculoTotalesFactura();
   }
 
   nuevo(){
+    
     this.agregarArticulo= true;
 
   }
 
  async guardarDatos(){ //Guarda los datos de la factura y reduce inventario
-  if(this.newCliente.nombre.length> 2 && this.newCliente.telefono.length> 6 ){
+  console.log('aqui la respuesta ',this.submitForm());
+  if(this.submitForm()){
   await this.gestionarCliente().then(
       res=> {this.guardarFactura();
       this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
@@ -341,6 +370,7 @@ cancelar(){
      this.newfactura.codigo= 0;
 
       this.productos=[];
+      this.isSubmitted = false;
     this.getdatos();
 
 }
@@ -362,18 +392,19 @@ cancelar(){
    } );
 
 
-     const anio = moment(new Date()).format('YYYY');
-     const mes = moment(new Date()).format('MMMM');
-     const path1 =
-       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-
+     const anio = moment(this.newfactura.fecha).format('YYYY');
+     const mes = moment(this.newfactura.fecha).format('MMMM');
+     const path1 =  'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+     console.log('mes para query',mes);
      this.firestoreService
        .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
        .pipe(take(1))
        .subscribe((res) => {
            if (res.length > 0) {
            this.totales = res[0];
+           console.log('estos son los totales ccuando hay info',this.totales);
          }
+         else{this.totales.venta=this.newfactura.total;}
        });
 
 
@@ -435,6 +466,7 @@ sumarDias(fecha, dias){
   fecha.setDate(fecha.getDate() + dias);
   return fecha;
 }
+
 
 async presentToast(msg: string) {
   const toast = await this.toastCtrl.create({
@@ -554,8 +586,10 @@ if(stockActual >= 0){
 
 
 async getionTotales(transaccion: number) {
+  this.getdatos();
   const anio = moment(this.newfactura.fecha).format('YYYY');
   const mes = moment(this.newfactura.fecha).format('MMMM');
+  this.totales.mes= moment(this.newfactura.fecha).format('MMMM');
   const path =
     'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
   
@@ -574,6 +608,10 @@ await    this.firestoreService
     this.totales.venta + transaccion;
         this.firestoreService.createDoc(this.totales, path, mes);
       }
+
+      else{this.totales.venta =
+        this.totales.venta + transaccion;
+            this.firestoreService.createDoc(this.totales, path, mes);}
     });
 
 }

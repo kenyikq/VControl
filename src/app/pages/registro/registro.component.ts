@@ -4,6 +4,7 @@ import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-registro',
@@ -26,14 +27,16 @@ export class RegistroComponent implements OnInit {
 subinfo: Subscription;
 confirmarPass ='';
 
-
+ionicForm: FormGroup;
+isSubmitted = false;
 
   constructor(public log: FirebaseauthService,
               public firestoreService: FirestoreService,
               public toastCtrl: ToastController,
               public navCtrl: NavController,
               public alertController: AlertController,
-              public loadingController: LoadingController) {
+              public loadingController: LoadingController,
+              public formBuilder: FormBuilder) {
                this.log.stateauth().subscribe( res=>{
 
                   if (res !== null){
@@ -49,6 +52,13 @@ confirmarPass ='';
 
 
  async ngOnInit() {
+  this.ionicForm = this.formBuilder.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
+   celular: ['', [Validators.required, Validators.pattern('[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}')]],
+   passw: ['', [Validators.required, Validators.min(8)]],
+  });
+
     const uid = await this.log.getUid().then(res =>{
       if (this.uid!==null||this.uid!=='')
       {this.seleccionA();};
@@ -57,8 +67,20 @@ confirmarPass ='';
 
 
   }
+  submitForm() {
+    this.isSubmitted = true;
+    if (!this.ionicForm.valid) {
+      console.log('Please provide all the required values!')
+      return false;
+    } else {
+      console.log(this.ionicForm.value)
+    }
+  }
 
-
+  get errorControl() {// muestra el mensaje al usuario
+    return this.ionicForm.controls;
+  }
+ 
 
   limpiarcampos(){
     this.usuario= {
@@ -83,7 +105,7 @@ confirmarPass ='';
         }).catch(err =>{console.log('error de id:',err);});
      });
 
-
+     
   }
 
  async registro(){
@@ -120,6 +142,7 @@ confirmarPass ='';
  async salir(){
     this.log.logout();
     this.subinfo.unsubscribe();
+    this.isSubmitted = true;
   }
 
   async presentToast(msg: string) {
@@ -165,6 +188,7 @@ confirmarPass ='';
     if (this.usuario.nombre=== ''|| this.usuario.contacto ==='' || this.usuario.password ===''
     || this.usuario.email===''){
       this.alerta('Todos los campos son queridos');
+      this.submitForm();
     return false;
     }
 

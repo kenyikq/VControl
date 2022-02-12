@@ -61,7 +61,6 @@ filas=15;
       if (res !== null){
         this.iduser= res.uid;
       this.path='usuario/'+this.iduser+'/movimientosContable';
-
       this.getTransacciones();
       this.getDatos();
 
@@ -90,7 +89,7 @@ filas=15;
       codigo: 0,
       tipoTransaccion:'',
       descripcion:'',
-      fecha: moment(new Date()).format('MM-DD-YYYY'),
+      fecha: moment(new Date()).format('DD-MM-YYYY'),
       anio: moment(new Date()).format('MMMM'),
     dia: moment(new Date()).format('DD'),
       mes: moment(new Date()).format('MMMM'),
@@ -131,8 +130,8 @@ getTransacciones(filas=15) {
 
    } );
 
-   const anio = moment(new Date()).format('YYYY');
-   const mes = moment(new Date()).format('MMMM');
+   const anio = moment(this.transaccion.fecha).format('YYYY');
+   const mes = moment(this.transaccion.fecha).format('MMMM');
    const path =
      'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -339,8 +338,8 @@ validacion(){
   }
 
   async getionTotales(transaccion: number) {
-    const anio = moment(new Date()).format('YYYY');
-    const mes = moment(new Date()).format('MMMM');
+    const anio = moment(this.transaccion.fecha).format('YYYY');
+    const mes = moment(this.transaccion.fecha).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
       if(this.transaccion.tipoTransaccion==='Venta')

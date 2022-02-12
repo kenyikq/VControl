@@ -10,6 +10,8 @@ import { ClientesComponent } from './clientes/clientes.component';
 import { ReplacePipe } from 'src/app/pipe-personalizado/pipe-personalizado.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
+
+
 @NgModule({
   declarations: [
     ReplacePipe,
