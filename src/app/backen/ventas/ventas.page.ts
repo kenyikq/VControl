@@ -105,8 +105,7 @@ producto: Producto = {
       compra: 0,
       gasto: 0,
     };
-    
-  
+
 
      transaccion: MovimientosContables={
     codigo: 0,
@@ -171,7 +170,7 @@ nombresArt = [];
   submitForm() {
     this.isSubmitted = true;
     if (!this.ionicForm.valid) {
-      console.log('Please provide all the required values!')
+      console.log('Please provide all the required values!');
       return false;
     } else {
       console.log(this.ionicForm.value);
@@ -182,7 +181,7 @@ nombresArt = [];
   get errorControl() {
     return this.ionicForm.controls;
   }
- 
+
 
   comprobarExistencia(){
 
@@ -287,7 +286,7 @@ this.calculoTotalesFactura();
   }
 
   nuevo(){
-    
+
     this.agregarArticulo= true;
 
   }
@@ -305,7 +304,7 @@ this.calculoTotalesFactura();
      this.alerta('Favor llenar los datos del cliente correctamente');
    }
 
-  
+
   }
 
 
@@ -483,26 +482,26 @@ async gestionarCliente(){
 
  const collection = this.firestoreService.database.collection<Producto>(path, ref=>ref.where('telefono','==',this.newCliente.telefono))
  .valueChanges().pipe(take(1)).subscribe(res => {
-    if(res.length==0){//si el cliente no existe
+    if(res.length === 0){//si el cliente no existe
       this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
         if(resp.length>0){
         this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
-  
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(respu=>{
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); });
       }
-      else{this.newCliente.codigo=0;console.log('else clientes no existe, codigo: ',this.newCliente.codigo); 
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+      else{this.newCliente.codigo=1000;console.log('else clientes no existe, codigo: ',this.newCliente.codigo);
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(re=>{
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); }); } });
 
-      
+
     }
 
     else{//si el cliente existe
       console.log('el cliente existe');
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(res=>{
+      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(respues=>{
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); });
     }
@@ -544,12 +543,12 @@ codigofactura(){
 
     this.firestoreService.getultimodoc<Factura>(path).subscribe(resp=>{
       if(resp.length>0){
-       
+
        this.newfactura.codigo = resp[0].codigo + 1;
           }
        else{console.log('no encotro nada');
        this.newfactura.codigo =0;}
-      
+
      });
 
 }
@@ -592,7 +591,7 @@ async getionTotales(transaccion: number) {
   this.totales.mes= moment(this.newfactura.fecha).format('MMMM');
   const path =
     'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-  
+
 
 
 await    this.firestoreService
@@ -603,7 +602,7 @@ await    this.firestoreService
       if (res.length > 0) {
         this.totales = res[0];
         console.log('resultado del query',this.totales);
-       
+
         this.totales.venta =
     this.totales.venta + transaccion;
         this.firestoreService.createDoc(this.totales, path, mes);

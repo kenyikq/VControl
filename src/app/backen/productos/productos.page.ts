@@ -70,7 +70,7 @@ export class ProductosPage implements OnInit {
 
   path = null;
   iduser = null;
-  subscriber:Subscription;
+  subscriber: Subscription;
 
   constructor(
     public firestoreService: FirestoreService,
@@ -128,7 +128,7 @@ export class ProductosPage implements OnInit {
 
     };
 
-    
+
     this.firestoreService.getultimodoc<Producto>(this.path).subscribe((res) => {
 
       if (res !== null) {
@@ -195,9 +195,9 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
       .valueChanges().subscribe((res) => {
         console.log(res);
         this.productos = res;
-        
+
       });}
-      
+
 
   }
 
@@ -269,8 +269,8 @@ this.filtrar();
 
         if (res.length > 0) {
           this.totales = res[0];
-          
-        } 
+
+        }
 
         else{this.totales.compra = (this.newproducto.costo + this.newproducto.gasto) * this.newproducto.unds;}
       });
@@ -278,7 +278,6 @@ this.filtrar();
   }
 
   guardarDatos() {
-   
 
     if (this.validacion()) {
        this.crearTransaccion();
@@ -291,7 +290,7 @@ this.filtrar();
   }
 
   async getionTotales(transaccion: number) {
-  
+
     const anio = moment(this.newproducto.fecha).format('YYYY');
     const mes = moment(this.newproducto.fecha).format('MMMM');
     this.totales.mes= moment(this.newproducto.fecha).format('MMMM');
@@ -306,7 +305,7 @@ this.filtrar();
         if (res.length > 0) {
           this.totales = res[0];
           console.log('resultado del query',this.totales);
-         
+
           this.totales.compra =
           this.totales.compra + transaccion;
           this.firestoreService.createDoc(this.totales, path, mes);
@@ -318,11 +317,11 @@ this.filtrar();
               this.firestoreService.createDoc(this.totales, path, mes);}
       });
 
-   
+
   }
 
   async guardar() {
- 
+
     this.presentLoading();
 
     const name = this.newproducto.nombre;
