@@ -23,7 +23,7 @@ export class MovimientosContablesComponent implements OnInit {
     codigo: 0,
     tipoTransaccion:'',
     descripcion:'',
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
     anio: moment(new Date()).format('YYYY'),
     mes: moment(new Date()).format('MMMM'),
     dia: moment(new Date()).format('DD'),
@@ -65,7 +65,7 @@ filas=15;
       this.path='usuario/'+this.iduser+'/movimientosContable';
       this.getTransacciones();
       this.getDatos();
-
+ 
       }else {
         this.alerta('Necesitas ingresar con tu usuario para usar el modulo de trasacciones');
 
@@ -80,6 +80,7 @@ filas=15;
   crearnuevaTransaccion(){
     this.nuevo();
     this.agregarTransaccion= true;
+    this.transaccion.fecha= moment(new Date()).toString();
 
   }
 
@@ -91,8 +92,8 @@ filas=15;
       codigo: 0,
       tipoTransaccion:'',
       descripcion:'',
-      fecha: moment(new Date()).format('DD-MM-YYYY'),
-      anio: moment(new Date()).format('MMMM'),
+      fecha: moment(new Date()).toString(),
+      anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
       mes: moment(new Date()).format('MMMM'),
       monto: 0,
@@ -205,14 +206,14 @@ mostrarDatos(transaction: MovimientosContables){
 async  guardar(){
   const path= 'usuario/'+this.iduser+'/movimientosContable';
 let codigo=0;
+this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
+this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
+this.transaccion.mes= moment(this.transaccion.fecha).format('MMMM');
 
 if (this.actualizarTransaccion=== false){
 
-
-
 this.transaccion.codigo=codigo;
-this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
-this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
+
 this.transaccion.idTransaccion=this.firestoreService.getid();
 
 this.firestoreService.createDoc(this.transaccion ,path, this.transaccion.idTransaccion);
@@ -225,9 +226,6 @@ this.getionTotales(this.transaccion.monto);
 else{
 
   codigo= this.transaccion.codigo;
-  this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
-  this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
-
   await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==',this.transaccion.idTransaccion).
   pipe(take(1)).subscribe(res=>{
     this.getionTotales(this.transaccion.monto - res[0].monto);
@@ -345,9 +343,13 @@ validacion(){
 
   async getionTotales(transaccion: number) {
     this.getDatos();
-    const anio = moment(this.transaccion.fecha).format('YYYY');
-    const mes = moment(this.transaccion.fecha).format('MMMM');
-    this.transaccion.mes=mes;
+    const anio = this.transaccion.anio;
+    const mes = this.transaccion.mes;
+    this.totales.mes=mes;
+    
+    
+    console.log('gestion Totales mes:',mes);
+    console.log('Transaccion: ',transaccion);
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -362,7 +364,7 @@ validacion(){
           this.totales = res[0];
           console.log('resultado del query',this.totales);
 
-          if(this.transaccion.tipoTransaccion==='Venta')
+          if(this.transaccion.tipoTransaccion==='Ventas')
           {
             this.totales.venta =
           this.totales.venta + transaccion;
@@ -399,7 +401,7 @@ validacion(){
 
         else{
 
-          if(this.transaccion.tipoTransaccion==='Venta')
+          if(this.transaccion.tipoTransaccion==='Ventas')
           {
             this.totales.venta = transaccion;
           this.firestoreService.createDoc(this.totales, path, mes);

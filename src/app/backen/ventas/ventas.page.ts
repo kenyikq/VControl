@@ -53,7 +53,7 @@ producto: Producto = {
   foto: '',
   nombre: '',
   unds: 0,
-  fecha: moment(new Date()).format('DD-MM-YYYY'),
+  fecha: moment(new Date()).toString(),
   mes: moment(new Date()).format('MMMM'),
   costo: 0,
   gasto: 0,
@@ -73,7 +73,7 @@ producto: Producto = {
     codigo: 1000,
     nombre:'',
     telefono:'',
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
   };
 
   newArticulo: Articulo =
@@ -111,7 +111,7 @@ producto: Producto = {
     codigo: 0,
     tipoTransaccion:'',
     descripcion:'',
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
     mes: moment(new Date()).format('MMMM'),
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
@@ -173,7 +173,7 @@ nombresArt = [];
       console.log('Please provide all the required values!');
       return false;
     } else {
-      console.log(this.ionicForm.value);
+     // console.log(this.ionicForm.value);
       return true;
     }
   }
@@ -292,7 +292,7 @@ this.calculoTotalesFactura();
   }
 
  async guardarDatos(){ //Guarda los datos de la factura y reduce inventario
-  console.log('aqui la respuesta ',this.submitForm());
+  //console.log('aqui la respuesta ',this.submitForm());
   if(this.submitForm()){
   await this.gestionarCliente().then(
       res=> {this.guardarFactura();
@@ -330,7 +330,7 @@ cancelar(){
       codigo: 1000,
       nombre:'',
       telefono:'',
-      fecha: moment(new Date()).format('DD-MM-YYYY'),
+      fecha: moment(new Date()).toString(),
     };
 
     this.newCliente =
@@ -339,7 +339,7 @@ cancelar(){
       codigo: 1000,
       nombre:'',
       telefono:'',
-      fecha: moment(new Date()).format('DD-MM-YYYY'),
+      fecha: moment(new Date()).toString(),
     };
 
   this.editarArticulo= false;
@@ -353,7 +353,7 @@ cancelar(){
       foto: '',
       nombre: '',
       unds: 0,
-      fecha: moment(new Date()).format('DD-MM-YYYY'),
+      fecha: moment(new Date()).toString(),
       mes: moment(new Date()).format('MMMM'),
       costo: 0,
       gasto: 0,
@@ -401,7 +401,7 @@ cancelar(){
        .subscribe((res) => {
            if (res.length > 0) {
            this.totales = res[0];
-           console.log('estos son los totales ccuando hay info',this.totales);
+
          }
          else{this.totales.venta=this.newfactura.total;}
        });
@@ -425,7 +425,6 @@ this.newArticulo.codigo= prod.codigo;
     const path='usuario/'+this.iduser+'/clientes';
 
     this.firestoreService.getCollectionquery<Cliente>(path, 'codigo', '==', this.codclient).subscribe(res=>{
-console.log('cliente ',res);
 
     this.newCliente.nombre= res[0].nombre;
     this.newCliente.telefono= res[0].telefono;
@@ -466,6 +465,10 @@ sumarDias(fecha, dias){
   return fecha;
 }
 
+actulizarVencimiento(){
+ this.newfactura.fechaVencimiento= this.sumarDias(this.newfactura.fecha, 90).toString();
+}
+
 
 async presentToast(msg: string) {
   const toast = await this.toastCtrl.create({
@@ -491,7 +494,7 @@ async gestionarCliente(){
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); });
       }
-      else{this.newCliente.codigo=1000;console.log('else clientes no existe, codigo: ',this.newCliente.codigo);
+      else{this.newCliente.codigo=1000;
       this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(re=>{
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); }); } });
@@ -500,7 +503,7 @@ async gestionarCliente(){
     }
 
     else{//si el cliente existe
-      console.log('el cliente existe');
+
       this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(respues=>{
         this.codigofactura();
       }).catch(err=>{ console.log('Error al crear cliente ',err); });
@@ -605,11 +608,11 @@ await    this.firestoreService
 
         this.totales.venta =
     this.totales.venta + transaccion;
-        this.firestoreService.createDoc(this.totales, path, mes);
+    this.db.collection(path).doc(mes).update({venta: this.totales.venta});
+        
       }
 
-      else{this.totales.venta =
-        this.totales.venta + transaccion;
+      else{this.totales.venta = transaccion;
             this.firestoreService.createDoc(this.totales, path, mes);}
     });
 
@@ -640,8 +643,8 @@ async presentLoading(){
         if(res.length === 0){//corregir codigo
 
               transaccion=this.newfactura.total;
-              this.agregartransaccion();
-              this.getionTotales(transaccion);
+              this.agregartransaccion().then(()=>{this.getionTotales(transaccion);});
+              
 console.log('id transacion en crearT',res[0].idTransaccion);
 
         }
@@ -671,7 +674,7 @@ console.log('id transacion en crearT',res[0].idTransaccion);
   });
 
     this.transaccion.descripcion='venta de mercancia';
-      this.transaccion.tipoTransaccion='Venta';
+      this.transaccion.tipoTransaccion='Ventas';
       this.transaccion.fecha= this.newfactura.fecha;
       this.transaccion.mes= moment( this.newfactura.fecha).format('MMMM');
       this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
@@ -680,9 +683,7 @@ console.log('id transacion en crearT',res[0].idTransaccion);
       this.transaccion.codigo= codigo;
       this.transaccion.idTransaccion= 'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
 
-      console.log('este es el id: ',this.transaccion.idTransaccion);
-
-    this.firestoreService.createDoc(
+        this.firestoreService.createDoc(
         this.transaccion,
         pathT,
         this.transaccion.idTransaccion

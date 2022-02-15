@@ -47,7 +47,7 @@
       <ion-item class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
         <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute; margin-top: -15px;   margin-left: 10px;"></ion-label></ion-input>
         <ion-label style="margin-top: 6px;">Fecha:</ion-label>
-        <ion-datetime cancelText="cancel"  doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
+        <ion-datetime cancelText="cancel" (ionchage)="actulizarVencimiento()" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newfactura.fecha"></ion-datetime>
      </ion-item>
      <ion-item  class="normal" style="--border-width: 0 0 0px 0 !important; margin-top: -15px">
       <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>

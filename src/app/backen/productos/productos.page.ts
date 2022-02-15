@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { async } from '@firebase/util';
 import { take } from 'rxjs/operators';
 import { pipe, Subscription } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-productos',
@@ -26,7 +27,7 @@ export class ProductosPage implements OnInit {
     foto: '',
     nombre: '',
     unds: 0,
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
     mes: moment(new Date()).format('MMMM').toString(),
     costo: 0,
     gasto: 0,
@@ -45,7 +46,7 @@ export class ProductosPage implements OnInit {
     codigo: 0,
     tipoTransaccion: '',
     descripcion: '',
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
     mes: moment(new Date()).format('MMMM'),
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
@@ -73,6 +74,7 @@ export class ProductosPage implements OnInit {
   subscriber: Subscription;
 
   constructor(
+    public db: AngularFirestore,
     public firestoreService: FirestoreService,
     public cd: ChangeDetectorRef,
     public firestorage: FirestorageService,
@@ -176,7 +178,7 @@ this.newproducto.descripcion= {
    const  subscriber = this.firestoreService.database.collection<Producto>(this.path,
       ref=>ref.where('unds','!=',0))
     .valueChanges().pipe(take(1)).subscribe((res) => {
-      console.log(res);
+      
       this.productos = res;
     });}
 
@@ -185,7 +187,7 @@ this.newproducto.descripcion= {
       const subscriber = this.firestoreService.database.collection<Producto>(this.path,
        ref=>ref.where('unds','==',0))
      .valueChanges().pipe(take(2)).subscribe((res) => {
-       console.log(res);
+       
        this.productos = res;
      });}
      if(this.valueSelected=== 'todos') {
@@ -193,7 +195,7 @@ this.newproducto.descripcion= {
 
 const  subscriber = this.firestoreService.database.collection<Producto>(this.path)
       .valueChanges().subscribe((res) => {
-        console.log(res);
+        
         this.productos = res;
 
       });}
@@ -296,6 +298,7 @@ this.filtrar();
     this.totales.mes= moment(this.newproducto.fecha).format('MMMM');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+      
 
   await    this.firestoreService
       .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
@@ -308,12 +311,12 @@ this.filtrar();
 
           this.totales.compra =
           this.totales.compra + transaccion;
+          this.db.collection(path).doc(mes).update({compra: this.totales.compra});
           this.firestoreService.createDoc(this.totales, path, mes);
         }
         else{
           console.log(this.totales);
-          this.totales.compra =
-          this.totales.compra + transaccion;
+         
               this.firestoreService.createDoc(this.totales, path, mes);}
       });
 

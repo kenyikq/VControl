@@ -19,7 +19,7 @@ export class ClientesComponent implements OnInit {
     codigo: 1000,
     nombre: '',
     telefono: '',
-    fecha: moment(new Date()).format('DD-MM-YYYY'),
+    fecha: moment(new Date()).toString(),
    // mes: moment(new Date()).format('MMMM').toString(),
      };
 
@@ -75,7 +75,7 @@ export class ClientesComponent implements OnInit {
       codigo: 1000,
       nombre: '',
       telefono: '',
-      fecha: moment(new Date()).format('DD-MM-YYYY'),
+      fecha: moment(new Date()).toString(),
      // mes: moment(new Date()).format('MMMM').toString(),
        };
       this.firestoreService.getultimodoc<Cliente>(this.path).subscribe(res=>{
