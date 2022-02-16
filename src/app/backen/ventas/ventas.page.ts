@@ -42,7 +42,7 @@ loading: any;
 codigo = null;
 codclient=null;
 subscribir: Subscription;
-filas= 15;
+filas= 30;
 disable= false;
 
 
@@ -609,7 +609,7 @@ await    this.firestoreService
         this.totales.venta =
     this.totales.venta + transaccion;
     this.db.collection(path).doc(mes).update({venta: this.totales.venta});
-        
+
       }
 
       else{this.totales.venta = transaccion;
@@ -644,7 +644,7 @@ async presentLoading(){
 
               transaccion=this.newfactura.total;
               this.agregartransaccion().then(()=>{this.getionTotales(transaccion);});
-              
+
 console.log('id transacion en crearT',res[0].idTransaccion);
 
         }

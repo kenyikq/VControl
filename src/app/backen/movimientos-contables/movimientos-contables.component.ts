@@ -65,8 +65,8 @@ filas=15;
       this.path='usuario/'+this.iduser+'/movimientosContable';
       this.getTransacciones();
       this.getDatos();
- 
-      }else {
+
+   }else {
         this.alerta('Necesitas ingresar con tu usuario para usar el modulo de trasacciones');
 
       }
@@ -123,7 +123,7 @@ this.getTransacciones();
       });
   }
 
-getTransacciones(filas=15) {
+getTransacciones(filas=30) {
   this.cont=0;
 
   this.firestoreService.getCollection<MovimientosContables>(this.path,filas).pipe().subscribe( res => {
@@ -346,10 +346,7 @@ validacion(){
     const anio = this.transaccion.anio;
     const mes = this.transaccion.mes;
     this.totales.mes=mes;
-    
-    
-    console.log('gestion Totales mes:',mes);
-    console.log('Transaccion: ',transaccion);
+
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
