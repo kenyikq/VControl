@@ -118,6 +118,11 @@ path= null;
     
    } );
 
+   this.firestoreService.getCollection(path1).subscribe(res=>{
+console.log('colecion de totals',res);
+
+   });
+
 
    }
 

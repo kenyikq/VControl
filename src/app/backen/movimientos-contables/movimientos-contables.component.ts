@@ -20,7 +20,7 @@ export class MovimientosContablesComponent implements OnInit {
   transacciones: MovimientosContables[]= [];
 
   transaccion: MovimientosContables={
-    codigo: 0,
+    codigo: '',
     tipoTransaccion:'',
     descripcion:'',
     fecha: moment(new Date()).toString(),
@@ -63,7 +63,7 @@ filas=15;
       if (res !== null){
         this.iduser= res.uid;
       this.path='usuario/'+this.iduser+'/movimientosContable';
-      this.getTransacciones();
+      this.getTransacciones(this.filas);
       this.getDatos();
 
    }else {
@@ -89,7 +89,7 @@ filas=15;
     this.agregarTransaccion= false;
     this.actualizarTransaccion = false;
     this.transaccion={
-      codigo: 0,
+      codigo: '',
       tipoTransaccion:'',
       descripcion:'',
       fecha: moment(new Date()).toString(),
@@ -102,7 +102,7 @@ filas=15;
 
 };
 this.cont=0;
-this.getTransacciones();
+this.getTransacciones(this.filas);
 
   }
   getDatos() {
@@ -115,7 +115,7 @@ this.getTransacciones();
       .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
       .pipe(take(1))
       .subscribe((res) => {
-        console.log('Get movimientos: ', res);
+
 
         if (res.length > 0) {
           this.totales = res[0];
@@ -123,7 +123,7 @@ this.getTransacciones();
       });
   }
 
-getTransacciones(filas=30) {
+getTransacciones(filas=this.filas) {
   this.cont=0;
 
   this.firestoreService.getCollection<MovimientosContables>(this.path,filas).pipe().subscribe( res => {
@@ -154,7 +154,7 @@ mostrarDatos(transaction: MovimientosContables){
   this.agregarTransaccion = true;
   this.actualizarTransaccion=true;
   this.transaccion = transaction;
-  console.log('Esta es la transaccion elegida',transaction);
+
 }
   agregarFila(){
     if(this.validacion()){
@@ -185,10 +185,10 @@ mostrarDatos(transaction: MovimientosContables){
           text: 'Okay',
           handler: () => {
 
-            console.log('esta es la transaccion' ,this.transaccion);
+
             this.transaccion=transaccion;
             this.getionTotales(this.transaccion.monto*(-1));
-            this.firestoreService.deleteDoc(this.path,transaccion.idTransaccion).then(()=>{
+            this.firestoreService.deleteDoc(this.path,transaccion.codigo).then(()=>{
 
         } );
             this.presentToast('Transaccion eliminada');
@@ -205,14 +205,12 @@ mostrarDatos(transaction: MovimientosContables){
 
 async  guardar(){
   const path= 'usuario/'+this.iduser+'/movimientosContable';
-let codigo=0;
+
 this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
 this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
 this.transaccion.mes= moment(this.transaccion.fecha).format('MMMM');
 
 if (this.actualizarTransaccion=== false){
-
-this.transaccion.codigo=codigo;
 
 this.transaccion.idTransaccion=this.firestoreService.getid();
 
@@ -225,13 +223,11 @@ this.getionTotales(this.transaccion.monto);
 
 else{
 
-  codigo= this.transaccion.codigo;
-  await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==',this.transaccion.idTransaccion).
+   await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==',this.transaccion.idTransaccion).
   pipe(take(1)).subscribe(res=>{
     this.getionTotales(this.transaccion.monto - res[0].monto);
     this.firestoreService.createDoc(this.transaccion ,path, this.transaccion.idTransaccion);
 
-console.log('resta:',(this.transaccion.monto - res[0].monto));
 
   });
 
@@ -327,7 +323,7 @@ validacion(){
 
   fila(){
     const i =this.transacciones.length;
-    console.log(this.transacciones.length);
+
     do {
       if(this.cont>this.transacciones.length){
         this.cont=0;
@@ -359,7 +355,7 @@ validacion(){
 
        if (res.length > 0) {
           this.totales = res[0];
-          console.log('resultado del query',this.totales);
+ 
 
           if(this.transaccion.tipoTransaccion==='Ventas')
           {

@@ -43,7 +43,7 @@ export class ProductosPage implements OnInit {
   };
 
   transaccion: MovimientosContables = {
-    codigo: 0,
+    codigo: '',
     tipoTransaccion: '',
     descripcion: '',
     fecha: moment(new Date()).toString(),
@@ -68,7 +68,7 @@ export class ProductosPage implements OnInit {
   idArticulo: 1000;
 
   actualizarProducto = false;
-
+  crearProducto=false;
   path = null;
   iduser = null;
   subscriber: Subscription;
@@ -140,11 +140,12 @@ export class ProductosPage implements OnInit {
       this.newproducto.id = 'P' + this.newproducto.codigo;
     });
     this.caracteristicasArticulos();
-    this.actualizarProducto = true;
+    
+    this.crearProducto=true;
   }
 
   caracteristicasArticulos(){
-  if(this.newproducto.tipoArticulo==='laptop'){
+  if(this.newproducto.tipoArticulo ==='laptop'){
 this.newproducto.descripcion= {
   caracteristicas:'',
   procesador: { tipo: 'Core i5', gen: '4ta' },
@@ -159,6 +160,7 @@ this.newproducto.descripcion= {
     this.nuevo();
     //this.getDatos();
     this.actualizarProducto = false;
+    this.crearProducto=false;
   }
 
   goAnOtherPage() {
@@ -205,8 +207,9 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
 
   mostrarDatos(producto: Producto) {
     this.actualizarProducto = true;
+    this.crearProducto=true;
     this.newproducto = producto;
-    this.transaccion.codigo=producto.codigo;
+    
   }
 
   async newImg(event: any) {
@@ -221,7 +224,7 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
     }
   }
 
-  async deleteproducto(producto: Producto) {
+  async deleteProducto(producto: Producto) {
 
     const alert = await this.alertController.create({
       cssClass: 'normal',
@@ -240,11 +243,12 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
           text: 'Okay',
           handler: () => {
             this.firestoreService.deleteDoc(this.path, producto.id).then(res=>{
-              this.firestoreService.deleteDoc('usuario/' + this.iduser + '/movimientosContable',producto.id);//elimina la transaccion
-              const diferencia = (producto.gasto + producto.costo)* (-1);//convierte el monto en negativo para afectar totales
-              this.getionTotales(diferencia);
-              this.firestoreService.deleteDoc('usuario/' + this.iduser + '/movimientosContable','T'+producto.id);//elimina la transaccion
-            }).finally(()=>{this.limpiarCampos();});// toma los datos del prodcucto y los reduce del totalCompra
+              this.newproducto=producto;
+              this.newproducto.fecha=moment(new Date).toString();
+              this.newproducto.unds= this.newproducto.unds*(-1);
+              this.transaccion.descripcion = this.newproducto.nombre+' eliminado' ;
+              this.crearTransaccion();
+             }).finally(()=>{this.limpiarCampos();});// toma los datos del prodcucto y los reduce del totalCompra
 
             this.presentToast('Accion realizada Exitosamente');
           },
@@ -266,8 +270,7 @@ this.filtrar();
       .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
       .pipe(take(1))
       .subscribe((res) => {
-        console.log('estes es el mes ',mes);
-        console.log('estos son los totales: ',this.totales);
+
 
         if (res.length > 0) {
           this.totales = res[0];
@@ -279,9 +282,11 @@ this.filtrar();
       this.caracteristicasArticulos();
   }
 
-  guardarDatos() {
+  async guardarDatos() {
 
     if (this.validacion()) {
+   
+
        this.crearTransaccion();
       this.guardar()
         .finally(() => {
@@ -289,6 +294,7 @@ this.filtrar();
 
     }
     this.getDatos();
+    
   }
 
   async getionTotales(transaccion: number) {
@@ -307,7 +313,7 @@ this.filtrar();
 
         if (res.length > 0) {
           this.totales = res[0];
-          console.log('resultado del query',this.totales);
+
 
           this.totales.compra =
           this.totales.compra + transaccion;
@@ -315,7 +321,7 @@ this.filtrar();
           this.firestoreService.createDoc(this.totales, path, mes);
         }
         else{
-          console.log(this.totales);
+         
          
               this.firestoreService.createDoc(this.totales, path, mes);}
       });
@@ -348,6 +354,7 @@ this.filtrar();
       .then((ans) => {
         this.loading.dismiss().then((respuesta) => {
           this.actualizarProducto = false;
+          this.crearProducto=false;
           this.presentToast('Acción ralizada con exito');
           if (this.newproducto.id === '' || null) {
             this.navCtrl.navigateRoot('/home');
@@ -365,7 +372,7 @@ this.filtrar();
       this.newproducto.precio === 0 ||
       this.newproducto.precioMin === 0
     ) {
-      this.alerta2('Todos los campos son queridos');
+      this.alerta2('Todos los campos son requeridos');
       return false;
     } else {
       return true;
@@ -376,65 +383,71 @@ this.filtrar();
     this.getDatos();
     const path = 'usuario/' + this.iduser + '/movimientosContable';
     let transaccion =0;
+    this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
 
+   if( this.actualizarProducto === true){//si se toma un producto ya creeado
+    this.firestoreService.getCollectionquery<Producto>(this.path,'id','==',this.newproducto.id).pipe(take(1)).subscribe(resp=>{
+      if(resp[0].unds === 0){//si tiene cero unidades se debe crear una nueva transaccion
+        transaccion=(this.newproducto.gasto+this.newproducto.costo)* this.newproducto.unds;
+        this.getionTotales(transaccion).then(()=>{
+         this.transaccion.monto=transaccion;
+         this.transaccion.fecha= moment(new Date).toString();
+         this.transaccion.idTransaccion= this.firestoreService.getid();
+          this.agregartransaccion();});
+          return console.log('if unidades igual a cero');
+     }
 
-    await this.firestoreService.getCollectionquery<MovimientosContables>(path,'idTransaccion','==','T'+this.newproducto.id).
-    pipe(take(1)).subscribe(res=>{
-
-      if(res.length === 0){
-
-            transaccion=(this.newproducto.costo+this.newproducto.gasto)* this.newproducto.unds;
-            this.agregartransaccion();
-            this.getionTotales(transaccion);
-
-
-      }
-
-      else{
-
-        transaccion=((this.newproducto.gasto+this.newproducto.costo)*this.newproducto.unds)-(res[0].monto);
-        this.getionTotales(transaccion).then(()=>{this.agregartransaccion();});
-
-      }
-
-
+     else{
+      transaccion=((this.newproducto.gasto+this.newproducto.costo)*(this.newproducto.unds)-
+      ((resp[0].gasto+resp[0].costo)*resp[0].unds));//reduce las unds creadas para no afectar nueva transaccion
+     
+      this.getionTotales(transaccion).then(()=>{
+       this.agregartransaccion();});
+       this.transaccion.monto=transaccion;
+       this.transaccion.fecha= moment(new Date).toString();
+       this.transaccion.idTransaccion= this.firestoreService.getid();
+       console.log(resp[0].unds)
+       return console.log('else unidades ');
+     }
     });
 
 
+   }
 
-
-
-  }
-
-
- async agregartransaccion(){
-    const pathT= 'usuario/'+this.iduser+'/movimientosContable';
-    let codigo=0;
-
-await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(1)).subscribe(res=>{
-
-  if (res.length>0){
-  codigo= res[0].codigo +1;
-  }
-  else{ codigo = 1;}
-});
-
-    this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
-    this.transaccion.tipoTransaccion = 'Compra de Mercancía';
+   else{
+     console.log('Este es el else');
     this.transaccion.fecha = this.newproducto.fecha;
-    this.transaccion.mes = moment(this.newproducto.fecha).format('MMMM');
-    this.transaccion.anio = moment(this.newproducto.fecha).format('YYYY');
-    this.transaccion.dia = moment(this.newproducto.fecha).format('DD');
-    console.log('este es ecodigo de transaccion', codigo);
-    this.transaccion.codigo=codigo;
-    this.transaccion.idTransaccion='T'+this.newproducto.id;
-    this.transaccion.monto =
-     ( this.newproducto.costo + this.newproducto.gasto)*this.newproducto.unds;
+    //si no ho aparece una transaccion con el producto
+    transaccion=((this.newproducto.gasto+this.newproducto.costo)*(this.newproducto.unds));//reduce las unds creadas para no afectar nueva transaccion
+     
+    this.getionTotales(transaccion).then(()=>{
+     this.agregartransaccion();});
+     this.transaccion.monto=transaccion;
+     this.transaccion.fecha= moment(new Date).toString();
+     this.transaccion.idTransaccion= this.firestoreService.getid();
+     
+   }
+     
 
-    this.firestoreService.createDoc(
+     
+
+  }
+
+
+ async agregartransaccion(id= this.newproducto.id){
+    const pathT= 'usuario/'+this.iduser+'/movimientosContable';
+   
+
+   this.transaccion.tipoTransaccion = 'Compra de Mercancía';
+
+    this.transaccion.mes = moment(this.transaccion.fecha).format('MMMM');
+    this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
+    this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
+    this.transaccion.codigo=id;
+      this.firestoreService.createDoc(
       this.transaccion,
       pathT,
-      'T'+this.newproducto.id
+      this.transaccion.idTransaccion
     );
 
   }

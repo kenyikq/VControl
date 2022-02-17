@@ -61,7 +61,7 @@ export interface Cliente{
 }
 
 export interface MovimientosContables{
-  codigo: number;
+  codigo: string;
   tipoTransaccion: string;
   descripcion: string;
   fecha: string;

@@ -108,7 +108,7 @@ producto: Producto = {
 
 
      transaccion: MovimientosContables={
-    codigo: 0,
+    codigo: '',
     tipoTransaccion:'',
     descripcion:'',
     fecha: moment(new Date()).toString(),
@@ -667,20 +667,14 @@ console.log('id transacion en crearT',res[0].idTransaccion);
 
   await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(1)).subscribe(res=>{
 
-    if (res.length>0){
-    codigo= res[0].codigo +1;
-    }
-    else{ codigo = 1;}
-  });
-
-    this.transaccion.descripcion='venta de mercancia';
+       this.transaccion.descripcion='venta de mercancia';
       this.transaccion.tipoTransaccion='Ventas';
       this.transaccion.fecha= this.newfactura.fecha;
       this.transaccion.mes= moment( this.newfactura.fecha).format('MMMM');
       this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
       this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
       this.transaccion.monto= this.newfactura.total;
-      this.transaccion.codigo= codigo;
+      this.transaccion.codigo=  'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
       this.transaccion.idTransaccion= 'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
 
         this.firestoreService.createDoc(
@@ -689,10 +683,8 @@ console.log('id transacion en crearT',res[0].idTransaccion);
         this.transaccion.idTransaccion
       );
 
+  });
+
   }
 
-
-
 }
-
-

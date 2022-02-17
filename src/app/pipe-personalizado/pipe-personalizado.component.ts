@@ -1,15 +1,4 @@
-/*
-@Pipe({
-  name: 'replace'
-})
-@Injectable()
-export class ReplacePipe implements PipeTransform {
-  constructor(){}
-  transform(numero: any, replace, replacement): string {
-    return numero.toString().replace(replace, replacement);
 
-  }
-}*/
 
 import { PipeTransform, Injectable, Pipe }     from '@angular/core';
 
@@ -31,3 +20,5 @@ export class ReplacePipe implements PipeTransform {
           num.replace('.', decimalDelimiter) : num).replace(new RegExp(result, 'g'), '$&' + chunkDelimiter);
     }
 }
+
+
