@@ -18,6 +18,7 @@ export class MovimientosContablesComponent implements OnInit {
   movimientos=[];
   agregarTransaccion= false;
   transacciones: MovimientosContables[]= [];
+  valueSelected: any;
 
   transaccion: MovimientosContables={
     codigo: '',
@@ -123,6 +124,13 @@ this.getTransacciones(this.filas);
       });
   }
 
+  segmentChanged(ev: any){
+    this.valueSelected= ev.detail.value;
+    
+    console.log(this.valueSelected);
+
+  }
+  
 getTransacciones(filas=this.filas) {
   this.cont=0;
 

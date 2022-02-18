@@ -54,7 +54,7 @@ producto: Producto = {
   nombre: '',
   unds: 0,
   fecha: moment(new Date()).toString(),
-  mes: moment(new Date()).format('MMMM'),
+  mes: moment(new Date()).format('M'),
   costo: 0,
   gasto: 0,
   precio: 0,
@@ -78,6 +78,7 @@ producto: Producto = {
 
   newArticulo: Articulo =
     { codigo: 0,
+      tipoArticulo:'',
       descripcion: '',
       cant: 0,
       precioVenta: 0,
@@ -99,7 +100,7 @@ producto: Producto = {
     };
 
     totales: GraficoTransacciones = {
-      mes: moment(this.newfactura.fecha).format('MMMM'),
+      mes: moment(this.newfactura.fecha).format('M'),
       capital: 0,
       venta: 0,
       compra: 0,
@@ -112,7 +113,7 @@ producto: Producto = {
     tipoTransaccion:'',
     descripcion:'',
     fecha: moment(new Date()).toString(),
-    mes: moment(new Date()).format('MMMM'),
+    mes: moment(new Date()).format('M'),
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
     monto: 0,
@@ -250,6 +251,7 @@ else{
 
     this.newArticulo =
     { codigo: 0,
+      tipoArticulo:'',
       descripcion: '',
       cant: 0,
       precioVenta: null,
@@ -295,8 +297,11 @@ this.calculoTotalesFactura();
   //console.log('aqui la respuesta ',this.submitForm());
   if(this.submitForm()){
   await this.gestionarCliente().then(
-      res=> {this.guardarFactura();
-      this.reducirInventario().then(resp=>{this.goAnOtherPage('home');});
+      res=> {this.guardarFactura().then(()=>{
+        this.reducirInventario().then(resp=>{this.goAnOtherPage('home');
+      }).catch(err=>{this.alerta('Error : '+err)});
+    });
+      
       });
       this.disable=false;
    }
@@ -316,6 +321,7 @@ cancelar(){
   this.newfactura.cliente='';
   this.newArticulo =
     { codigo: 0,
+     tipoArticulo:'',
       descripcion: '',
       cant: 0,
       precioVenta: 0,
@@ -354,7 +360,7 @@ cancelar(){
       nombre: '',
       unds: 0,
       fecha: moment(new Date()).toString(),
-      mes: moment(new Date()).format('MMMM'),
+      mes: moment(new Date()).format('M'),
       costo: 0,
       gasto: 0,
       precio: 0,
@@ -376,6 +382,7 @@ cancelar(){
 
   getdatos(filas= 1000) {
   this.getCliente();
+
     const path='usuario/'+this.iduser+'/clientes';
 
 
@@ -392,7 +399,7 @@ cancelar(){
 
 
      const anio = moment(this.newfactura.fecha).format('YYYY');
-     const mes = moment(this.newfactura.fecha).format('MMMM');
+     const mes = moment(this.newfactura.fecha).format('M');
      const path1 =  'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
      console.log('mes para query',mes);
      this.firestoreService
@@ -401,7 +408,7 @@ cancelar(){
        .subscribe((res) => {
            if (res.length > 0) {
            this.totales = res[0];
-
+console.log('totales getdatos:',this.totales);
          }
          else{this.totales.venta=this.newfactura.total;}
        });
@@ -416,6 +423,8 @@ this.newArticulo.cant= prod.unds;
 this.newArticulo.descripcion= prod.nombre;
 this.newArticulo.precioVenta= prod.precio;
 this.newArticulo.codigo= prod.codigo;
+this.newArticulo.tipoArticulo= prod.tipoArticulo;
+
 
 
   }
@@ -529,6 +538,7 @@ async  guardarFactura(){
   const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
   this.presentLoading();
  this.newfactura.cliente=this.newCliente.nombre;
+ console.log(this.newfactura.codigo);
   this.firestoreService.createDoc(this.newfactura, path, 'F'+this.newfactura.codigo.toString()).then( ans =>{
       this.loading.dismiss().then( respuesta => {
 
@@ -544,10 +554,11 @@ async  guardarFactura(){
 codigofactura(){
   const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
 
-    this.firestoreService.getultimodoc<Factura>(path).subscribe(resp=>{
+    this.firestoreService.getultimodoc<Factura>(path,'codigo').subscribe(resp=>{
       if(resp.length>0){
-
+console.log('respuesta if codigo fact: ',resp);
        this.newfactura.codigo = resp[0].codigo + 1;
+       console.log(this.newfactura.codigo);
           }
        else{console.log('no encotro nada');
        this.newfactura.codigo =0;}
@@ -588,10 +599,11 @@ if(stockActual >= 0){
 
 
 async getionTotales(transaccion: number) {
+  
   this.getdatos();
   const anio = moment(this.newfactura.fecha).format('YYYY');
-  const mes = moment(this.newfactura.fecha).format('MMMM');
-  this.totales.mes= moment(this.newfactura.fecha).format('MMMM');
+  const mes = moment(this.newfactura.fecha).format('M');
+  this.totales.mes= moment(this.newfactura.fecha).format('M');
   const path =
     'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -612,7 +624,11 @@ await    this.firestoreService
 
       }
 
-      else{this.totales.venta = transaccion;
+      else{this.totales.capital=0;
+        this.totales.compra=0;
+        this.totales.gasto=0;
+        this.totales.venta = transaccion;
+        console.log('este es el monto cuando esta en el else',transaccion);
             this.firestoreService.createDoc(this.totales, path, mes);}
     });
 
@@ -636,28 +652,9 @@ async presentLoading(){
       const path = 'usuario/' + this.iduser + '/movimientosContable';
       let transaccion =0;
 
-      await this.firestoreService.getCollectionquery<MovimientosContables>
-      (path,'idTransaccion','==','C'+this.newCliente.codigo+'TF'+this.newfactura.codigo).
-      pipe(take(1)).subscribe(res=>{
 
-        if(res.length === 0){//corregir codigo
-
-              transaccion=this.newfactura.total;
+            transaccion=this.newfactura.total;
               this.agregartransaccion().then(()=>{this.getionTotales(transaccion);});
-
-console.log('id transacion en crearT',res[0].idTransaccion);
-
-        }
-
-        else{
-
-          transaccion= this.newfactura.total - res[0].monto;
-          this.getionTotales(transaccion).then(()=>{this.agregartransaccion();});
-
-        }
-
-
-      });
 
     }
 
@@ -665,17 +662,16 @@ console.log('id transacion en crearT',res[0].idTransaccion);
       const pathT= 'usuario/'+this.iduser+'/movimientosContable';
       let codigo=0;
 
-  await this.firestoreService.getultimodoc<MovimientosContables>(pathT).pipe(take(1)).subscribe(res=>{
-
-       this.transaccion.descripcion='venta de mercancia';
+ 
+      this.transaccion.descripcion='Venta de mercancia';
       this.transaccion.tipoTransaccion='Ventas';
       this.transaccion.fecha= this.newfactura.fecha;
-      this.transaccion.mes= moment( this.newfactura.fecha).format('MMMM');
+      this.transaccion.mes= moment( this.newfactura.fecha).format('M');
       this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
       this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
       this.transaccion.monto= this.newfactura.total;
       this.transaccion.codigo=  'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
-      this.transaccion.idTransaccion= 'C'+this.newCliente.codigo+'TF'+this.newfactura.codigo;
+      this.transaccion.idTransaccion= this.firestoreService.getid();
 
         this.firestoreService.createDoc(
         this.transaccion,
@@ -683,7 +679,7 @@ console.log('id transacion en crearT',res[0].idTransaccion);
         this.transaccion.idTransaccion
       );
 
-  });
+  
 
   }
 

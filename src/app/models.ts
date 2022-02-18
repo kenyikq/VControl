@@ -46,6 +46,7 @@ total: number;
 
 export interface Articulo{
   codigo: number;
+  tipoArticulo:string;
   descripcion: string;
   cant: number;
   precioVenta: number;
@@ -83,17 +84,17 @@ gasto: number;
 }
 
 export interface Messes{
-enero: number;
-febrero: number;
-marzo: number;
-abril: number;
-mayo: number;
-junio: number;
-julio: number;
-agosto: number;
-septiembre: number;
-octubre: number;
-noviembre: number;
-diciembre: number;
+january: number;
+february: number;
+march: number;
+april: number;
+may: number;
+june: number;
+july: number;
+august: number;
+september: number;
+october: number;
+november: number;
+december: number;
 
 }

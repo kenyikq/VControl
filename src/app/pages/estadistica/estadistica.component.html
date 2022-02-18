@@ -23,10 +23,61 @@
    
   
   <ion-content [fullscreen]="true">
+   
     <div class="ion-padding">
+      <ion-segment  mode="ios" scrollable="true" (ionChange)=" segmentChanged(valueSelected, $event)" [value]="anio" color="dark">
+        <ion-segment-button value="2021">
+          <ion-label>2021</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="2022">
+          <ion-label>2022</ion-label>
+        </ion-segment-button>
+     </ion-segment>
+
+      <ion-segment mode="ios" scrollable="true" (ionChange)=" segmentChanged($event, anio)" [value]="valueSelected" color="dark" scrollable="true">
+        <ion-segment-button value="1">
+          <ion-label>Enero</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="2">
+          <ion-label>Febrero</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="3">
+          <ion-label>Marzo</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="4">
+          <ion-label>Abril</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="5">
+          <ion-label>Mayo</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="6">
+          <ion-label>Junio</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="7">
+          <ion-label>Julio</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="8">
+          <ion-label>Agosto</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="9">
+          <ion-label>Septiembre</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="10">
+          <ion-label>Octubre</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="11">
+          <ion-label>Noviembre</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="12">
+          <ion-label>Diciembre</ion-label>
+        </ion-segment-button>
+      
+      </ion-segment>
+      
       <ion-card>
-        <ion-card-header  class="tituloGrafico">
-          Transacciones
+       
+         <ion-card-header  class="tituloGrafico titulo">
+          Resultados de {{tituloMes}}
         </ion-card-header>
 
         <ion-card-content >
@@ -36,8 +87,8 @@
       </ion-card>
   
       <ion-card>
-        <ion-card-header class="tituloGrafico" >
-          Seguimiento de Casos
+        <ion-card-header class="tituloGrafico titulo" >
+          Productos por Categoria
         </ion-card-header>
         <ion-card-content>
           <canvas #doughnutCanvas style="position: relative; height:20vh; width:40vw"></canvas>
@@ -46,11 +97,11 @@
       </ion-card>
 
       <ion-card>
-        <ion-card-header style="text-align: center; font-weight: bold;">
-          Line Chart
+        <ion-card-header class="titulo" style="text-align: center; font-weight: bold;">
+          Comportamiento de Ventas por mes
         </ion-card-header>
         <ion-card-content>
-          <canvas #lineCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+          <canvas #lineCanvas class="normal" style="position: relative; height:20vh; width:40vw"></canvas>
         </ion-card-content>
       </ion-card>
       

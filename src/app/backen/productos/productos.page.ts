@@ -28,7 +28,7 @@ export class ProductosPage implements OnInit {
     nombre: '',
     unds: 0,
     fecha: moment(new Date()).toString(),
-    mes: moment(new Date()).format('MMMM').toString(),
+    mes: moment(new Date()).format('M').toString(),
     costo: 0,
     gasto: 0,
     precio: 0,
@@ -47,7 +47,7 @@ export class ProductosPage implements OnInit {
     tipoTransaccion: '',
     descripcion: '',
     fecha: moment(new Date()).toString(),
-    mes: moment(new Date()).format('MMMM'),
+    mes: moment(new Date()).format('M'),
     anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
     monto: 0,
@@ -55,7 +55,7 @@ export class ProductosPage implements OnInit {
   };
 
   totales: GraficoTransacciones = {
-    mes: moment(this.newproducto.fecha).format('MMMM'),
+    mes: moment(this.newproducto.fecha).format('M'),
     capital: 0,
     venta: 0,
     compra: 0,
@@ -72,6 +72,7 @@ export class ProductosPage implements OnInit {
   path = null;
   iduser = null;
   subscriber: Subscription;
+  
 
   constructor(
     public db: AngularFirestore,
@@ -114,7 +115,7 @@ export class ProductosPage implements OnInit {
       nombre: '',
       unds: 1,
       fecha: moment(new Date()).toString(), //para mostrar la fecha anctual al crear nuevo producto
-      mes: moment(new Date()).format('MMMM').toString(),
+      mes: moment(new Date()).format('M').toString(),
       costo: 0,
       gasto: 0,
       precio: 0,
@@ -262,7 +263,7 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
   getDatos() {
 this.filtrar();
     const anio = moment(this.newproducto.fecha).format('YYYY');
-    const mes = moment(this.newproducto.fecha).format('MMMM');
+    const mes = moment(this.newproducto.fecha).format('M');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -279,6 +280,21 @@ this.filtrar();
 
         else{this.totales.compra = (this.newproducto.costo + this.newproducto.gasto) * this.newproducto.unds;}
       });
+if(this.actualizarProducto=== false){
+  this.firestoreService.database.collection<Producto>(this.path,
+    ref=>ref.where('codigo','>',0).orderBy('codigo').limitToLast(1)).valueChanges()
+  .pipe(take(1))
+  .subscribe((resp) => {
+    if (resp.length > 0) {
+      this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
+      this.newproducto.id = 'P' +this.newproducto.codigo;
+      console.log('este es el codigo ', (resp[0].codigo+1), this.newproducto.codigo, this.newproducto.id);
+    }
+
+  });
+
+}
+     
       this.caracteristicasArticulos();
   }
 
@@ -300,8 +316,8 @@ this.filtrar();
   async getionTotales(transaccion: number) {
 
     const anio = moment(this.newproducto.fecha).format('YYYY');
-    const mes = moment(this.newproducto.fecha).format('MMMM');
-    this.totales.mes= moment(this.newproducto.fecha).format('MMMM');
+    const mes = moment(this.newproducto.fecha).format('M');
+    this.totales.mes= moment(this.newproducto.fecha).format('M');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
       
@@ -321,7 +337,12 @@ this.filtrar();
           this.firestoreService.createDoc(this.totales, path, mes);
         }
         else{
-         
+          console.log('crear nuevo totales', transaccion);
+          this.totales.capital=0;
+          this.totales.compra=transaccion;
+          this.totales.gasto=0;
+          this.totales.venta = 0;
+
          
               this.firestoreService.createDoc(this.totales, path, mes);}
       });
@@ -338,16 +359,7 @@ this.filtrar();
     const res = await this.firestorage.uploadImg(file, this.path, name);
     this.newproducto.foto = res;
 
-    await this.firestoreService
-      .getultimodoc<Producto>(this.path)
-      .pipe(take(1))
-      .subscribe((resp) => {
-        if (resp.length > 0) {
-          this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
-          this.newproducto.id = 'P' + this.newproducto.codigo;
-        }
-
-      });
+   
 
     this.firestoreService
       .createDoc(this.newproducto, this.path, this.newproducto.id)
@@ -384,6 +396,10 @@ this.filtrar();
     const path = 'usuario/' + this.iduser + '/movimientosContable';
     let transaccion =0;
     this.transaccion.descripcion = 'Compra de ' + this.newproducto.nombre;
+
+    if(this.actualizarProducto===false){
+
+    }
 
    if( this.actualizarProducto === true){//si se toma un producto ya creeado
     this.firestoreService.getCollectionquery<Producto>(this.path,'id','==',this.newproducto.id).pipe(take(1)).subscribe(resp=>{
@@ -440,7 +456,7 @@ this.filtrar();
 
    this.transaccion.tipoTransaccion = 'Compra de Mercancía';
 
-    this.transaccion.mes = moment(this.transaccion.fecha).format('MMMM');
+    this.transaccion.mes = moment(this.transaccion.fecha).format('M');
     this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
     this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
     this.transaccion.codigo=id;

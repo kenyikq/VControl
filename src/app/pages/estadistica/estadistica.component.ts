@@ -3,9 +3,10 @@ import { AlertController, NavController } from '@ionic/angular';
 import { Chart } from 'chart.js'; //para usarlo debes intstalar npm install chart.js@2.9.4 --save
 import * as moment from 'moment';
 import { take } from 'rxjs/operators';
-import { GraficoTransacciones, Messes, MovimientosContables } from 'src/app/models';
+import { GraficoTransacciones, Factura, MovimientosContables } from 'src/app/models';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { threadId } from 'worker_threads';
 
 @Component({
   selector: 'app-estadistica',
@@ -24,6 +25,8 @@ export class EstadisticaComponent implements AfterViewInit, OnInit {
   doughnutChart: any;
   lineChart: any;
   iduser= '';
+  valueSelected:any;
+  anio: any;
 
 transaciones: GraficoTransacciones ={
 mes: moment(new Date()).format('MMMM'),
@@ -34,21 +37,10 @@ gasto: 0,
 
 };
 
-meses: Messes={
-enero: 5,
-febrero: 15,
-marzo: 20,
-abril: 25,
-mayo: 30,
-junio: 35,
-julio: 40,
-agosto: 45,
-septiembre: 50,
-octubre: 55,
-noviembre: 60,
-diciembre: 65,
-
-};
+meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+mes=[];
+venta=[];
+tituloMes='';
 
 
 path= null;
@@ -65,7 +57,8 @@ path= null;
       if (res !== null){
         this.iduser= res.uid;
       this.path='usuario/'+this.iduser+'/movimientosContable';
-
+     this.valueSelected= moment(new Date()).format('M');
+     this.anio  = moment(new Date()).format('YYYY');
         this.getEstado();
 
       }else {
@@ -90,21 +83,49 @@ path= null;
         this. barChartMethod();
         this.lineChartMethod();
 
-
-
-
   }
 
 
 
  async getEstado(){
-  const anio = moment(new Date()).format('YYYY');
-  const mes = moment(new Date()).format('MMMM');
+
+  
+  const mes = moment(new Date()).format('M');
   const path1 =
-    'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
+    'usuario/' + this.iduser + '/movimientosContable/totales/' + this.anio;
+
+    await  this.firestoreService.database.collection<GraficoTransacciones>('usuario/' + this.iduser + '/movimientosContable/totales/'+this.anio ,
+    ref => ref.orderBy('mes')).valueChanges().subscribe(res=>{
+this.mes=[];
+this.venta=[];
+res.forEach((mes) => { //Recorro primer arreglo
+  this.mes.push(this.meses[parseInt(mes.mes)-1]);
+ this.venta.push(mes.venta);
+  
+});
+
+
+   });
+
+   await  this.firestoreService.database.collection<Factura>('usuario/'+this.iduser+'/clientes' ,
+   ref => ref.orderBy('mes')).valueChanges().subscribe(res=>{
+console.log('colecion de clientes',res);
+/*res.forEach((factura) => { //Recorro primer arreglo
+factura.articulo.forEach((articulo)=>{
+  console.log(articulo.tipoArticulo);
+  console.log(articulo.total);
+});
+  console.log(factura.articulo);
+ 
+});*/
+
+
+  });
+
+  
 
   this.firestoreService
-    .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
+    .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', this.valueSelected)
     .subscribe((res) => {
      
 
@@ -112,19 +133,41 @@ path= null;
 
         this.transaciones = res[0];
       }
-     
+    this.tituloMes=  this.meses[parseInt(this.valueSelected)-1];
     this.barChartMethod();
     this. lineChartMethod();
     
    } );
 
-   this.firestoreService.getCollection(path1).subscribe(res=>{
-console.log('colecion de totals',res);
-
-   });
-
+ 
 
    }
+
+   segmentChanged(ev: any, ev2 : any){
+
+    
+    console.log(typeof ev2);
+
+    if(typeof ev2 === 'string'){
+      this.anio= ev2;
+      this.valueSelected= ev.detail.value;
+    }
+    else{this.anio= ev2.detail.value;
+    this.mes=ev;
+    }
+   
+    console.log(this.valueSelected, ', ',this.anio);
+    this.transaciones ={
+      mes: moment(new Date()).format('MMMM'),
+      capital: 0,
+      venta: 0,
+      compra: 0,
+      gasto: 0,
+      
+      };
+    this.getEstado();
+     
+  }
 
 
 seleccionA(id: string){
@@ -158,6 +201,7 @@ active(id: string){
 
 inactive(id: string){
   const active = document.getElementById(id);
+  
   this.getEstado();
   active.classList.remove('active');
 }
@@ -295,28 +339,28 @@ else{
     this.lineChart = new Chart(this.lineCanvas.nativeElement, {
       type: 'line',
       data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
+        labels: this.mes,
         datasets: [
           {
-            label: 'Sell per week',
-            fill: false,
+            label: 'Total Ventas',
+            fill: true,
             lineTension: 0.3,
             backgroundColor: 'rgba(75,192,192,0.4)',
             borderColor: 'rgba(75,192,192,1)',
             borderCapStyle: 'butt',
             borderDash: [],
-            borderDashOffset: 0.0,
+            borderDashOffset: 1.0,
             borderJoinStyle: 'miter',
             pointBorderColor: 'rgba(75,192,192,1)',
             pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
+            pointBorderWidth: 3,
             pointHoverRadius: 5,
             pointHoverBackgroundColor: 'rgba(75,192,192,1)',
             pointHoverBorderColor: 'rgba(220,220,220,1)',
             pointHoverBorderWidth: 2,
-            pointRadius: 1,
+            pointRadius: 5,
             pointHitRadius: 10,
-            data: Object.values(this.meses) ,
+            data: this.venta, // Object.values(this.venta) ,
             spanGaps: false,
           }
         ]

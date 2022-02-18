@@ -44,8 +44,8 @@ getCollection<Tipo>(path: string, filas= 200){
   return collection.valueChanges();
 }
 
-getultimodoc<Tipo>(path: string){
- const collection = this.database.collection<Tipo>(path, ref=>ref.orderBy('fecha').limitToLast(1));
+getultimodoc<Tipo>(path: string, ordenar='fecha'){
+ const collection = this.database.collection<Tipo>(path, ref=>ref.orderBy(ordenar).limitToLast(1));
   return collection.valueChanges().pipe(take(1));
 }
 
