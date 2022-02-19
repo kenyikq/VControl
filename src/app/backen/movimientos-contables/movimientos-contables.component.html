@@ -26,6 +26,7 @@
   <div class= "" >
             
     <h1  class="titulo p-3 encabezado" style="font-size: 22 !important;">Resumen de transacciones</h1>
+     
 
       <div style="justify-content: center;" *ngIf="agregarTransaccion ===true">
         <div   Style="text-align: center; width: 300px; position: absolute; margin:10%;  @media screen and (max-width:600px) { margin:3%; }">       
@@ -70,19 +71,36 @@
     </div>
 
       </ion-card> </div>
-     
-
-        
+             
 
         </div>
-        <div style="top: 117px; margin-bottom: 2px; right: 57%;
+        <div style="margin-bottom: 20px; margin-right: 5%; margin-left: 5%;"> 
+          <ion-segment style="position: absolute; left: 15%; right: 14%; top: 112px;"  mode="ios" scrollable="true" (ionChange)=" segmentChanged( $event)" value="Todo" color="dark">
+          <ion-segment-button value="Todo">
+            <ion-label>Todo</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Capital">
+            <ion-label>Capital</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Compra de Mercancía">
+            <ion-label>Compras</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Ventas">
+            <ion-label>Ventas</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Gasto">
+            <ion-label>Gastos</ion-label>
+          </ion-segment-button>
+       </ion-segment></div>   
+          
+    
+
+        <div style="top: 144px; margin-bottom: 2px; right: 57%;
         position: absolute;"><ion-item style="color: white; --background: none; width: 119px;   height: 39px;    margin-bottom: 23px;"><ion-label style="text-align: left;color: white;" class="normal">FILAS: </ion-label>
           <ion-input [(ngModel)]="filas" style="   background: white;width: 39px; height: 20px; margin-left: 5px;" type="number" min=1 inputmode="number"class="normal" (ionBlur)="getTransacciones(filas)" ></ion-input>
           </ion-item> 
           </div>
-         
-         
-
+ 
           
           <ion-buttons *ngIf="agregarTransaccion===false" slot="end" style="position: absolute; margin-top: -31px; right: 10%;" >
             <ion-button  (click)="crearnuevaTransaccion()" >
@@ -132,3 +150,7 @@
   </div>
 </div>
 </ion-content>
+<ion-footer class="normal" mode="ios" translucent="true">
+ <ion-item style="text-align: center;"><ion-label class="subtitulo" style="font-size: 18 !important;">Capital Disponible: {{capital |replace}}</ion-label></ion-item> 
+  
+</ion-footer>

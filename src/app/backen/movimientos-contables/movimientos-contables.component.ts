@@ -18,7 +18,7 @@ export class MovimientosContablesComponent implements OnInit {
   movimientos=[];
   agregarTransaccion= false;
   transacciones: MovimientosContables[]= [];
-  valueSelected: any;
+  valueSelected= 'Todo';
 
   transaccion: MovimientosContables={
     codigo: '',
@@ -26,7 +26,7 @@ export class MovimientosContablesComponent implements OnInit {
     descripcion:'',
     fecha: moment(new Date()).toString(),
     anio: moment(new Date()).format('YYYY'),
-    mes: moment(new Date()).format('MMMM'),
+    mes: moment(new Date()).format('M'),
     dia: moment(new Date()).format('DD'),
     monto: 0,
     idTransaccion: 'Mov'
@@ -38,13 +38,13 @@ export class MovimientosContablesComponent implements OnInit {
   cont=0;
 
   totales: GraficoTransacciones = {
-    mes: moment(this.transaccion.fecha).format('MMMM'),
+    mes: moment(this.transaccion.fecha).format('M'),
     capital: 0,
     venta: 0,
     compra: 0,
     gasto: 0,
   };
-
+capital=0;
 filas=15;
 
   constructor(
@@ -64,8 +64,9 @@ filas=15;
       if (res !== null){
         this.iduser= res.uid;
       this.path='usuario/'+this.iduser+'/movimientosContable';
-      this.getTransacciones(this.filas);
       this.getDatos();
+      this.getTransacciones();
+      this.capitalDisponible();
 
    }else {
         this.alerta('Necesitas ingresar con tu usuario para usar el modulo de trasacciones');
@@ -82,6 +83,7 @@ filas=15;
     this.nuevo();
     this.agregarTransaccion= true;
     this.transaccion.fecha= moment(new Date()).toString();
+    this.getTransacciones();
 
   }
 
@@ -96,7 +98,7 @@ filas=15;
       fecha: moment(new Date()).toString(),
       anio: moment(new Date()).format('YYYY'),
     dia: moment(new Date()).format('DD'),
-      mes: moment(new Date()).format('MMMM'),
+      mes: moment(new Date()).format('M'),
       monto: 0,
       idTransaccion: 'mov',
 
@@ -108,7 +110,7 @@ this.getTransacciones(this.filas);
   }
   getDatos() {
     const anio = moment(this.transaccion.fecha).format('YYYY');
-    const mes = moment(this.transaccion.fecha).format('MMMM');
+    const mes = moment(this.transaccion.fecha).format('M');
     const path =
       'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -122,27 +124,43 @@ this.getTransacciones(this.filas);
           this.totales = res[0];
         }
       });
+
+      this.valueSelected='Todo';
   }
 
   segmentChanged(ev: any){
-    this.valueSelected= ev.detail.value;
     
-    console.log(this.valueSelected);
+    this.valueSelected= ev.detail.value;
+    this.getTransacciones(this.filas);
+    
+
 
   }
-  
+
 getTransacciones(filas=this.filas) {
   this.cont=0;
 
-  this.firestoreService.getCollection<MovimientosContables>(this.path,filas).pipe().subscribe( res => {
-     //console.log(res);
-     this.cont=0;
-     this.transacciones= res;
+if(this.valueSelected === 'Todo'){
 
-   } );
+  this.firestoreService.getCollection<MovimientosContables>(this.path,filas).pipe().subscribe( res => {
+ this.cont=0;
+    //console.log(res);
+  this.transacciones= res;
+
+} );
+
+}
+
+else{this.firestoreService.getCollectionquery<MovimientosContables>(this.path,'tipoTransaccion','==',this.valueSelected).
+subscribe(resp=>{this.cont=0;
+  this.transacciones=resp});
+
+
+}
+  
 
    const anio = moment(this.transaccion.fecha).format('YYYY');
-   const mes = moment(this.transaccion.fecha).format('MMMM');
+   const mes = moment(this.transaccion.fecha).format('M');
    const path =
      'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
 
@@ -150,7 +168,7 @@ getTransacciones(filas=this.filas) {
      .getCollectionquery<GraficoTransacciones>(path, 'mes', '==', mes)
      .pipe(take(1))
      .subscribe((res) => {
-       console.log('Get movimientos: ', res);
+
 
        if (res.length > 0) {
          this.totales = res[0];
@@ -195,9 +213,11 @@ mostrarDatos(transaction: MovimientosContables){
 
 
             this.transaccion=transaccion;
-            this.getionTotales(this.transaccion.monto*(-1));
-            this.firestoreService.deleteDoc(this.path,transaccion.codigo).then(()=>{
 
+            
+            this.firestoreService.deleteDoc(this.path,transaccion.idTransaccion).then(()=>{
+             this.transaccion.tipoTransaccion=transaccion.tipoTransaccion;
+              this.getionTotales(transaccion.monto*(-1));
         } );
             this.presentToast('Transaccion eliminada');
 
@@ -212,11 +232,12 @@ mostrarDatos(transaction: MovimientosContables){
 
 
 async  guardar(){
+  this.getDatos();
   const path= 'usuario/'+this.iduser+'/movimientosContable';
 
 this.transaccion.anio= moment(this.transaccion.fecha).format('YYYY');
 this.transaccion.dia= moment(this.transaccion.fecha).format('DD');
-this.transaccion.mes= moment(this.transaccion.fecha).format('MMMM');
+this.transaccion.mes= moment(this.transaccion.fecha).format('M');
 
 if (this.actualizarTransaccion=== false){
 
@@ -343,12 +364,49 @@ validacion(){
 
   }
 
+async capitalDisponible(){
+  const path =      'usuario/' + this.iduser + '/movimientosContable';
+await this.firestoreService.database.collection<MovimientosContables>(path).valueChanges().
+subscribe(res=>{this.capital=0;
 
+  res.forEach((transaccion)=>{
+if (transaccion.tipoTransaccion=== 'Capital'){
+this.capital=this.capital+transaccion.monto;
+
+}//Primer if
+
+else if (transaccion.tipoTransaccion=== 'Compra de Mercancía'){
+  this.capital=this.capital-transaccion.monto;
+  
+  }//segundo if
+
+  else if (transaccion.tipoTransaccion=== 'Ventas'){
+    this.capital=this.capital+transaccion.monto;
+    
+    }//tercer if
+
+    else if (transaccion.tipoTransaccion=== 'Gasto'){
+      this.capital=this.capital-transaccion.monto;
+      
+      }//tercer if
+  
+
+  });//foreach
+  
+
+
+
+
+});//termina el subscribe
+
+
+
+}
 
   async getionTotales(transaccion: number) {
-    this.getDatos();
-    const anio = this.transaccion.anio;
-    const mes = this.transaccion.mes;
+
+    const anio =moment(this.transaccion.fecha).format('YYYY') ;
+    const mes = moment(this.transaccion.fecha).format('M') ;;
     this.totales.mes=mes;
 
     const path =
@@ -385,13 +443,13 @@ validacion(){
             this.db.collection(path).doc(mes).update({gasto: this.totales.gasto});
           }
 
-          else{
+          else if(this.transaccion.tipoTransaccion==='Capital'){
             this.totales.capital =
             this.totales.capital + transaccion;
             this.db.collection(path).doc(mes).update({capital: this.totales.capital});
           }
 
-
+          else{console.log('no encontor igualdad');}
 
         }
 
@@ -404,22 +462,36 @@ validacion(){
 
           if(this.transaccion.tipoTransaccion==='Ventas')
           {
+           this.totales.capital=0;
+          this.totales.compra=0;
+          this.totales.gasto=0;
+          
             this.totales.venta = transaccion;
           this.firestoreService.createDoc(this.totales, path, mes);
 
           }
 
           else if(this.transaccion.tipoTransaccion==='Compra de Mercancía'){
-            this.totales.compra =transaccion;
+            this.totales.capital=0;
+          this.totales.compra=transaccion;
+          this.totales.gasto=0;
+          this.totales.venta = 0;
+           
             this.firestoreService.createDoc(this.totales, path, mes);
           }
 
           else if(this.transaccion.tipoTransaccion==='Gasto'){
+            this.totales.capital=0;
+          this.totales.compra=0;
+            this.totales.venta = 0;
             this.totales.gasto =  transaccion;
             this.firestoreService.createDoc(this.totales, path, mes);
           }
 
           else{
+           this.totales.compra=0;
+          this.totales.gasto=0;
+          this.totales.venta = 0;
             this.totales.capital = transaccion;
             this.firestoreService.createDoc(this.totales, path, mes);
           }

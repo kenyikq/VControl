@@ -299,7 +299,7 @@ this.calculoTotalesFactura();
   await this.gestionarCliente().then(
       res=> {this.guardarFactura().then(()=>{
         this.reducirInventario().then(resp=>{this.goAnOtherPage('home');
-      }).catch(err=>{this.alerta('Error : '+err)});
+      }).catch(err=>{this.alerta('Error al guardar datos : '+err)});
     });
       
       });
@@ -401,14 +401,13 @@ cancelar(){
      const anio = moment(this.newfactura.fecha).format('YYYY');
      const mes = moment(this.newfactura.fecha).format('M');
      const path1 =  'usuario/' + this.iduser + '/movimientosContable/totales/' + anio;
-     console.log('mes para query',mes);
+ 
      this.firestoreService
        .getCollectionquery<GraficoTransacciones>(path1, 'mes', '==', mes)
        .pipe(take(1))
        .subscribe((res) => {
            if (res.length > 0) {
            this.totales = res[0];
-console.log('totales getdatos:',this.totales);
          }
          else{this.totales.venta=this.newfactura.total;}
        });
@@ -538,15 +537,15 @@ async  guardarFactura(){
   const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
   this.presentLoading();
  this.newfactura.cliente=this.newCliente.nombre;
- console.log(this.newfactura.codigo);
+
   this.firestoreService.createDoc(this.newfactura, path, 'F'+this.newfactura.codigo.toString()).then( ans =>{
       this.loading.dismiss().then( respuesta => {
 
-        this.crearTransaccion();
+        this.crearTransaccion().catch(err=>{this.alerta('Error al Crear Transaccion: '+err);});
         this.presentToast('Acción ralizada con exito');
 
        });
-    }).catch(err=>{this.alerta('Error: '+err);});
+    }).catch(err=>{this.alerta('Error: '+err);this.loading.dismiss();});
     this.goAnOtherPage('/home');
 
 }
@@ -556,11 +555,11 @@ codigofactura(){
 
     this.firestoreService.getultimodoc<Factura>(path,'codigo').subscribe(resp=>{
       if(resp.length>0){
-console.log('respuesta if codigo fact: ',resp);
+
        this.newfactura.codigo = resp[0].codigo + 1;
-       console.log(this.newfactura.codigo);
+       
           }
-       else{console.log('no encotro nada');
+       else{
        this.newfactura.codigo =0;}
 
      });
@@ -616,7 +615,7 @@ await    this.firestoreService
 
       if (res.length > 0) {
         this.totales = res[0];
-        console.log('resultado del query',this.totales);
+     
 
         this.totales.venta =
     this.totales.venta + transaccion;
@@ -628,7 +627,6 @@ await    this.firestoreService
         this.totales.compra=0;
         this.totales.gasto=0;
         this.totales.venta = transaccion;
-        console.log('este es el monto cuando esta en el else',transaccion);
             this.firestoreService.createDoc(this.totales, path, mes);}
     });
 

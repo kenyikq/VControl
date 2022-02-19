@@ -288,7 +288,7 @@ if(this.actualizarProducto=== false){
     if (resp.length > 0) {
       this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
       this.newproducto.id = 'P' +this.newproducto.codigo;
-      console.log('este es el codigo ', (resp[0].codigo+1), this.newproducto.codigo, this.newproducto.id);
+ 
     }
 
   });
@@ -303,7 +303,7 @@ if(this.actualizarProducto=== false){
     if (this.validacion()) {
    
 
-       this.crearTransaccion();
+       this.crearTransaccion().catch(err=>{this.alerta('Error al Crear Transaccion: '+err);});
       this.guardar()
         .finally(() => {
          this.limpiarCampos();});
@@ -337,7 +337,6 @@ if(this.actualizarProducto=== false){
           this.firestoreService.createDoc(this.totales, path, mes);
         }
         else{
-          console.log('crear nuevo totales', transaccion);
           this.totales.capital=0;
           this.totales.compra=transaccion;
           this.totales.gasto=0;
@@ -374,7 +373,8 @@ if(this.actualizarProducto=== false){
 
           }
         });
-      });
+      }).catch(err=>{this.alerta('Error al crear Producto: '+err);
+    this.loading.dismiss();});
   }
 
   validacion() {
@@ -409,8 +409,8 @@ if(this.actualizarProducto=== false){
          this.transaccion.monto=transaccion;
          this.transaccion.fecha= moment(new Date).toString();
          this.transaccion.idTransaccion= this.firestoreService.getid();
-          this.agregartransaccion();});
-          return console.log('if unidades igual a cero');
+          this.agregartransaccion().catch(err=>{this.alerta('Error al actualizar totales: '+err);});});
+
      }
 
      else{
@@ -422,8 +422,7 @@ if(this.actualizarProducto=== false){
        this.transaccion.monto=transaccion;
        this.transaccion.fecha= moment(new Date).toString();
        this.transaccion.idTransaccion= this.firestoreService.getid();
-       console.log(resp[0].unds)
-       return console.log('else unidades ');
+
      }
     });
 
@@ -431,7 +430,7 @@ if(this.actualizarProducto=== false){
    }
 
    else{
-     console.log('Este es el else');
+  
     this.transaccion.fecha = this.newproducto.fecha;
     //si no ho aparece una transaccion con el producto
     transaccion=((this.newproducto.gasto+this.newproducto.costo)*(this.newproducto.unds));//reduce las unds creadas para no afectar nueva transaccion

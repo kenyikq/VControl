@@ -107,20 +107,7 @@ res.forEach((mes) => { //Recorro primer arreglo
 
    });
 
-   await  this.firestoreService.database.collection<Factura>('usuario/'+this.iduser+'/clientes' ,
-   ref => ref.orderBy('mes')).valueChanges().subscribe(res=>{
-console.log('colecion de clientes',res);
-/*res.forEach((factura) => { //Recorro primer arreglo
-factura.articulo.forEach((articulo)=>{
-  console.log(articulo.tipoArticulo);
-  console.log(articulo.total);
-});
-  console.log(factura.articulo);
- 
-});*/
 
-
-  });
 
   
 
@@ -146,7 +133,6 @@ factura.articulo.forEach((articulo)=>{
    segmentChanged(ev: any, ev2 : any){
 
     
-    console.log(typeof ev2);
 
     if(typeof ev2 === 'string'){
       this.anio= ev2;
@@ -156,7 +142,7 @@ factura.articulo.forEach((articulo)=>{
     this.mes=ev;
     }
    
-    console.log(this.valueSelected, ', ',this.anio);
+   
     this.transaciones ={
       mes: moment(new Date()).format('MMMM'),
       capital: 0,

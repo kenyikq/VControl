@@ -96,7 +96,7 @@ export class ClientesComponent implements OnInit {
 
     }
     segmentChanged(ev: any) {
-      console.log('Segment changed', ev);
+      
     }
     mostrarDatos(cliente: Cliente){
       this.actualizarCliente = true;
