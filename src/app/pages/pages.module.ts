@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { LoginComponent } from './login/login.component';
@@ -16,15 +16,16 @@ import  {ReactiveFormsModule}  from '@angular/forms';
 
 
 
+
 @NgModule({
-  declarations: [LoginComponent, RegistroComponent,  EstadisticaComponent],
+  declarations: [LoginComponent, RegistroComponent,  EstadisticaComponent, ],
 
 
 
   imports: [
     CommonModule, IonicModule, FormsModule, BrowserModule, RouterModule, ReactiveFormsModule
   ],
-
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 
 })
 export class PagesModule { }

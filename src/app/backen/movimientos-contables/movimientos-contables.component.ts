@@ -125,7 +125,7 @@ this.getTransacciones(this.filas);
         }
       });
 
-      this.valueSelected='Todo';
+     
   }
 
   segmentChanged(ev: any){

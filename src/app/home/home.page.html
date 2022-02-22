@@ -1,23 +1,75 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
+    <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
+      <ion-button [routerLink]= "['/home']" >
+        <ion-icon style="width: 22px;" color="danger" name="home" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      <ion-button [routerLink]= "['/registro']" >
+        <ion-icon color="danger" name="person-circle-outline" slot="icon-only"></ion-icon>
+        
+      </ion-button>
+      
+      </ion-buttons>
+    <ion-title style="text-align: center; margin-right: 5%;" class="subtitulo">
+      Tienda
     </ion-title>
-  </ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+     </ion-buttons>
+   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-slides   [options]="option" class="ion-margin-top">
+    <ion-slide *ngFor="let producto of productos" scrollbar="true" style="    width: 305.333px;
+    margin-right: 5px;">
+  
+       <ion-card style="width: 300px; height: 250px;">
+         <ion-card-header>
+          <ion-label class="subtitulo">{{producto.nombre}}</ion-label> 
+         </ion-card-header>
+          <img style="width: 100%;" class="image"  [src]="producto.foto">
+          <i class="fa fa-ship" aria-hidden="true">{{producto.descripcion.caracteristicas}}</i>
+         
+      </ion-card>
+    
+      
+    </ion-slide>
+  </ion-slides>
+<ion-grid style="margin-top: 40px;">
+  <h1 class="titulo" style="text-align: center;">Catalogo de Productos </h1>
+  <ion-row>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-   <p class="titulo">Titulo</p>
-   <p class="subtitulo">este es un subtitulo</p>
-   <p class="normal">esta sera la letra normal</p>
-   <p>esto no tiene formato</p>
-  </div>
+     
+    <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let producto of productos" >
+<ion-card style="box-shadow: none !important;">
+  <img style="width: 100%;" class="image"  [src]="producto.foto">
+  <ion-card-content>
+    <ion-label class="normal">
+      {{producto.nombre}}
+      <p>{{producto.precio}}</p>
+      <i class="fa fa-ship" aria-hidden="true">
+        {{producto.descripcion.caracteristicas}}
+      </i>
+    </ion-label>
+  </ion-card-content>
+</ion-card>
+    </ion-col>
+ 
+ 
+  </ion-row>
+</ion-grid>
+ 
 </ion-content>
+
+<!--ion-footer>
+  <ion-toolbar style="padding: 0 10px;">
+    <ion-label>
+      <ion-button color="tertiary " expand="full" fill="solid" (click)="addProduct(product)">
+        Add To Cart
+      </ion-button>
+    </ion-label>
+  </ion-toolbar>
+</ion-footer-->

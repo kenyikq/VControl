@@ -4,12 +4,13 @@ import { ClientesComponent } from './backen/clientes/clientes.component';
 import { MovimientosContablesComponent } from './backen/movimientos-contables/movimientos-contables.component';
 import { ProductosPage } from './backen/productos/productos.page';
 import { VentasPage } from './backen/ventas/Ventas.page';
+import { HomePage } from './home/home.page';
 import { EstadisticaComponent } from './pages/estadistica/estadistica.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 
 const routes: Routes = [
-  { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
+  { path: 'home', component: HomePage},
   { path: '',  redirectTo: 'home',    pathMatch: 'full'},
   { path: 'productos', component: ProductosPage},
   { path: 'registro', component: RegistroComponent},

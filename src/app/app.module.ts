@@ -16,6 +16,7 @@ import { LOCALE_ID } from '@angular/core';//para la fecha en espanol
 import localeEs from '@angular/common/locales/es';//para la fecha en espanol
 import { registerLocaleData } from '@angular/common';//para la fecha en espanol
 import { ReplacePipe } from './pipe-personalizado/pipe-personalizado.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 registerLocaleData(localeEs, 'es');//para la fecha en espanol
 
 
@@ -32,6 +33,12 @@ registerLocaleData(localeEs, 'es');//para la fecha en espanol
   AngularFireModule.initializeApp(environment.firebaseConfig),
   BrowserModule, AngularFireStorageModule,
   AngularFireAuthModule,
+  ServiceWorkerModule.register('ngsw-worker.js', {
+    enabled: environment.production,
+    // Register the ServiceWorker as soon as the app is stable
+    // or after 30 seconds (whichever comes first).
+    registrationStrategy: 'registerWhenStable:30000'
+  }),
 
 ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: LOCALE_ID, useValue: 'es',}], //para la fecha

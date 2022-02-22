@@ -9,6 +9,7 @@ import { MovimientosContablesComponent } from './movimientos-contables/movimient
 import { ClientesComponent } from './clientes/clientes.component';
 import { ReplacePipe } from 'src/app/pipe-personalizado/pipe-personalizado.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HomePage } from '../home/home.page';
 
 
 
@@ -19,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     VentasPage,
     MovimientosContablesComponent,
     ClientesComponent ,
+    HomePage
     
   ],
   imports: [
