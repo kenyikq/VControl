@@ -16,12 +16,14 @@ export class HomePage {
   productos: Producto[] = [];
   subscriber: Subscription;
   path='/usuario/PgpRK7YIO3YF2tQaXYybIAR97nK2/producto';
-  option = {slidesPerView: 1.5,
+  option = {slidesPerView: 1,
   centeredSlide: true,
   loop: true,
   spaceBetween: 10,
-  autoplay: true
+  autoplay: true,
+  
 }
+
 
   constructor(
     public db: AngularFirestore,

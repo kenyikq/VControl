@@ -22,19 +22,41 @@
 </ion-header>
 
 <ion-content>
-  <ion-slides   [options]="option" class="ion-margin-top">
-    <ion-slide *ngFor="let producto of productos" scrollbar="true" style="    width: 305.333px;
-    margin-right: 5px;">
-  
-       <ion-card style="width: 300px; height: 250px;">
+  <ion-slides   [options]="option" class="ion-margin-top: " style="margin-left: -22px; text-align: center;">
+    <ion-slide *ngFor="let producto of productos" scrollbar="true" style="    width: 305.333px; ">
+  <ion-card style="width: 80%;">
+    <ion-card style="width: 100%; height: 341px; box-shadow: none !important;">
          <ion-card-header>
-          <ion-label class="subtitulo">{{producto.nombre}}</ion-label> 
+          <ion-label class="titulo">{{producto.nombre}}</ion-label> 
          </ion-card-header>
-          <img style="width: 100%;" class="image"  [src]="producto.foto">
-          <i class="fa fa-ship" aria-hidden="true">{{producto.descripcion.caracteristicas}}</i>
+         <ion-card-content class="imgtamanio" ><div class="content"><img  class="imgtamanio"  [src]="producto.foto"></div>
+          
+         </ion-card-content>
+         <i style="width: 200px ;height: 10px; position: absolute; bottom: 8px; margin-left: calc(0% - 111px); -webkit-text-stroke: 1px black;
+         color: white; " class="fa fa-ship" aria-hidden="true">{{producto.descripcion.caracteristicas}}</i> 
+          </ion-card>
+        
+        <ion-list style="text-align: center;"> 
+          <ion-item lines="none" style="text-align: center;">
+              <ion-label> <strong>Disponible:</strong> {{producto.unds}}</ion-label>
+           </ion-item>
+
+          <ion-item lines="none" style="text-align: center;">
+            <ion-label><strong>Precio:</strong>{{producto.precio|  replace }}</ion-label>
+          </ion-item>
+      <ion-item lines="none" style="text-align: center;">
+        <ion-buttons style="width: 100%;" > 
+          <ion-button style="margin: auto" expand="full" fill="solid" size="large">Ver Producto</ion-button>
+        </ion-buttons>
+        
+      </ion-item>
+     </ion-list>
+           
+         
          
       </ion-card>
-    
+       
+     
       
     </ion-slide>
   </ion-slides>
@@ -48,11 +70,9 @@
   <img style="width: 100%;" class="image"  [src]="producto.foto">
   <ion-card-content>
     <ion-label class="normal">
-      {{producto.nombre}}
-      <p>{{producto.precio}}</p>
-      <i class="fa fa-ship" aria-hidden="true">
-        {{producto.descripcion.caracteristicas}}
-      </i>
+     <strong>{{producto.nombre}}</strong> 
+      <p>{{producto.precio|  replace }} $DOP</p>
+      
     </ion-label>
   </ion-card-content>
 </ion-card>
