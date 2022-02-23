@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Producto } from '../models';
 import { FirestoreService } from '../services/firestore.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,29 @@ export class HomePage {
   autoplay: true,
   
 }
+mirarProducto=false;
+
+newproducto: Producto = {
+  id: 'P1000',
+  codigo: 1000,
+  tipoArticulo: '',
+  foto: '',
+  nombre: '',
+  unds: 0,
+  fecha: moment(new Date()).toString(),
+  mes: moment(new Date()).format('M').toString(),
+  costo: 0,
+  gasto: 0,
+  precio: 0,
+  precioMin: 0,
+  descripcion: {
+    caracteristicas:'',
+    procesador: { tipo: '', gen: '' },
+    ram: { tipo: '', cant: '' },
+    almacenamiento: { tipo: '', cant: '' },
+    pantalla: '',
+  },
+};
 
 
   constructor(
@@ -38,6 +62,13 @@ export class HomePage {
       this.productos = res;
       console.log(res);
   });}
+
+  mostrarDatos(producto: Producto) {
+    this.mirarProducto = true;
+    console.log(producto);
+    this.newproducto = producto;
+    
+  }
   
   
 

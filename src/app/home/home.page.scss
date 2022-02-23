@@ -81,3 +81,79 @@ ion-card{
 #container a {
   text-decoration: none;
 }
+
+.icono{
+  margin-right: -15px;
+  color: red;
+  @media screen and (max-width:590px) {
+    }
+  }
+  ion-select{
+  
+  max-width: 90% !important;
+  }
+  ion-label{
+  font-weight: 900;
+  }
+  .datosProducto{
+  padding: 2%!important;
+  border-style: double;
+  border-radius: 25px!important;
+  background-color: #f8f9fa;
+  margin-left: 20%!important;
+  margin-right: 20%!important;
+  
+  
+  @media screen and (max-width:590px) {
+  
+    padding-left: 1%;
+  padding-right: 1%!important;
+  margin-left: 5%!important;
+  margin-right: 5%!important;
+  
+  }
+}
+
+h1{
+  text-align:center;
+  color:white;
+  padding: 7px;
+  width: 80%;
+  text-shadow: black;
+  background: red;
+  opacity: 89%;
+  border-bottom-left-radius: 70px;
+  border-bottom-right-radius: 70px;
+  border-top-left-radius: 70px;
+  border-top-right-radius: 70px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+  padding: 10px;
+  
+  @media screen and (max-width:590px) {
+    margin-top: 35px;
+    margin-bottom: 50px;
+    width: 90%;
+   
+    
+}
+  
+
+.table{
+  opacity: 108%; 
+  background: white !important;
+}
+
+
+
+}
+.encabezado{
+  text-align: center;
+  background:red;
+  border-radius: 30px;
+  margin: 20px;
+  color: white;
+}
