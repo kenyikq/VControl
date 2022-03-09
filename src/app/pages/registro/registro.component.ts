@@ -5,6 +5,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-registro',
@@ -209,7 +210,7 @@ isSubmitted = false;
 
   getUserInfo(uid: string){
         const path ='usuario';
-   this. subinfo = this.firestoreService.getDoc<Usuario>(path,uid).subscribe(res=>{
+   this. subinfo = this.firestoreService.getDoc<Usuario>(path,uid).pipe(take(1)).subscribe(res=>{
       this.usuario = res;
     });
   }

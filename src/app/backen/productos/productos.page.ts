@@ -33,6 +33,7 @@ export class ProductosPage implements OnInit {
     gasto: 0,
     precio: 0,
     precioMin: 0,
+    condicion:'Usado como nuevo',
     descripcion: {
       caracteristicas:'',
       procesador: { tipo: '', gen: '' },
@@ -120,6 +121,7 @@ export class ProductosPage implements OnInit {
       gasto: 0,
       precio: 0,
       precioMin: 0,
+      condicion: 'Usado como nuevo',
       descripcion: {
         caracteristicas:'',
         procesador: { tipo: null, gen: null },
@@ -214,11 +216,12 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
   }
 
   async newImg(event: any) {
+ this.newFile='';
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       this.newFile = event.target.files[0];
       reader.onload = (image) => {
-        this.img = image.target.result as string;
+              this.img = image.target.result as string;
         this.newproducto.foto = this.img;
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -353,10 +356,11 @@ if(this.actualizarProducto=== false){
 
     this.presentLoading();
 
-    const name = this.newproducto.nombre;
+    const name = this.newproducto.id;
     const file = this.newFile;
-    const res = await this.firestorage.uploadImg(file, this.path, name);
-    this.newproducto.foto = res;
+    const res = await this.firestorage.uploadImg(file, this.path, name).
+    then(res=>{this.newproducto.foto = res;});
+    
 
    
 

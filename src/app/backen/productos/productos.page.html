@@ -64,10 +64,20 @@
              <ion-input [(ngModel)]= "newproducto.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del articulo"></ion-input>
          
         </ion-item>
+        <ion-item>
+          <ion-label  class="normal"  class="normal">Condicion:</ion-label>
+          
+          <ion-select  class="normal" [(ngModel)]="newproducto.condicion">
+            <ion-select-option value="Nuevo">Nuevo</ion-select-option>
+            <ion-select-option value="Usado como nuevo">Usado como nuevo</ion-select-option>
+            <ion-select-option value="Usado, en Buen Estado">Usado, en Buen Estado</ion-select-option>
+
+          </ion-select>
+     </ion-item>
 
         <ion-item>
           <ion-label  class="normal">Tipo de Articulo:</ion-label>
-          <ion-select class="normal" [(ngModel)]="newproducto.tipoArticulo" (ionchange)="caracteristicasArticulos()">
+          <ion-select class="normal" [(ngModel)]="newproducto.tipoArticulo" (ionChange)="caracteristicasArticulos()">
             <ion-select-option value="Laptop">Laptop</ion-select-option>
             <ion-select-option value="Accesorio">Accesorio</ion-select-option>
             <ion-select-option value="Disco Duro">Disco Duro</ion-select-option>

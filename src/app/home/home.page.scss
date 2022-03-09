@@ -1,3 +1,9 @@
+
+/*ion-content{
+  --background: linear-gradient(0deg,rgba(0,0,0,0.7), rgba(0,0,0,0.1)),
+  url("/assets/fondo.PNG") no-repeat center center / cover;
+}
+*/
 #container {
   text-align: center;
 
@@ -99,12 +105,12 @@ ion-card{
   padding: 2%!important;
   border-style: double;
   border-radius: 25px!important;
-  background-color: #f8f9fa;
-  margin-left: 20%!important;
-  margin-right: 20%!important;
+  background-color: white;
+  margin: auto;
+
   
   
-  @media screen and (max-width:590px) {
+  @media screen and (max-width:790px) {
   
     padding-left: 1%;
   padding-right: 1%!important;
@@ -118,7 +124,7 @@ h1{
   text-align:center;
   color:white;
   padding: 7px;
-  width: 80%;
+  width: 90%;
   text-shadow: black;
   background: red;
   opacity: 89%;
@@ -136,7 +142,7 @@ h1{
   @media screen and (max-width:590px) {
     margin-top: 35px;
     margin-bottom: 50px;
-    width: 90%;
+    width: 95%;
    
     
 }

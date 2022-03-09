@@ -13,6 +13,7 @@
    gasto: number;
    precio: number;
    precioMin: number;
+   condicion:string;
    descripcion: {
      caracteristicas: string;
     procesador: {tipo: string; gen: string};

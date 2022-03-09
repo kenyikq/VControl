@@ -1,19 +1,21 @@
 
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Producto } from '../models';
 import { FirestoreService } from '../services/firestore.service';
 import * as moment from 'moment';
+import { Browser } from '@capacitor/browser';
+import { constants } from 'buffer';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
-
+export class HomePage implements AfterViewInit {
+  datos: Producto[]=[];
   productos: Producto[] = [];
   subscriber: Subscription;
   path='/usuario/PgpRK7YIO3YF2tQaXYybIAR97nK2/producto';
@@ -25,6 +27,8 @@ export class HomePage {
   
 }
 mirarProducto=false;
+productosCarrusell=[];
+filtroLetra='';
 
 newproducto: Producto = {
   id: 'P1000',
@@ -39,6 +43,7 @@ newproducto: Producto = {
   gasto: 0,
   precio: 0,
   precioMin: 0,
+  condicion:'Usado como nuevo',
   descripcion: {
     caracteristicas:'',
     procesador: { tipo: '', gen: '' },
@@ -48,20 +53,33 @@ newproducto: Producto = {
   },
 };
 
+categoria="Todo";
 
   constructor(
     public db: AngularFirestore,
     public firestoreService: FirestoreService,
-  ) {this.getDatos();}
+  ) {this.getDatos() ;
+    
+    
+  }
 
-  getDatos(){
+  ngAfterViewInit(): void {
+    
+  }
+  
+
+  getDatos(): boolean{
     this.subscriber = this.firestoreService.database.collection<Producto>(this.path,
       ref=>ref.where('unds','!=',0))
     .valueChanges().pipe(take(1)).subscribe((res) => {
+      this.datos=res;
+      this.productos = this.datos;
+      this.productosCarrusell=res;
+      this.filterItems(this.categoria);
+
       
-      this.productos = res;
-      console.log(res);
-  });}
+  });
+  return true;}
 
   mostrarDatos(producto: Producto) {
     this.mirarProducto = true;
@@ -69,6 +87,65 @@ newproducto: Producto = {
     this.newproducto = producto;
     
   }
+
+     
+
+ async  abrirlink(){
+
+ 
+   const phone='18295695701';
+   const mensaje='Hola, estoy interesado en el siguiente articulo:%0A'+
+   '*%0A'+this.newproducto.nombre+'*%0A'+
+   '*Codigo:* P'+this.newproducto.codigo+'%0A'+
+   '*Precio:* '+this.newproducto.precio+
+   '%0A Sigue disponible?'
+   ;
+    //await Browser.open({ url: 'https://api.whatsapp.com/send?phone='+phone+'?text=Me%20interesa%20in%20el%20auto%20que%20vende', });
+    //mirarProducto = false
+    console.log('abrir el link');
+    await Browser.open({ url: ' https://wa.me/'+phone+'?text='+mensaje, });
+  }
+
+ filterItems(filtro) {
+      if(filtro==='Todo') 
+    {this.productos=this.datos;}
+
+    else{
+     
+      let arr = [ [],[] ]; 
+    for (let i = 0; i < this.productos.length; i++) 
+    { this.productos[i].tipoArticulo === filtro ? arr[0].push(this.productos[i]) : arr[1].push(this.productos[i]) }; 
+    this.productos=arr[0];
+    }
+  }
+
+  filterItemsLetra(query) {
+  
+
+
+ 
+    if(this.filtroLetra===''|| this.filtroLetra===null){
+
+      this.productos=this.datos;
+      
+    }
+    else{
+      this.productos=this.datos;
+      this.productos=  this.productos.filter((el)=> {
+       return el.nombre.toLowerCase().indexOf(query.toLowerCase()) > -1;
+  });}
+   
+    
+  }
+    
+
+//Fuente: https://www.iteramos.com/pregunta/107658/filtrar-un-array-en-base-a-los-diferentes-valores-del-objeto
+  //return this.productos.filter(function(el) {
+    //  return el.toLowerCase().indexOf(query.toLowerCase()) > -1;
+//  })
+//}
+
+
   
   
 

@@ -3,6 +3,7 @@ import { Usuario } from 'src/app/models';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { take } from 'rxjs/operators';
 
 
 
@@ -116,7 +117,7 @@ await this.loading.present();
 
 getUserInfo(uid: string){
 const path ='usuario';
-this.firestoreService.getDoc<Usuario>(path,uid).subscribe(res=>{
+this.firestoreService.getDoc<Usuario>(path,uid).pipe(take(1)).subscribe(res=>{
 this.usuario = res;
 });
 }

@@ -9,10 +9,10 @@ export class FirestorageService {
 
   constructor(public storage: AngularFireStorage) {}
 
-  uploadImg(file: any, path: string, nombre: string): Promise<string>{
+  uploadImg(file: any, path: string, nombre: string, id= 1): Promise<string>{
     return new Promise( resolve =>{
 
-      const filepath = path + '/' + nombre;
+      const filepath = path + '/' + nombre+ '/' +nombre+id;
       const ref = this.storage.ref(filepath);
       const task = ref.put(file);
       task.snapshotChanges().pipe(
