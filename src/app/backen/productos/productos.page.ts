@@ -181,7 +181,7 @@ this.newproducto.descripcion= {
     if(this.valueSelected === 'disponibles'){
 
    const  subscriber = this.firestoreService.database.collection<Producto>(this.path,
-      ref=>ref.where('unds','!=',0))
+      ref=>ref.where('unds','!=',0).orderBy('nombre'))
     .valueChanges().pipe(take(1)).subscribe((res) => {
       
       this.productos = res;
@@ -190,7 +190,7 @@ this.newproducto.descripcion= {
     if(this.valueSelected=== 'vendidos'){
 
       const subscriber = this.firestoreService.database.collection<Producto>(this.path,
-       ref=>ref.where('unds','==',0))
+       ref=>ref.where('unds','==',0).orderBy('nombre'))
      .valueChanges().pipe(take(2)).subscribe((res) => {
        
        this.productos = res;
@@ -198,7 +198,8 @@ this.newproducto.descripcion= {
      if(this.valueSelected=== 'todos') {
 
 
-const  subscriber = this.firestoreService.database.collection<Producto>(this.path)
+const  subscriber = this.firestoreService.database.collection<Producto>(this.path,
+  ref=>ref.orderBy('nombre'))
       .valueChanges().subscribe((res) => {
         
         this.productos = res;
@@ -456,19 +457,22 @@ if(this.actualizarProducto=== false){
  async agregartransaccion(id= this.newproducto.id){
     const pathT= 'usuario/'+this.iduser+'/movimientosContable';
    
+if (this.transaccion.monto>0){
+  this.transaccion.tipoTransaccion = 'Compra de Mercancía';
 
-   this.transaccion.tipoTransaccion = 'Compra de Mercancía';
+  this.transaccion.mes = moment(this.transaccion.fecha).format('M');
+  this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
+  this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
+  this.transaccion.codigo=id;
+    this.firestoreService.createDoc(
+    this.transaccion,
+    pathT,
+    this.transaccion.idTransaccion
+  );
 
-    this.transaccion.mes = moment(this.transaccion.fecha).format('M');
-    this.transaccion.anio = moment(this.transaccion.fecha).format('YYYY');
-    this.transaccion.dia = moment(this.transaccion.fecha).format('DD');
-    this.transaccion.codigo=id;
-      this.firestoreService.createDoc(
-      this.transaccion,
-      pathT,
-      this.transaccion.idTransaccion
-    );
+}
 
+else{console.log('No cambia el Total')}
   }
 
   async presentToast(msg: string) {

@@ -97,7 +97,7 @@
 
         <div style="top: 144px; margin-bottom: 2px; right: 57%;
         position: absolute;"><ion-item style="color: white; --background: none; width: 119px;   height: 39px;    margin-bottom: 23px;"><ion-label style="text-align: left;color: white;" class="normal">FILAS: </ion-label>
-          <ion-input [(ngModel)]="filas" style="   background: white;width: 39px; height: 20px; margin-left: 5px;" type="number" min=1 inputmode="number"class="normal" (ionBlur)="getTransacciones(filas)" ></ion-input>
+          <ion-input [(ngModel)]="filas" style="   background: white;width: 45px; height: 20px; margin-left: 5px;" type="number" min=1 inputmode="number"class="normal" (ionBlur)="getTransacciones(filas)" ></ion-input>
           </ion-item> 
           </div>
  
@@ -126,7 +126,7 @@
         <tbody class="normal">
           <tr style="text-align: center;" *ngFor="let transaccion of transacciones">
             <td>{{fila()}}</td>
-            <td>{{transaccion.fecha | date: 'dd-MM-yyyy'}}</td>
+            <td>{{transaccion.fecha | date: 'dd-MM-yyyy' }}</td><!---| date: 'dd-MM-yyyy'--->
             <td>{{transaccion.tipoTransaccion}}</td>
             <td class="hide">{{transaccion.descripcion}}</td>
             <td>{{transaccion.monto| replace }}</td>

@@ -26,16 +26,19 @@
   <ion-item *ngIf="mirarProducto === false" style=" width: 80%;  margin: auto;  margin-top: 10px !important;">
     <!--style="width margin-left: calc(0% - 111px); -webkit-text-stroke: 1px black;-->
     <ion-label    class="normal" >Buscar:</ion-label>
-    <ion-input (ionChange)="filterItemsLetra(filtroLetra)" [(ngModel)]="filtroLetra" [readonly]="disable"  class="normal" type="string" inputmode="text" placeholder="Buscar Articulo"></ion-input>
+    <ion-input (ionChange)="filterItemsLetra(filtroLetra)" [(ngModel)]="filtroLetra"   class="normal" type="string" inputmode="text" placeholder="Buscar Articulo"></ion-input>
 
- 
     <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
      <label ><ion-icon  slot="icon-only" name="search"></ion-icon></label>
      
      </ion-buttons>
 
    </ion-item>
-
+   <div *ngIf="productos.length<1" class="subtitulo" style="width: 80%; text-align: center;margin-top: 15px;margin-left: 10%; "> 
+    <ion-card><span style="margin: 5px;">Lo sentimos. En este momento no hay publicaciones que concuerden con su selección. Por favor, regrese en otro momento...</span>
+    </ion-card> 
+    </div>
+  
 
   <h3 *ngIf="mirarProducto == true" class="titulo p-3 encabezado">Datos del producto</h3>
     <div style="max-width: 600px; margin-left: calc(0% -600px)" *ngIf="mirarProducto === true" class="datosProducto">
@@ -186,9 +189,30 @@
   </ion-slides>
 
 <!--Catalogo -->
+<div *ngIf="filtroLetra.length > 0 && mirarProducto===false">
+<h1 class="titulo" style="text-align: center;">{{tituloProducto}} </h1>
+<ion-list *ngFor="let producto of productos"><ion-item>
+  <ion-card  button="true" (click)="mostrarDatos(producto)" style=" width: 200px; background: white;box-shadow: none !important; 
+margin-right: 11px;">
+  <img  class="image"  [src]="producto.foto">
+   
+</ion-card>
+<ion-list >
+  <ion-button (click)="mostrarDatos(producto)">
+  <ion-item  lines="none"  ><p style="  font-size: 19px !important;" class="normal">  <strong>{{producto.nombre}}</strong> </p>
+   </ion-item>
+<ion-item  lines="none" style=" margin-top: -14px;"> <p class="titulo">{{producto.precio|  replace }} $DOP</p></ion-item>
+   <ion-item  lines="none" style="margin-top: -12px;"> <i  class="fa fa-ship" aria-hidden="true">{{producto.condicion}}</i></ion-item>
+  </ion-button>
+  </ion-list>
 
-<ion-grid *ngIf="mirarProducto === false" style="margin-top: 40px; margin-right: 5%; margin-left: 5%;">
-  <h1 class="titulo" style="text-align: center;">Listado de Productos </h1>
+</ion-item>
+ </ion-list>
+
+</div>
+
+<ion-grid *ngIf="mirarProducto === false && filtroLetra.length<1" style="margin-top: 15px; margin-right: 5%; margin-left: 5%;">
+  <h1 class="titulo" style="text-align: center;">{{tituloProducto}} </h1>
  
   <ion-item *ngIf="filtroLetra.length < 1"> 
     <ion-label style="    font-size: 21px !important;  font-family: 'Roboto', sans-serif"  class="normal">Categoria:</ion-label>

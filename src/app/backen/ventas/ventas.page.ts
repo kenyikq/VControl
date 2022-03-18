@@ -397,6 +397,10 @@ cancelar(){
    const collection = this.firestoreService.database.collection<Producto>(this.path, ref=>ref.where('unds','>',0))
    .valueChanges().pipe(take(1)).subscribe(res => {
        this.productos= res;
+       this.productos= this.productos.sort((x,y)=>{  if (x.nombre < y.nombre) {return -1;}
+       if (x.nombre > y.nombre) {return 1;}
+       return 0;}
+       );
    } );
 
 
@@ -595,6 +599,11 @@ if(stockActual >= 0){
         });
 
 
+}
+SortArray(x, y){
+  if (x.nombre < y.nombre) {return -1;}
+  if (x.nombre > y.nombre) {return 1;}
+  return 0;
 }
 
 

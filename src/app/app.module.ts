@@ -17,6 +17,8 @@ import localeEs from '@angular/common/locales/es';//para la fecha en espanol
 import { registerLocaleData } from '@angular/common';//para la fecha en espanol
 import { ReplacePipe } from './pipe-personalizado/pipe-personalizado.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { HttpClientModule } from '@angular/common/http';
+
 registerLocaleData(localeEs, 'es');//para la fecha en espanol
 
 
@@ -31,7 +33,7 @@ registerLocaleData(localeEs, 'es');//para la fecha en espanol
     FormsModule,
     ReactiveFormsModule,
   AngularFireModule.initializeApp(environment.firebaseConfig),
-  BrowserModule, AngularFireStorageModule,
+  BrowserModule,HttpClientModule, AngularFireStorageModule,
   AngularFireAuthModule,
   ServiceWorkerModule.register('ngsw-worker.js', {
     enabled: environment.production,

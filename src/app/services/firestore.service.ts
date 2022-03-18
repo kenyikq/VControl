@@ -38,14 +38,14 @@ getid(){
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-getCollection<Tipo>(path: string, filas= 200){
+getCollection<Tipo>(path: string, filas= 800){
   const collection= this.database.collection <Tipo>(path,
-    ref => ref.orderBy('fecha').limitToLast(filas));
+    ref => ref.orderBy('fecha', 'desc').limitToLast(filas));
   return collection.valueChanges();
 }
 
 getultimodoc<Tipo>(path: string, ordenar='fecha'){
- const collection = this.database.collection<Tipo>(path, ref=>ref.orderBy(ordenar).limitToLast(1));
+ const collection = this.database.collection<Tipo>(path, ref=>ref.orderBy(ordenar, 'desc').limitToLast(1));
   return collection.valueChanges().pipe(take(1));
 }
 

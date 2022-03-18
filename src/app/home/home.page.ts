@@ -1,13 +1,14 @@
 
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Producto } from '../models';
 import { FirestoreService } from '../services/firestore.service';
 import * as moment from 'moment';
 import { Browser } from '@capacitor/browser';
 import { constants } from 'buffer';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -53,14 +54,24 @@ newproducto: Producto = {
   },
 };
 
+tituloProducto="Listado de Productos";
 categoria="Todo";
+
+films: Observable<any>;
+
 
   constructor(
     public db: AngularFirestore,
     public firestoreService: FirestoreService,
+     public httpClient: HttpClient
   ) {this.getDatos() ;
     
-    
+  /* this.films= this.httpClient.get('https://swapi.dev/api/films/1/');
+   this.films
+   .subscribe(data => {
+     console.log('my data: ', data);
+   }); */
+ 
   }
 
   ngAfterViewInit(): void {
@@ -88,6 +99,24 @@ categoria="Todo";
     
   }
 
+  /*conet(){
+    this.http.get('http://ionic.io', {}, {})
+  .then(data => {
+
+    console.log(data.status);
+    console.log(data.data); // data received by server
+    console.log(data.headers);
+
+  })
+  .catch(error => {
+
+    console.log(error.status);
+    console.log(error.error); // error message as string
+    console.log(error.headers);
+
+  });
+  }*/
+
      
 
  async  abrirlink(){
@@ -95,7 +124,7 @@ categoria="Todo";
  
    const phone='18295695701';
    const mensaje='Hola, estoy interesado en el siguiente articulo:%0A'+
-   '*%0A'+this.newproducto.nombre+'*%0A'+
+   '%0A*'+this.newproducto.nombre+'*%0A'+
    '*Codigo:* P'+this.newproducto.codigo+'%0A'+
    '*Precio:* '+this.newproducto.precio+
    '%0A Sigue disponible?'
@@ -125,18 +154,22 @@ categoria="Todo";
 
  
     if(this.filtroLetra===''|| this.filtroLetra===null){
-
+      this.tituloProducto="Listado de Productos"
       this.productos=this.datos;
       
     }
     else{
+      this.tituloProducto="Resultados de la Búsqueda"
       this.productos=this.datos;
       this.productos=  this.productos.filter((el)=> {
+       
        return el.nombre.toLowerCase().indexOf(query.toLowerCase()) > -1;
+       
   });}
    
+  console.log(this.productos.length);
     
-  }
+  }   
     
 
 //Fuente: https://www.iteramos.com/pregunta/107658/filtrar-un-array-en-base-a-los-diferentes-valores-del-objeto

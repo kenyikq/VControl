@@ -26,14 +26,14 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 /* ITpo de letra desde google font */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 
 //Clases Globales
 
 .titulo{
-    font-family: 'Lora', serif !important;
+    font-family: 'Roboto', sans-serif !important;
     font-size: 23px!important;
-    font-weight: 600;
+    font-weight: 500;
     color: black;
     @media screen and (max-width:590px) {
        
@@ -41,9 +41,9 @@
     }
 }
 .subtitulo{
-    font-family: 'Lora', serif !important;
+    font-family: 'Roboto', sans-serif !important;
     font-size: 19px!important;
-    font-weight: 550;
+    font-weight: 450;
     color:black;
     @media screen and (max-width:590px) {
        
@@ -52,7 +52,7 @@
 }
 
 .normal{
-    font-family: 'Lora', serif !important;
+    font-family: 'Roboto', sans-serif !important;
     
     font-size: 15px !important;
     color: black;

@@ -25,7 +25,7 @@
   
 
   
-  <h3 *ngIf="crearProducto === true" class="titulo p-3 encabezado">Datos del producto</h3>
+  <h3 *ngIf="crearProducto === true" class="titulo encabezado">Datos del producto</h3>
     <div *ngIf="crearProducto === true" class="datosProducto">
       <!-- Default Segment -->
 
@@ -236,7 +236,7 @@
 <!--Listado de los articulos-->
 
    <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="crearProducto === false" class="contenedorControles">
-    <h3  class="titulo p-2 encabezado">Listado de Productos</h3>
+    <h3  class="titulo p-1 encabezado">Listado de Productos</h3>
    
     <div id="lista" class="listaProductos">
 
@@ -258,8 +258,8 @@
         </ion-button>
                 
         </ion-buttons>
-
-        <div scrollable="true" class="row">
+<ion-segment  scrollable="true">
+        <div scrollable="true" class="row"   style="margin: 5px; width: 100%;">
           <table scrollable="true" border="1" class="table" id="tablaprueba" style="opacity: 108%; background: white !important;">
             <thead class="thead-dark normal" style= "font-weight: bold;" >
               <tr style="text-align: center;" >
@@ -279,7 +279,7 @@
                 </td>
                 <td>{{ producto.precio | replace}}</td>
                 <td>{{ producto.unds }}</td>
-                <td style="width: 90px;"> 
+                <td style="width: 5px;"> 
                   <ion-buttons style="margin-top: -16px"   class="ionbutton" slot="end">
                     <ion-button  (click)="mostrarDatos(producto)">
                       <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
@@ -297,7 +297,7 @@
 
 
        </div>
-    
+      </ion-segment>
    
 
 

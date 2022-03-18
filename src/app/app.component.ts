@@ -3,6 +3,7 @@ import { NavController, Platform } from '@ionic/angular';
 import { Usuario } from './models';
 import { FirebaseauthService } from './services/firebaseauth.service';
 import { FirestoreService } from './services/firestore.service';
+import { NotificationService } from './services/notification.service';
 
 
 //const {SplashScreen, StatusBar} = Plugins;
@@ -35,6 +36,7 @@ export class AppComponent  {
     private firebaseauthService: FirebaseauthService,
     public firestoreService: FirestoreService,
     public platform: Platform,
+    private notification: NotificationService,
 
     ) {
        this.firebaseauthService.stateauth().subscribe( res=>{
