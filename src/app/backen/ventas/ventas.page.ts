@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { Articulo, Cliente, Factura, GraficoTransacciones, MovimientosContables, Producto } from 'src/app/models';
 import { FirestorageService } from 'src/app/services/firestorage.service';
-import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { FirebaseauthService } from 'src/app/services/firebaseauth.service';
 import * as moment from 'moment';
 import { AngularFirestore} from '@angular/fire/compat/firestore';
@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ThisReceiver } from '@angular/compiler';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ClientesComponent } from '../clientes/clientes.component';
 
 
 
@@ -68,7 +69,7 @@ producto: Producto = {
     pantalla: ''}
   };
 
-  newCliente: Cliente =
+  @Input() newCliente: Cliente =
   {
     //id: this.firestoreService.getid(),
     codigo: 1000,
@@ -134,7 +135,8 @@ nombresArt = [];
               public navCtrl: NavController,
               public toastCtrl: ToastController,
               public alertController: AlertController,
-              public formBuilder: FormBuilder
+              public formBuilder: FormBuilder,
+              public modalCtr: ModalController
   ) {
 
 
@@ -161,6 +163,7 @@ nombresArt = [];
   }
 
   ngOnInit() {
+    
     this.ionicForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
      // email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
@@ -297,11 +300,10 @@ this.calculoTotalesFactura();
  async guardarDatos(){ //Guarda los datos de la factura y reduce inventario
   //console.log('aqui la respuesta ',this.submitForm());
   if(this.submitForm()){
-  await this.gestionarCliente().then(
-      res=> {this.guardarFactura().then(()=>{
+  await this.guardarFactura().then(()=>{
         this.reducirInventario().then(resp=>{this.goAnOtherPage('home');
       }).catch(err=>{this.alerta('Error al guardar datos : '+err)});
-    });
+    
       
       });
       this.disable=false;
@@ -383,7 +385,7 @@ cancelar(){
 }
 
   getdatos(filas= 1000) {
-  this.getCliente();
+  
 
     const path='usuario/'+this.iduser+'/clientes';
 
@@ -439,12 +441,14 @@ this.newArticulo.tipoArticulo= prod.tipoArticulo;
     const path='usuario/'+this.iduser+'/clientes';
 
     this.firestoreService.getCollectionquery<Cliente>(path, 'codigo', '==', this.codclient).subscribe(res=>{
-
-    this.newCliente.nombre= res[0].nombre;
+if(res.length >0){
+  this.newCliente.nombre= res[0].nombre;
     this.newCliente.telefono= res[0].telefono;
     this.newCliente.codigo= res[0].codigo;
 this.disable=true;
     this.codigofactura();
+}
+    
 
 
     });
@@ -494,39 +498,8 @@ async presentToast(msg: string) {
 toast.present();
 }
 
-async gestionarCliente(){
-  const path= 'usuario/'+this.iduser+'/clientes';
-
- const collection = this.firestoreService.database.collection<Producto>(path, ref=>ref.where('telefono','==',this.newCliente.telefono))
- .valueChanges().pipe(take(1)).subscribe(res => {
-    if(res.length === 0){//si el cliente no existe
-      this.firestoreService.getultimodoc<Cliente>(path).subscribe(resp=>{
-        if(resp.length>0){
-        this.newCliente.codigo=  resp[0].codigo + 1; //asigna el nuevo codigo del cliente
-
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(respu=>{
-        this.codigofactura();
-      }).catch(err=>{ console.log('Error al crear cliente ',err); });
-      }
-      else{this.newCliente.codigo=1000;
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(re=>{
-        this.codigofactura();
-      }).catch(err=>{ console.log('Error al crear cliente ',err); }); } });
 
 
-    }
-
-    else{//si el cliente existe
-
-      this.firestoreService.createDoc(this.newCliente, path, 'C'+this.newCliente.codigo.toString()).then(respues=>{
-        this.codigofactura();
-      }).catch(err=>{ console.log('Error al crear cliente ',err); });
-    }
- } );
-
- this.newfactura.cliente=this.newCliente.nombre;
-
-}
 
 comprobarTelefono(){
   const path= 'usuario/'+this.iduser+'/clientes';
@@ -543,6 +516,7 @@ async  guardarFactura(){
   const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
   this.presentLoading();
  this.newfactura.cliente=this.newCliente.nombre;
+ this.codigofactura();
 
   this.firestoreService.createDoc(this.newfactura, path, 'F'+this.newfactura.codigo.toString()).then( ans =>{
       this.loading.dismiss().then( respuesta => {
@@ -691,5 +665,34 @@ async presentLoading(){
   
 
   }
+
+  async presentModal() {
+    const modalCtr = await this.modalCtr.create({
+      component: ClientesComponent,
+      componentProps:{
+        modal: true
+      },
+      cssClass: 'my-custom-modal-css'
+    });
+    
+    await modalCtr.present();
+    const {data} = await modalCtr.onDidDismiss();
+  if (data!== undefined){
+    this.newCliente=data;
+this.disable=true;
+    this.codigofactura();
+  }
+
+    
+  }
+
+  dismiss() {
+    // using the injected modalCtrController this page
+    // can "dismiss" itself and optionally pass back data
+    this.modalCtr.dismiss({
+      'dismissed': true
+    });
+  }
+
 
 }

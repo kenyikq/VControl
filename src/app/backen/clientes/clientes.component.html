@@ -1,114 +1,219 @@
-<ion-header>
+<ion-header *ngIf="modal== false">
   <ion-toolbar>
-    <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
-      <ion-button [routerLink]= "['/home']" >
+    <ion-buttons slot="end" style="width: 41px; margin-right: 47px;">
+      <ion-button [routerLink]="['/home']">
         <ion-icon style="width: 22px;" color="danger" name="home" slot="icon-only"></ion-icon>
-        
+
       </ion-button>
-      <ion-button [routerLink]= "['/registro']" >
+      <ion-button [routerLink]="['/registro']">
         <ion-icon color="danger" name="person-circle-outline" slot="icon-only"></ion-icon>
-        
+
       </ion-button>
-      
-      </ion-buttons>
+
+    </ion-buttons>
     <ion-title style="text-align: center; margin-right: 5%;" class="subtitulo">
       CLientes
     </ion-title>
 
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-     </ion-buttons>
-   </ion-toolbar>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  
 
-  
+
+
   <h3 *ngIf="actualizarCliente === true" class="titulo p-3 encabezado">Datos del Cliente</h3>
-    <div *ngIf="actualizarCliente === true" class="datoscliente">
-      <ion-item>
-        <ion-input disabled="true"  > <ion-label  class="normal" style="position: absolute;    margin-left: 10px;"></ion-label></ion-input>
-        <ion-label style="margin-top: 6px;">Fecha:</ion-label>
-        <ion-datetime disabled="true" cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY" [(ngModel)]="newCliente.fecha"></ion-datetime>     
-      </ion-item>
-      
-        <ion-list>
-
-        <ion-item>
-             <ion-label    class="normal" >Nombre:</ion-label>
-             <ion-input [(ngModel)]= "newCliente.nombre"  class="normal" type="string" inputmode="text" placeholder="Nombre del Cliente"></ion-input>
-         
-        </ion-item>
-
-
-        <ion-item>
-          <ion-label    class="normal" >Teléfono:</ion-label>
-          <ion-input [(ngModel)]= "newCliente.telefono"  class="normal" type="string" inputmode="text" placeholder="telefono del Cliente"></ion-input>
-      
-     </ion-item>
-        
-        
-              
-           
-              
-       
-
-      </ion-list>
-      
-    </div>
-
-    <div *ngIf="actualizarCliente === true" class="action-buttons" style=" padding-bottom: 60px !important; text-align: center;">
-      <ion-button class="action-button"  *ngIf="isActive=== true "  shape="round"  (click)="guardarDatos()">  Enviar  </ion-button>
-      <ion-button class="action-button" shape="round" (click)="actualizarCliente = false" style="color: red; --border-color: red;" class="signup-button"  fill="outline " >Cancelar </ion-button>
-     
-       </div>
-
-<!--Listado de los Clientes-->
-
-   <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="actualizarCliente === false" class="contenedorControles">
-    <h3  class="titulo p-2 encabezado">Listado de clientes</h3>
-   
-    <div id="lista" class="listaclientes">
-      <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
-        <ion-button  (click)="nuevo()" >
-          <ion-icon  slot="start"  (click)="nuevo()" name="add"></ion-icon>  <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
-          
-        </ion-button>
-                
-        </ion-buttons>
-    
-    <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
-      <ion-label style="text-align: center;" class="normal">Código</ion-label>
-        <ion-label style="text-align: center;" class="normal">CLiente</ion-label>
-      <ion-label style="text-align: center;" class="normal hide">Telefono</ion-label>
-      <ion-label  style="text-align: center;" class="normal">Acciones</ion-label>
+  <div *ngIf="actualizarCliente === true" class="datoscliente">
+    <ion-item>
+      <ion-input disabled="true">
+        <ion-label class="normal" style="position: absolute;    margin-left: 10px;"></ion-label>
+      </ion-input>
+      <ion-label style="margin-top: 6px;">Fecha:</ion-label>
+      <ion-datetime disabled="true" cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY"
+        [(ngModel)]="newCliente.fecha"></ion-datetime>
     </ion-item>
 
-  <div  style="border-radius: 40px;">
-    <ion-card style="border-radius: 22px;">
-  <ion-item *ngFor="let cliente of clientes">
-    <ion-label style="text-align: center;" class="normal"><ion-label></ion-label> C {{ cliente.codigo }}</ion-label>
-    <ion-label style="text-align: center;" class="normal">{{ cliente.nombre }}</ion-label >
-    <ion-label style="text-align: center;" class="normal hide">{{ cliente.telefono }}</ion-label >
-              <ion-label style="text-align: right;"> <ion-buttons   style="width: 72px ;position: absolute; right: 10%;
-                top: -2px;" class="ionbutton" slot="end">
-          <ion-button style="margin-right: -19px;" (click)="mostrarDatos(cliente)">
-            <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
-          </ion-button>
-          <ion-button class="icono"  (click)="deleteCliente(cliente)">
-            <ion-icon slot="icon-only" color="danger"  name="trash-bin"  ></ion-icon>
-          </ion-button>
-        </ion-buttons></ion-label>
-     
-  </ion-item>
-</ion-card>
-</div>
+    <ion-list>
 
-    
+      <ion-item>
+        <ion-label class="normal">Nombre:</ion-label>
+        <ion-input [(ngModel)]="newCliente.nombre" class="normal" type="string" inputmode="text"
+          placeholder="Nombre del Cliente"></ion-input>
+
+      </ion-item>
+
+
+      <ion-item>
+        <ion-label class="normal">Teléfono:</ion-label>
+        <ion-input [(ngModel)]="newCliente.telefono" class="normal" type="string" inputmode="text"
+          placeholder="telefono del Cliente"></ion-input>
+
+      </ion-item>
+
+
+
+
+
+
+
+    </ion-list>
+
   </div>
 
- </div>
+  <div *ngIf="actualizarCliente === true" class="action-buttons"
+    style=" padding-bottom: 60px !important; text-align: center;">
+    <ion-button class="action-button" *ngIf="isActive=== true " shape="round" (click)="guardarDatos()"> Enviar
+    </ion-button>
+    <ion-button class="action-button" shape="round" (click)="actualizarCliente = false"
+      style="color: red; --border-color: red;" class="signup-button" fill="outline ">Cancelar </ion-button>
+
+  </div>
+
+  <!--Listado de los Clientes-->
+
+  <div style="margin-top: 40px; margin-bottom: 30px;" *ngIf="actualizarCliente === false" class="contenedorControles">
+    <div *ngIf="historico=== false" class="listado">
+      <h3 class="titulo p-2 encabezado">Listado de clientes</h3>
+
+      <div id="lista" class="listaclientes">
+        <ion-buttons slot="end" style="width: 41px; margin-right: 47px;">
+          <ion-button (click)="nuevo()">
+            <ion-icon slot="start" (click)="nuevo()" name="add"></ion-icon>
+            <ion-label style="text-align: center;" class="normal">Agregar</ion-label>
+
+          </ion-button>
+
+        </ion-buttons>
+
+        <ion-item style="margin-bottom: 3px; margin-left: 2%; margin-right: 2%" class="emcabezados">
+          <ion-label style="text-align: center;" class="normal">Código</ion-label>
+          <ion-label style="text-align: center;" class="normal">Cliente</ion-label>
+          <ion-label style="text-align: center;" class="normal hide">Telefono</ion-label>
+          <ion-label *ngIf="modal===false" style="text-align: center;" class="normal">Acciones</ion-label>
+        </ion-item>
+
+        <div style="border-radius: 40px;">
+          <ion-card style="border-radius: 22px;">
+            <ion-item button="true" (click)="seleccionCliente(cliente)" *ngFor="let cliente of clientes">
+              <ion-label style="text-align: center;" class="normal">
+                <ion-label></ion-label> C {{ cliente.codigo }}
+              </ion-label>
+              <ion-label style="text-align: center;" class="normal">{{ cliente.nombre }}</ion-label>
+              <ion-label style="text-align: center;" class="normal hide">{{ cliente.telefono }}</ion-label>
+              <ion-label *ngIf="modal===false" style="text-align: right;">
+                <ion-buttons style="width: 72px ;position: absolute; right: 10%;
+                top: -2px;" class="ionbutton" slot="end">
+                  <ion-button style="margin-right: -19px;" (click)="mostrarDatos(cliente)">
+                    <ion-icon slot="icon-only" name="create-sharp"></ion-icon>
+                  </ion-button>
+                  <ion-button class="icono" (click)="deleteCliente(cliente)">
+                    <ion-icon slot="icon-only" color="danger" name="trash-bin"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-label>
+
+            </ion-item>
+          </ion-card>
+        </div>
+
+
+
+      </div>
+    </div>
+
+
+
+    <!--Histori-->
+
+    <div *ngIf="historico=== true" class="hitorico">
+      <h3 class="titulo p-2 encabezado">Historico De Cliente</h3>
+
+      <div id="lista" class="listaclientes" >
+
+        <div class="datoscliente" style=" margin:auto; max-width: 400px; margin-bottom: 10px;">
+          <ion-item>
+            <ion-input disabled="true">
+              <ion-label class="subtitulo" style="position: absolute;    margin-left: 0px;">C{{newCliente.codigo}}
+              </ion-label>
+            </ion-input>
+            <ion-label style="margin-top: 6px;">Fecha:</ion-label>
+            <ion-datetime disabled="true" cancelText="cancel" doneText="ok" displayFormat="DD-MM-YYYY"
+              [(ngModel)]="newCliente.fecha"></ion-datetime>
+          </ion-item>
+
+          <ion-list>
+
+            <ion-item>
+              <ion-label class="normal">Nombre:</ion-label>
+              <ion-input [(ngModel)]="newCliente.nombre" class="normal" type="string" inputmode="text"
+                placeholder="Nombre del Cliente"></ion-input>
+
+            </ion-item>
+
+
+            <ion-item>
+              <ion-label class="normal">Teléfono:</ion-label>
+              <ion-input [(ngModel)]="newCliente.telefono" class="normal" type="string" inputmode="text"
+                placeholder="telefono del Cliente"></ion-input>
+
+            </ion-item>
+
+
+          </ion-list>
+
+        </div>
+
+
+        <table border="1" style="background: white !important; opacity: 50% importat !important;max-width: 500px; margin: auto;" class="table"
+          id="table">
+          <thead class="thead-dark normal" style="font-weight: bold;">
+            <tr style="text-align: center;">
+              <th>Fecha</th>
+              <th>Factura</th>
+              <th>Articulos</th>
+              <!--th class="hide">Descripción</th-->
+              <th>Monto</th>
+
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody class="normal">
+            <tr style="text-align: center;" *ngFor="let factura of facturas">
+              <td>{{ factura.fecha | date: 'dd-MM-yyyy'}}</td>
+              <td>F{{ factura.codigo }}</td>
+              <!---| date: 'dd-MM-yyyy'--->
+              <td >
+                {{ factura.articulo.length }}
+              </td>
+              <!--td class="hide">{{transaccion.descripcion}}</td-->
+              <td>{{ factura.total|replace }}</td>
+
+
+            <tr>
+          </tbody>
+          <tbody>
+
+        </table>
+
+
+
+      </div>
+      <div style="width: 100%; text-align: center;">
+        <ion-button style="margin: auto;    --background: red;" (click)="historico=false">Volver Atras</ion-button>
+    
+
+
+    </div>
+  </div>
+
+
+
+
+  </div>
 
 
 

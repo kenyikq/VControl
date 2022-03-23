@@ -180,20 +180,38 @@ this.newproducto.descripcion= {
 
     if(this.valueSelected === 'disponibles'){
 
-   const  subscriber = this.firestoreService.database.collection<Producto>(this.path,
-      ref=>ref.where('unds','!=',0).orderBy('nombre'))
-    .valueChanges().pipe(take(1)).subscribe((res) => {
-      
-      this.productos = res;
+      const subscriber = this.firestoreService.database.collection<Producto>(this.path,
+        ref=>ref.where('unds','>',0))
+      .valueChanges().pipe(take(2)).subscribe((res) => {
+        
+        this.productos = res.sort(function (a, b) {
+          if (a.nombre > b.nombre) {
+            return 1;
+          }
+          if (a.nombre < b.nombre) {
+            return -1;
+          }
+          // a must be equal to b
+          return 0;
+        });
     });}
 
     if(this.valueSelected=== 'vendidos'){
 
       const subscriber = this.firestoreService.database.collection<Producto>(this.path,
-       ref=>ref.where('unds','==',0).orderBy('nombre'))
+       ref=>ref.where('unds','==',0))
      .valueChanges().pipe(take(2)).subscribe((res) => {
        
-       this.productos = res;
+       this.productos = res.sort(function (a, b) {
+        if (a.nombre > b.nombre) {
+          return 1;
+        }
+        if (a.nombre < b.nombre) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
+      });
      });}
      if(this.valueSelected=== 'todos') {
 
@@ -213,6 +231,7 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
     this.actualizarProducto = true;
     this.crearProducto=true;
     this.newproducto = producto;
+    console.log(producto.foto);
     
   }
 
@@ -356,14 +375,17 @@ if(this.actualizarProducto=== false){
   async guardar() {
 
     this.presentLoading();
-
-    const name = this.newproducto.id;
+    if( this.newFile===''){
+console.log('nada que subir');
+    }
+else{
+  const name = this.newproducto.id;
     const file = this.newFile;
     const res = await this.firestorage.uploadImg(file, this.path, name).
     then(res=>{this.newproducto.foto = res;});
+}
     
-
-   
+ 
 
     this.firestoreService
       .createDoc(this.newproducto, this.path, this.newproducto.id)
@@ -419,10 +441,10 @@ if(this.actualizarProducto=== false){
      }
 
      else{
-      transaccion=((this.newproducto.gasto+this.newproducto.costo)*(this.newproducto.unds)-
-      ((resp[0].gasto+resp[0].costo)*resp[0].unds));//reduce las unds creadas para no afectar nueva transaccion
+      transaccion=((this.newproducto.gasto+this.newproducto.costo)*this.newproducto.unds)-
+      ((resp[0].gasto+resp[0].costo)*resp[0].unds);//reduce las unds creadas para no afectar nueva transaccion
      
-      this.getionTotales(transaccion).then(()=>{
+      this.getionTotales(transaccion).then(()=>{  
        this.agregartransaccion();});
        this.transaccion.monto=transaccion;
        this.transaccion.fecha= moment(new Date).toString();

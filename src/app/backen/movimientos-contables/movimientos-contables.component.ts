@@ -143,12 +143,13 @@ getTransacciones(filas=this.filas) {
 if(this.valueSelected === 'Todo'){
 
   this.firestoreService.getCollection<MovimientosContables>(this.path).pipe().subscribe( res => {
- this.cont=0;
+
     //console.log(res);
   this.transacciones= res.sort((a,b)=> Date.parse(a.fecha)- Date.parse(b.fecha));
   this.transacciones= this.transacciones.slice(this.transacciones.length-filas);
 this.transacciones= this.transacciones.sort((a,b)=> Date.parse(b.fecha)- Date.parse(a.fecha));
  // let aNuevo = aNumeros.slice(aNumeros.length-5);
+ this.cont=0;
 
 } );
 
@@ -157,7 +158,7 @@ this.transacciones= this.transacciones.sort((a,b)=> Date.parse(b.fecha)- Date.pa
 else{this.firestoreService.getCollectionquery<MovimientosContables>(this.path,'tipoTransaccion','==',this.valueSelected).
 subscribe(resp=>{this.cont=0;
   this.transacciones=resp.sort((a,b)=> Date.parse(a.fecha)- Date.parse(b.fecha));
-  this.transacciones= this.transacciones.slice(this.transacciones.length-filas);
+  this.transacciones= this.transacciones.slice(this.transacciones.length - filas);
   this.transacciones= this.transacciones.sort((a,b)=> Date.parse(b.fecha)- Date.parse(a.fecha));
 
 });
@@ -367,7 +368,7 @@ validacion(){
       this.cont=this.cont+1;
     return this.cont;
   }
-  while (this.cont < i);
+  while (this.cont < this.filas);
 
   }
 

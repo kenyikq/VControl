@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header >
   <ion-toolbar>
     <ion-buttons slot="end" style="width: 41px; margin-right: 47px;" >
       <ion-button [routerLink]= "['/home']" >
@@ -59,7 +59,7 @@
    
    
     </div>
-     
+    
       
       
       <ion-list>
@@ -78,9 +78,9 @@
 
     <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
      <label for="client"><ion-icon  slot="icon-only" name="search"></ion-icon></label>
-     <ion-select [ngModelOptions]="{standalone: true}" [(ngModel)]="codclient" style="position: absolute;" class="normal" (ionChange)="getCliente()" >
-       <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.codigo">{{cliente.nombre}}</ion-select-option>
-      </ion-select>    
+     <ion-button  style="position: absolute;" class="normal" (click)="presentModal()" >
+      
+      </ion-button>    
      </ion-buttons>
 
    </ion-item>

@@ -260,9 +260,9 @@
         </ion-buttons>
 <ion-segment  scrollable="true">
         <div scrollable="true" class="row"   style="margin: 5px; width: 100%;">
-          <table scrollable="true" border="1" class="table" id="tablaprueba" style="opacity: 108%; background: white !important;">
+          <table scrollable="true" border="1" class="table" id="tablaprueba" style="opacity: 108%; background: white !important; vertical-align: middle !important;">
             <thead class="thead-dark normal" style= "font-weight: bold;" >
-              <tr style="text-align: center;" >
+              <tr style="text-align: center; vertical-align: middle;" >
                 <th>Articulo</th>
                 <th>Costo N</th>
                 <th>Precio</th>
@@ -271,7 +271,7 @@
               </tr>
             </thead>
             <tbody class="normal">
-              <tr style="text-align: center;" *ngFor="let producto of productos">
+              <tr style="text-align: center; " *ngFor="let producto of productos">
                 <td>{{ producto.nombre }}</td>
                 <td>
                   {{ producto.costo + producto.gasto | replace}}
