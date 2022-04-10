@@ -359,16 +359,21 @@ validacion(){
   }
 
   fila(){
-    const i =this.transacciones.length;
+    
+    const i =this.filas;
 
     do {
-      if(this.cont>this.transacciones.length){
+      if(this.cont>i){
         this.cont=0;
       }
+      
       this.cont=this.cont+1;
-    return this.cont;
+     
+        return this.cont;
+     
+    
   }
-  while (this.cont < this.filas);
+  while (this.cont < this.filas - 1);
 
   }
 

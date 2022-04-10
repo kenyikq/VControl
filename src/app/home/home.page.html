@@ -239,7 +239,15 @@ margin-right: 11px;">
     <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let producto of productos" >
 <ion-card  button="true" (click)="mostrarDatos(producto)" style="background: white;box-shadow: none !important; margin-bottom: 82px;
 margin-right: 11px;">
-  <img style="width: 100%;" class="image"  [src]="producto.foto">
+<ion-item style="  height: 12em;
+display: flex;
+align-items: center;
+justify-content: center;">
+  <img style=" width: 165px; text-align: center; margin: auto;
+  --object-position: center center;
+  height: auto; " [src]="producto.foto">
+</ion-item>
+  
   <ion-card-content>
    
     

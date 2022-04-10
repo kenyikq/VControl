@@ -533,9 +533,9 @@ async  guardarFactura(){
 codigofactura(){
   const path='usuario/'+this.iduser+'/clientes/C'+this.newCliente.codigo+'/factura';
 
-    this.firestoreService.getultimodoc<Factura>(path,'codigo').subscribe(resp=>{
+    this.firestoreService.database.collection<Factura>(path, ref=>ref.orderBy('codigo').limitToLast(1)).valueChanges()
+    .subscribe(resp=>{
       if(resp.length>0){
-
        this.newfactura.codigo = resp[0].codigo + 1;
        
           }

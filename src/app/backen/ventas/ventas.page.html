@@ -86,13 +86,14 @@
    </ion-item>
 <ion-item>
  <ion-label    class="normal" >Celular:</ion-label>
- <ion-input [readonly]="disable"  formControlName="celular"  inputmode="number" (ionBlur)="submitForm()" required [(ngModel)]="newCliente.telefono"  class="normal" type="tel"  placeholder="809-894-5555"></ion-input>
+ <ion-label><ion-input class="normal" [readonly]="disable"  formControlName="celular"  inputmode="number" (ionBlur)="submitForm()" required [(ngModel)]="newCliente.telefono"  class="normal" type="tel"  placeholder="809-894-5555"></ion-input>
  <span  style="position: absolute;width: 200px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.required">
   Numero Celular requerido.
 </span>
 <span  style="position: absolute;width: 250px; right: 24px;" class="error ion-padding normal"  *ngIf="isSubmitted && errorControl.celular.errors?.pattern">
   El formato no es correcto. Ejemplo: 809-782-8923.
-</span>
+</span></ion-label>
+ 
 </ion-item>
 
 </form>

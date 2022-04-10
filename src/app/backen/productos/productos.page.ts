@@ -132,16 +132,18 @@ export class ProductosPage implements OnInit {
 
 
     };
-
-
-    this.firestoreService.getultimodoc<Producto>(this.path).subscribe((res) => {
-
-      if (res !== null) {
-        const sum: number = res[0].codigo + 1;
-        this.newproducto.codigo = sum;
-      }
-      this.newproducto.id = 'P' + this.newproducto.codigo;
-    });
+    if(this.actualizarProducto=== false){
+      this.firestoreService.database.collection<Producto>(this.path,
+        ref=>ref.where('codigo','>',0).orderBy('codigo').limitToLast(1)).valueChanges()
+      .pipe(take(1))
+      .subscribe((resp) => {
+        if (resp.length > 0) {
+          this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
+          this.newproducto.id = 'P' +this.newproducto.codigo;
+     console.log  ("codigo",this.newproducto.id);
+        }
+   
+    });}
     this.caracteristicasArticulos();
     
     this.crearProducto=true;
@@ -311,7 +313,7 @@ if(this.actualizarProducto=== false){
     if (resp.length > 0) {
       this.newproducto.codigo = resp[0].codigo + 1; //asigna el nuevo codigo del producto
       this.newproducto.id = 'P' +this.newproducto.codigo;
- 
+ console.log  ("codigo",this.newproducto.id);
     }
 
   });

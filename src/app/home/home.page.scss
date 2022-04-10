@@ -143,10 +143,24 @@ h1{
     margin-top: 35px;
     margin-bottom: 15px;
     width: 95%;
-   
+  
     
 }
+
+.presentacion{
+  height: 12em !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
+  
+  @media screen and (max-width:790px) {
+  
+    height: inherit;
+  
+  }
+}
+
 
 .table{
   opacity: 108%; 
