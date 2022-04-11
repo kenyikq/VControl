@@ -26,8 +26,8 @@
   <ion-item *ngIf="mirarProducto === false" style=" width: 80%;  margin: auto;  margin-top: 10px !important;">
     <!--style="width margin-left: calc(0% - 111px); -webkit-text-stroke: 1px black;-->
     <ion-label    class="normal" >Buscar:</ion-label>
-    <ion-input (ionChange)="filterItemsLetra(filtroLetra)" [(ngModel)]="filtroLetra"   class="normal" type="string" inputmode="text" placeholder="Buscar Articulo"></ion-input>
-
+   <ion-label> <ion-input (ionChange)="filterItemsLetra(filtroLetra)" [(ngModel)]="filtroLetra"   class="normal" type="string" inputmode="text" placeholder="Buscar Articulo"></ion-input>
+   </ion-label>
     <ion-buttons slot="end" style="position: absolute; margin-top: 2px; right: 17px;" >
      <label ><ion-icon  slot="icon-only" name="search"></ion-icon></label>
      
@@ -192,21 +192,21 @@
 <div *ngIf="filtroLetra.length > 0 && mirarProducto===false">
 <h1 class="titulo" style="text-align: center;">{{tituloProducto}} </h1>
 
-<ion-list *ngFor="let producto of productos">
+<ion-list *ngFor="let producto of productos" style="background: white;">
   <ion-card button="true" (click)="mostrarDatos(producto)">
-  <ion-item>
+  <ion-item style="--background: white;">
   <ion-card  button="true" (click)="mostrarDatos(producto)" style=" width: 200px; background: white;box-shadow: none !important; 
 margin-right: 11px;">
   <img  class="image"  [src]="producto.foto">
    
 </ion-card>
 
-<ion-list >
+<ion-list style="background: white;" >
   
-  <ion-item  lines="none"  ><p style="  font-size: 19px !important;" class="normal">  <strong>{{producto.nombre}}</strong> </p>
+  <ion-item  lines="none" style=" --background: white;" ><p style=" --background: white; font-size: 19px !important;" class="normal">  <strong>{{producto.nombre}}</strong> </p>
    </ion-item>
-<ion-item  lines="none" style=" margin-top: -14px;"> <p class="titulo">{{producto.precio|  replace }} $DOP</p></ion-item>
-   <ion-item  lines="none" style="margin-top: -12px;"> <i  class="fa fa-ship" aria-hidden="true">{{producto.condicion}}</i></ion-item>
+<ion-item  lines="none" style=" margin-top: -14px; --background: white;"> <p class="titulo">{{producto.precio|  replace }} $DOP</p></ion-item>
+   <ion-item  lines="none" style="margin-top: -12px; --background: white;"> <i style="color: black;" class="fa fa-ship" aria-hidden="true">{{producto.condicion}}</i></ion-item>
   
   </ion-list>
 
@@ -237,21 +237,18 @@ margin-right: 11px;">
 
      
     <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let producto of productos" >
-<ion-card  button="true" (click)="mostrarDatos(producto)" style="background: white;box-shadow: none !important; margin-bottom: 82px;
+<ion-card  button="true" (click)="mostrarDatos(producto)" style="background: white;box-shadow: none !important; margin-bottom: 12px;
 margin-right: 11px;">
-<ion-item style="  height: 12em;
+<ion-item style=" --border-color: white !important; height: 12em;
 display: flex;
 align-items: center;
-justify-content: center;">
-  <img style=" width: 165px; text-align: center; margin: auto;
+justify-content: center; --background: white;">
+  <img style=" width: 180px; text-align: center; margin: auto;
   --object-position: center center;
   height: auto; " [src]="producto.foto">
 </ion-item>
   
-  <ion-card-content>
-   
-    
-  </ion-card-content> 
+  
   <ion-label style="width: 100%;     font-size: 19px !important;" class="normal">
     <strong>{{producto.nombre}}</strong> </ion-label>
     <div lines="none" style="margin-top: 10px;">

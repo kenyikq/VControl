@@ -82,7 +82,7 @@ films: Observable<any>;
   getDatos(): boolean{
     this.subscriber = this.firestoreService.database.collection<Producto>(this.path,
       ref=>ref.where('unds','!=',0))
-    .valueChanges().pipe(take(1)).subscribe((res) => {
+    .valueChanges().subscribe((res) => {
       this.datos=res;
       this.productos = this.datos;
       this.productosCarrusell=res;
