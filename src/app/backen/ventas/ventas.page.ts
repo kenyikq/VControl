@@ -61,6 +61,7 @@ producto: Producto = {
   precio: 0,
   precioMin: 0,
   condicion:'Usado como Nuevo',
+  link:'',
   descripcion: {
     caracteristicas:'',
     procesador: {tipo: '', gen: ''},
@@ -369,6 +370,7 @@ cancelar(){
       precio: 0,
       precioMin: 0,
       condicion: 'Usado Como Nuevo',
+      link:'',
       descripcion: {
         caracteristicas:'',
         procesador: {tipo: '', gen: ''},

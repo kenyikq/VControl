@@ -74,6 +74,11 @@
 
           </ion-select>
      </ion-item>
+     <ion-item>
+      <ion-label    class="normal" >Link Facebook:</ion-label>
+      <ion-input [(ngModel)]= "newproducto.link"  class="normal" type="string" inputmode="text" placeholder="link de anuncion fcbook"></ion-input>
+  
+ </ion-item>
 
         <ion-item>
           <ion-label  class="normal">Tipo de Articulo:</ion-label>
@@ -173,8 +178,9 @@
           <ion-select-option value="12.5">12.5</ion-select-option>
           <ion-select-option value="13">13</ion-select-option>
           <ion-select-option value="14">14</ion-select-option>
-          <ion-select-option value="15">15.5</ion-select-option>
+          <ion-select-option value="15">15</ion-select-option>
           <ion-select-option value="15.5">15.5</ion-select-option>
+          <ion-select-option value="15.5">17</ion-select-option>
         </ion-select><ion-input disabled="true" inputmode="number" > <ion-label   
           class="normal" style="position: absolute;    margin-left: 10px;">Pulg</ion-label></ion-input>
       
@@ -263,6 +269,7 @@
           <table scrollable="true" border="1" class="table" id="tablaprueba" style="opacity: 108%; background: white !important; vertical-align: middle !important;">
             <thead class="thead-dark normal" style= "font-weight: bold;" >
               <tr style="text-align: center; vertical-align: middle;" >
+                <th>Codigo</th>
                 <th>Articulo</th>
                 <th>Costo N</th>
                 <th>Precio</th>
@@ -272,6 +279,7 @@
             </thead>
             <tbody class="normal">
               <tr style="text-align: center; " *ngFor="let producto of productos">
+                <td>{{ producto.id }}</td>
                 <td>{{ producto.nombre }}</td>
                 <td>
                   {{ producto.costo + producto.gasto | replace}}

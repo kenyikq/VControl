@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { Browser } from '@capacitor/browser';
 import { constants } from 'buffer';
 import { HttpClient } from '@angular/common/http';
+import { FirebaseauthService } from '../services/firebaseauth.service';
 
 @Component({
   selector: 'app-home',
@@ -45,6 +46,7 @@ newproducto: Producto = {
   precio: 0,
   precioMin: 0,
   condicion:'Usado como nuevo',
+  link:'',
   descripcion: {
     caracteristicas:'',
     procesador: { tipo: '', gen: '' },
@@ -56,6 +58,8 @@ newproducto: Producto = {
 
 tituloProducto="Listado de Productos";
 categoria="Todo";
+mostrarMenu=false;
+ubicacion= "https://www.google.com/maps/place/19%C2%B009'14.8%22N+70%C2%B028'52.9%22W/@19.1541111,-70.4813611,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcb5abf3438e623e9!8m2!3d19.1541115!4d-70.4813634?hl=es";
 
 films: Observable<any>;
 
@@ -63,8 +67,22 @@ films: Observable<any>;
   constructor(
     public db: AngularFirestore,
     public firestoreService: FirestoreService,
-     public httpClient: HttpClient
+     public httpClient: HttpClient,
+     public log: FirebaseauthService,
   ) {this.getDatos() ;
+
+    if ( this.log.stateauth())
+    {
+    this.log.stateauth().subscribe( res=>{
+
+      if (res !== null){
+        this.mostrarMenu= true;
+
+      }
+      else{this.mostrarMenu= false;}
+    });
+
+  }
     
   /* this.films= this.httpClient.get('https://swapi.dev/api/films/1/');
    this.films
@@ -117,16 +135,19 @@ films: Observable<any>;
   });
   }*/
 
-     
+     async abrirlink(link=this.newproducto.link) {
+         await Browser.open({ url:link, });
+     }
 
- async  abrirlink(){
+ async  msjWhatsapp(){
 
  
    const phone='18295695701';
    const mensaje='Hola, estoy interesado en el siguiente articulo:%0A'+
    '%0A*'+this.newproducto.nombre+'*%0A'+
    '*Codigo:* P'+this.newproducto.codigo+'%0A'+
-   '*Precio:* '+this.newproducto.precio+
+   '*Precio:* '+this.newproducto.precio+'%0A'+
+   '*Link:*'+this.newproducto.link+
    '%0A Sigue disponible?'
    ;
     //await Browser.open({ url: 'https://api.whatsapp.com/send?phone='+phone+'?text=Me%20interesa%20in%20el%20auto%20que%20vende', });

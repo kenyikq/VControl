@@ -125,7 +125,7 @@
         </thead>
         <tbody class="normal">
           <tr style="text-align: center;" *ngFor="let transaccion of transacciones">
-            <td>{{fila()}}</td>
+            <td>{{transaccion.codigo}}</td>
             <td>{{transaccion.fecha | date: 'dd-MM-yyyy' }}</td><!---| date: 'dd-MM-yyyy'--->
             <td>{{transaccion.tipoTransaccion}}</td>
             <td class="hide">{{transaccion.descripcion}}</td>

@@ -27,6 +27,7 @@ export class AppComponent  {
     loading: any;
     path: '/usuarios';
     uid = '';
+    activo=true;
 
 
 
@@ -58,11 +59,13 @@ getuid(){
 
       if(res.uid !==''){
         this.login= true;
+        this.activo=false;
       }else {
         this.login= false;
+        this.activo=true;
       }
     }
-    else{ this.login = false;}
+    else{ this.login = false;this.activo=false;}
   });
 }
 

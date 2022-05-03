@@ -34,6 +34,7 @@ export class ProductosPage implements OnInit {
     precio: 0,
     precioMin: 0,
     condicion:'Usado como nuevo',
+    link:'',
     descripcion: {
       caracteristicas:'',
       procesador: { tipo: '', gen: '' },
@@ -122,6 +123,7 @@ export class ProductosPage implements OnInit {
       precio: 0,
       precioMin: 0,
       condicion: 'Usado como nuevo',
+      link:'',
       descripcion: {
         caracteristicas:'',
         procesador: { tipo: null, gen: null },
@@ -215,6 +217,7 @@ this.newproducto.descripcion= {
         return 0;
       });
      });}
+
      if(this.valueSelected=== 'todos') {
 
 
@@ -226,7 +229,11 @@ const  subscriber = this.firestoreService.database.collection<Producto>(this.pat
 
       });}
 
-
+      let cont=0;
+      this.productos.forEach(transaccion => {
+        cont=cont + 1;
+        transaccion.codigo= cont;
+      });
   }
 
   mostrarDatos(producto: Producto) {

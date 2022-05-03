@@ -288,6 +288,11 @@ else{
 
   };
 
+  /* this.firestoreService.database.collection<Producto>(this.path,
+  ref=>ref.where('codigo','>',0).orderBy('codigo').limitToLast(1)).valueChanges()
+  .pipe(take(1))
+  .subscribe((resp) */
+
   doughnutChartMethod() {
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
       type: 'doughnut',

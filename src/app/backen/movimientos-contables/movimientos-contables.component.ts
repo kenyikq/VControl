@@ -83,7 +83,7 @@ filas=30;
     this.nuevo();
     this.agregarTransaccion= true;
     this.transaccion.fecha= moment(new Date()).toString();
-    this.getTransacciones();
+    this.getTransacciones(this.filas);
 
   }
 
@@ -139,27 +139,37 @@ this.getTransacciones(this.filas);
 
 getTransacciones(filas=this.filas) {
   this.cont=0;
+  this.transacciones= [];
+  
 
 if(this.valueSelected === 'Todo'){
 
-  this.firestoreService.getCollection<MovimientosContables>(this.path).pipe().subscribe( res => {
+  this.firestoreService.getCollection<MovimientosContables>(this.path).pipe(take(1)).subscribe( res => {
 
     //console.log(res);
   this.transacciones= res.sort((a,b)=> Date.parse(a.fecha)- Date.parse(b.fecha));
   this.transacciones= this.transacciones.slice(this.transacciones.length-filas);
 this.transacciones= this.transacciones.sort((a,b)=> Date.parse(b.fecha)- Date.parse(a.fecha));
+this.transacciones.forEach(transaccion => {
+  this.cont=this.cont + 1;
+  transaccion.codigo= this.cont.toString();
+});
  // let aNuevo = aNumeros.slice(aNumeros.length-5);
- this.cont=0;
+
 
 } );
 
 }
 
 else{this.firestoreService.getCollectionquery<MovimientosContables>(this.path,'tipoTransaccion','==',this.valueSelected).
-subscribe(resp=>{this.cont=0;
+pipe(take(1)).subscribe(resp=>{
   this.transacciones=resp.sort((a,b)=> Date.parse(a.fecha)- Date.parse(b.fecha));
   this.transacciones= this.transacciones.slice(this.transacciones.length - filas);
   this.transacciones= this.transacciones.sort((a,b)=> Date.parse(b.fecha)- Date.parse(a.fecha));
+  this.transacciones.forEach(transaccion => {
+    this.cont=this.cont + 1;
+    transaccion.codigo= this.cont.toString();
+  });
 
 });
   
@@ -363,9 +373,7 @@ validacion(){
     const i =this.filas;
 
     do {
-      if(this.cont>i){
-        this.cont=0;
-      }
+      
       
       this.cont=this.cont+1;
      
@@ -373,7 +381,7 @@ validacion(){
      
     
   }
-  while (this.cont < this.filas - 1);
+  while (this.cont < this.transacciones.length);
 
   }
 

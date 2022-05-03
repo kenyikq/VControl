@@ -24,7 +24,9 @@
   
   <ion-content [fullscreen]="true">
    
-    <div class="ion-padding">
+    <div class="ion-padding" style="max-width: 1032px;
+    text-align: center;
+    margin: auto;">
       <ion-segment  mode="ios" scrollable="true" (ionChange)=" segmentChanged(valueSelected, $event)" [value]="anio" color="dark">
         <ion-segment-button value="2021">
           <ion-label>2021</ion-label>
